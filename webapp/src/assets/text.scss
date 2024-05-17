@@ -1,0 +1,20 @@
+* {
+  font-family: Matter, sans-serif;
+  font-weight: 400;
+  font-size: 1em;
+}
+
+p {
+  strong {
+    font-weight: bold;
+  }
+
+  &.secondary {
+    color: var(--secondary-text);
+  }
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+}

@@ -1,2 +1,24 @@
 {
+  "home": {
+    "title": "Commencer votre aventure !"
+  },
+  "router": {
+    "friends": {
+      "subtitle": "Invitez vos amis à jouer !",
+      "title": "Amis"
+    },
+    "home": "Acceuil",
+    "leaderboard": {
+      "subtitle": "Voir le classement global de OnePool !",
+      "title": "Classement"
+    },
+    "pool": {
+      "subtitle": "Démarre ta partie dès maintenant",
+      "title": "Jouer"
+    },
+    "profile": {
+      "subtitle": "Accédez à votre profil et vos statistiques",
+      "title": "Profil"
+    }
+  }
 }

@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from "@/App.vue";
 import "@/assets/style.scss"
 import "@/assets/font.scss"
+import "@/assets/text.scss"
 import en from "@/assets/locales/en.json";
 import fr from "@/assets/locales/fr.json";
 import es from "@/assets/locales/es.json";
