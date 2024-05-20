@@ -2,6 +2,23 @@
   "home": {
     "title": "Commencer votre aventure !"
   },
+  "leaderboard": {
+    "self": {
+      "ranking": {
+        "line1": "Vous etes actuellement",
+        "line2": "dans le classement !",
+        "line3": "Vous avez actuellement",
+        "th": "eme"
+      }
+    },
+    "table": {
+      "column": {
+        "point": "PP",
+        "rank": "Classement",
+        "username": "Pseudonye"
+      }
+    }
+  },
   "router": {
     "friends": {
       "subtitle": "Invitez vos amis à jouer !",
