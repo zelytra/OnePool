@@ -27,7 +27,6 @@ import ButtonCard from "@/vue/templates/ButtonCard.vue";
 const {t} = useI18n()
 
 function getGradient(routePath:string){
-  console.log(routePath)
   switch (routePath) {
     case "/pool" : return "#27A27A"
     case "/leaderboard" : return "#44FBF0"

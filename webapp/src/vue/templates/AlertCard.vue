@@ -55,8 +55,8 @@ defineProps({
     mask-composite: exclude;
   }
 
-  &::v-deep p {
-    font-size: 12px;
+  &:deep(p) {
+    font-size: 14px;
 
     strong{
       color: var(--gradient-start);

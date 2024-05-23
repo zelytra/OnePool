@@ -1,4 +1,14 @@
 {
+  "friends": {
+    "action": {
+      "add": "Cliquez ici pour ajouter un(e) ami(e)s"
+    },
+    "status": {
+      "offline": "Hors ligne",
+      "online": "En ligne"
+    },
+    "title": "Amis"
+  },
   "home": {
     "title": "Commencer votre aventure !"
   },
