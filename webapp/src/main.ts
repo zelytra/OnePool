@@ -9,6 +9,7 @@ import es from "@/assets/locales/es.json";
 import de from "@/assets/locales/de.json";
 import {createI18n} from "vue-i18n";
 import router from "@/router";
+import {createPinia} from "pinia";
 
 export const i18n = createI18n({
   legacy: false, // you must set `false`, to use Composition API
@@ -33,6 +34,7 @@ app.directive("click-outside", {
     document.body.removeEventListener("click", el.clickOutsideEvent);
   },
 });
+app.use(createPinia());
 app.use(router);
 app.use(i18n);
 app.mount("#app");
