@@ -20,7 +20,7 @@
       <tbody>
       <tr v-for="player in players.sort((a,b)=> a.ranking - b.ranking)">
         <td>{{ player.username }}</td>
-        <td class="point">{{ player.pp }}</td>
+        <td class="point">{{ formatNumberWithSpaces(player.pp) }}</td>
         <td :class="{'rank':true,first:player.ranking == 1,second:player.ranking == 2,third:player.ranking==3}">
           #{{ player.ranking }}
         </td>
@@ -43,7 +43,7 @@ onMounted(() => {
   for (let x = 1; x <= 100; x++) {
     players.value.push({
       ranking: x,
-      pp: formatNumberWithSpaces(Math.round(Math.random() * 10000)),
+      pp: Math.round(Math.random() * 10000),
       username: "Zelytra"
     })
   }

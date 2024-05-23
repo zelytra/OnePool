@@ -1,4 +1,4 @@
-export class PlayerLeaderboard {
+export interface PlayerLeaderboard {
   icon?: string
   username: string
   pp: number
