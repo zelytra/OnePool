@@ -39,6 +39,7 @@ defineProps({
   position: relative;
   overflow: hidden;
   width: 100%;
+  min-height: 56px;
   gap: 8px;
   padding: 16px;
   border-radius: 15px;
