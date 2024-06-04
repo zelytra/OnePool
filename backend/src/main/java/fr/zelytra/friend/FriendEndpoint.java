@@ -2,18 +2,15 @@ package fr.zelytra.friend;
 
 import fr.zelytra.logger.LogEndpoint;
 import fr.zelytra.user.UserEntity;
+import fr.zelytra.user.UserService;
 import io.quarkus.logging.Log;
-import io.quarkus.panache.common.Parameters;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Path("/friends")
 @Authenticated
@@ -22,52 +19,57 @@ public class FriendEndpoint {
     @Inject
     SecurityIdentity securityIdentity;
 
+    @Inject
+    FriendService friendService;
+
+    @Inject
+    UserService userService;
+
     @GET
     @Path("list")
     @LogEndpoint
     @Transactional
     public Response getFriends() {
-        UserEntity user = UserEntity.findById(securityIdentity.getPrincipal().getName());
-
-        if (user == null) {
-            user = new UserEntity(securityIdentity.getPrincipal().getName());
-        }
-
-        List<FriendEntity> friendsList = FriendEntity.find(
-                "user1 = :user OR user2 = :user",
-                Parameters.with("user", user)
-        ).list();
-
-        return Response.ok(friendsList).build();
+        UserEntity user = userService.getOrCreateUserByName(securityIdentity.getPrincipal().getName());
+        return Response.ok(friendService.getFriendsList(user)).build();
     }
 
     @DELETE
     @Path("list/{username}")
     @LogEndpoint
+    @Transactional
     public Response deleteFriend(@PathParam("username") String username) {
+        String receiver = securityIdentity.getPrincipal().getName();
+        FriendEntity friendship = friendService.getFriend(receiver, username);
+
+        if (friendship == null) {
+            Log.info("Friendship doesn't exist");
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        FriendEntity.deleteById(friendship.getId());
         return Response.ok().build();
     }
 
     @POST
     @Path("invite/send/{username}")
     @LogEndpoint
+    @Transactional
     public Response inviteFriend(@PathParam("username") String username) {
-        UserEntity user1 = UserEntity.findById(securityIdentity.getPrincipal().getName());
-        UserEntity user2 = UserEntity.findById(username);
+        String requester = securityIdentity.getPrincipal().getName();
+        FriendEntity friendship = friendService.getFriend(requester, username);
 
-        if (user1 == null || user2 == null) {
-            Log.info("One of the users doesn't exist");
-            return Response.status(Response.Status.BAD_REQUEST).build();
+        if (friendship != null) {
+            Log.info("Request already sent to " + username);
+            return Response.ok("Request already sent to this user").build();
         }
 
-        Map<String, String> params = new HashMap<>();
-        params.put("user1", user1.getUsername());
-        params.put("user2", user2.getUsername());
+        UserEntity user1 = userService.getOrCreateUserByName(requester);
+        UserEntity user2 = userService.getUserByName(username);
 
-        List<FriendEntity> friendsList = FriendEntity.find("(user_id1 = :user1 AND user_id2 = :user2) OR (user_id1 = :user2 AND user_id2 = :user1)", params).list();
-        if (!friendsList.isEmpty()) {
-            Log.info("Request already sent");
-            return Response.ok().build();
+        if (user2 == null) {
+            Log.info("Unknown user " + username);
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
         new FriendEntity(user1, user2, InviteStatus.PENDING);
@@ -77,16 +79,31 @@ public class FriendEndpoint {
     }
 
     @POST
-    @Path("invite/status/{username}")
+    @Path("invite/accept/{username}")
     @LogEndpoint
-    public Response updateInviteStatus(@PathParam("username") String username, InviteStatus status) {
-        return Response.ok().build();
-    }
+    @Produces(MediaType.TEXT_PLAIN)
+    @Transactional
+    public Response acceptInvitation(@PathParam("username") String username) {
+        String receiver = securityIdentity.getPrincipal().getName();
+        FriendEntity friendship = friendService.getFriend(receiver, username);
 
-    @GET
-    @Path("invite/list")
-    @LogEndpoint
-    public Response getInviteList() {
+        if (friendship == null) {
+            Log.info("The friendship with " + username + " doesn't exist");
+            return Response.ok("The friendship doesn't exist").build();
+        }
+
+        if (friendship.getStatus() != InviteStatus.PENDING) {
+            Log.info("Friendship already accepted/refused by " + username);
+            return Response.ok("Friendship already accepted/refused").build();
+        }
+
+        //Check if the user accepting is the receiver
+        if (!friendship.getUser2().getAuthUsername().equalsIgnoreCase(receiver)) {
+            Log.info("The user trying to accept the friend request is not allowed to do it");
+            return Response.ok("The user trying to accept the friend request is not allowed to do it").build();
+        }
+
+        friendship.setStatus(InviteStatus.ACCEPT);
         return Response.ok().build();
     }
 }

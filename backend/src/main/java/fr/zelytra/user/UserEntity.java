@@ -24,10 +24,10 @@ public class UserEntity extends PanacheEntityBase {
     private boolean online;
 
     @Column(columnDefinition = "date", name = "created_at")
-    public LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Column(columnDefinition = "integer")
-    public int pp;
+    private int pp;
 
     public UserEntity() {
     }

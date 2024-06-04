@@ -13,22 +13,22 @@ public class FriendEntity extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id1", nullable = false)
-    public UserEntity user1;
+    private UserEntity user1;
 
     @ManyToOne
     @JoinColumn(name = "user_id2", nullable = false)
-    public UserEntity user2;
+    private UserEntity user2;
 
     @Column(name = "created_at")
-    public LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    public InviteStatus status;
+    private InviteStatus status;
 
     public FriendEntity() {
     }
