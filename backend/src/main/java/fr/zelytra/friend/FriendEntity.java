@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Table(name = "friend")
+@Entity
 public class FriendEntity extends PanacheEntityBase {
 
     @Id
@@ -25,11 +26,26 @@ public class FriendEntity extends PanacheEntityBase {
     @Column(name = "created_at")
     public LocalDateTime createdAt;
 
-    public FriendEntity(){}
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    public InviteStatus status;
+
+    public FriendEntity() {
+    }
+
+    public FriendEntity(UserEntity uer1, UserEntity uer2, InviteStatus status) {
+        this.user1 = uer1;
+        this.user2 = uer2;
+        this.status = status;
+        this.persistAndFlush();
+    }
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        if (status == null) {
+            status = InviteStatus.PENDING;
+        }
     }
 
     public Long getId() {
@@ -62,5 +78,13 @@ public class FriendEntity extends PanacheEntityBase {
 
     public void setUser1(UserEntity user1) {
         this.user1 = user1;
+    }
+
+    public InviteStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(InviteStatus status) {
+        this.status = status;
     }
 }

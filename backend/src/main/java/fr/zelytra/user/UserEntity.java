@@ -1,17 +1,18 @@
 package fr.zelytra.user;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import io.quarkus.logging.Log;
+import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-@Table(name = "user")
+@Table(name = "'user'")
+@Entity
 public class UserEntity extends PanacheEntityBase {
 
     @Id
-    private long id;
+    @Column(columnDefinition = "text", name = "auth_username")
+    private String authUsername;
 
     @Column(columnDefinition = "text")
     private String username;
@@ -22,17 +23,34 @@ public class UserEntity extends PanacheEntityBase {
     @Column(columnDefinition = "boolean")
     private boolean online;
 
-    @Column(columnDefinition = "date")
-    public Date creationDate;
+    @Column(columnDefinition = "date", name = "created_at")
+    public LocalDateTime createdAt;
 
     @Column(columnDefinition = "integer")
     public int pp;
 
     public UserEntity() {
     }
+    public UserEntity(String username){
+        Log.info("New user created : " + username);
+        this.pp = 100;//TODO Need to be modify when rating system is implemented
+        this.authUsername=username;
+        this.username=username;
+        this.online=true;
+        this.persistAndFlush();
+    }
 
-    public long getId() {
-        return id;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
+    public String getAuthUsername() {
+        return authUsername;
+    }
+
+    public void setAuthUsername(String authUsername) {
+        this.authUsername = authUsername;
     }
 
     public String getUsername() {
@@ -59,12 +77,12 @@ public class UserEntity extends PanacheEntityBase {
         this.online = online;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
+    public LocalDateTime getCreationDate() {
+        return createdAt;
     }
 
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    public void setCreationDate(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public int getPp() {
@@ -74,4 +92,5 @@ public class UserEntity extends PanacheEntityBase {
     public void setPp(int pp) {
         this.pp = pp;
     }
+
 }

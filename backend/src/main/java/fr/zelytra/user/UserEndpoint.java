@@ -1,13 +1,16 @@
 package fr.zelytra.user;
 
 import fr.zelytra.logger.LogEndpoint;
+import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
 @Path("/user")
+@Authenticated
 public class UserEndpoint {
 
     @Inject
@@ -16,14 +19,12 @@ public class UserEndpoint {
     @GET
     @Path("/preferences")
     @LogEndpoint
+    @Transactional
     public Response getPreferences() {
-        UserEntity user = UserEntity.find("username",securityIdentity.getPrincipal().getName()).firstResult();
-
-        // Init first time connection
-        if(user == null) {
-         UserEntity newUser = new UserEntity();
-
+        UserEntity user = UserEntity.find("username", securityIdentity.getPrincipal().getName()).firstResult();
+        if (user == null) {
+            user = new UserEntity(securityIdentity.getPrincipal().getName());
         }
-        return Response.ok().build();
+        return Response.ok(user).build();
     }
 }
