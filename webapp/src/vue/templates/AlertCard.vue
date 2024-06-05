@@ -1,10 +1,10 @@
 <template>
   <div class="alert-card-container" :style="{
-    '--gradient-start': color,
+    '--gradient-start': color?color:'#FFF',
   }">
     <svg width="157" height="87" viewBox="0 0 157 87" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g filter="url(#filter0_f_26_339)">
-        <ellipse cx="34" cy="-2.03906" rx="73" ry="48.2578" :fill="color" fill-opacity="0.2"/>
+        <ellipse cx="34" cy="-2.03906" rx="73" ry="48.2578" :fill="color?color:'#FFF'" fill-opacity="0.2"/>
       </g>
       <defs>
         <filter id="filter0_f_26_339" x="-89" y="-100.297" width="246" height="196.516" filterUnits="userSpaceOnUse"
@@ -15,7 +15,7 @@
         </filter>
       </defs>
     </svg>
-    <slot/>
+    <slot class="slot"/>
   </div>
 </template>
 
@@ -43,6 +43,7 @@ defineProps({
   gap: 8px;
   padding: 16px;
   border-radius: 15px;
+  z-index: 1;
 
   &:before {
     content: "";
@@ -54,12 +55,13 @@ defineProps({
     -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
+    z-index: -1;
   }
 
   &:deep(p) {
     font-size: 14px;
 
-    strong{
+    strong {
       color: var(--gradient-start);
       font-weight: 400;
     }

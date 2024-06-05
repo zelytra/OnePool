@@ -40,9 +40,7 @@ export class HTTPAxios {
   */
 
   public static async updateToken() {
-    await keycloakStore.keycloak.updateToken(60).then((refresh: boolean) => {
-      if (refresh) console.debug("Token was successfully refreshed");
-    });
+    await keycloakStore.keycloak.updateToken(60);
     HTTPAxios.header.Authorization = 'Bearer ' + keycloakStore.keycloak.token;
   }
 }

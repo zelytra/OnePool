@@ -5,12 +5,18 @@ export interface Friend {
 }
 
 export interface User {
-  authUsername:string
+  authUsername: string
   username: string
   icon: string
   online: boolean
   createdAt: Date
   pp: number
-  lang:string
+  lang: string
 //history: PoolHistory[],
+}
+
+export interface SimpleUser {
+  icon: string
+  username: string
+  authUsername: string
 }

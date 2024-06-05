@@ -1,7 +1,7 @@
 <template>
   <section class="friends">
     <div class="header-wrapper">
-      <AlertCard color="#27A27A">
+      <AlertCard color="#27A27A" @click="isResearchOpen=true">
         <div class="friends-action">
           <p>{{ t('friends.action.add') }}</p>
           <img src="@/assets/icons/add-friend.svg" alt="add friend button"/>
@@ -13,6 +13,7 @@
     <div class="friends-list-wrapper">
       <FriendStatus v-for="friend in friends.sort((a,b)=>(b.online?1:0) - (a.online?1:0))" :friend="friend"/>
     </div>
+    <FriendSearchModale v-model:is-open="isResearchOpen"/>
   </section>
 </template>
 
@@ -22,12 +23,18 @@ import {onMounted, ref} from "vue";
 import AlertCard from "@/vue/templates/AlertCard.vue";
 import {useI18n} from "vue-i18n";
 import FriendStatus from "@/vue/friends/FriendStatus.vue";
+import {HTTPAxios} from "@/objects/utils/HTTPAxios.ts";
+import {AxiosResponse} from "axios";
+import FriendSearchModale from "@/vue/modale/FriendSearchModale.vue";
 
 const {t} = useI18n()
 const friends = ref<Friend[]>([])
+const isResearchOpen = ref<boolean>(false)
 
 onMounted(() => {
-
+  new HTTPAxios("friends/list").get().then((response: AxiosResponse) => {
+    friends.value = response.data
+  })
 })
 </script>
 
@@ -43,6 +50,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     gap: 19px;
+    cursor: pointer;
   }
 
   .header-wrapper {

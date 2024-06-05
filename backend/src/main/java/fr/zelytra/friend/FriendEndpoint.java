@@ -72,6 +72,11 @@ public class FriendEndpoint {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
+        if (user1.getAuthUsername().equalsIgnoreCase(user2.getAuthUsername())) {
+            Log.info("User cannot invite him self : " + username);
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
         new FriendEntity(user1, user2, InviteStatus.PENDING);
         Log.info("Sending friend invitation from " + user1.getUsername() + " to " + user2.getUsername());
 

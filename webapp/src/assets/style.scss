@@ -37,11 +37,11 @@ html, body {
   overflow: hidden;
   overflow-y: auto;
   width: auto;
+  position: relative;
 }
 
 #app {
   background: var(--primary-background);
-  position: relative;
 
   // Remove when computer display is done
   max-width: 600px;

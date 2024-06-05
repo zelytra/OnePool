@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
-@Table(name = "'user'")
+@Table(name = "user_pool")
 @Entity
 public class UserEntity extends PanacheEntityBase {
 

@@ -17,6 +17,7 @@ export const useUserStore = defineStore('user', () => {
     pp: 0,
     username: '',
   });
+  const isUserInit = ref<boolean>(false);
 
   function init(username: string) {
     const browserLang = navigator.language.substring(0, 2);
@@ -34,6 +35,7 @@ export const useUserStore = defineStore('user', () => {
         ...response.data,
         lang: browserLang,
       }
+      isUserInit.value = true;
     })
 
     i18n.global.locale.value = user.value.lang as "fr" | "en" | "es" | "de" || "en";
@@ -52,6 +54,7 @@ export const useUserStore = defineStore('user', () => {
 
   return {
     user,
+    isUserInit,
     init,
     setUser,
     setLang,

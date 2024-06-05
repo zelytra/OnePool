@@ -20,7 +20,7 @@ export const i18n = createI18n({
 });
 
 const app = createApp(App);
-keycloakStore.init(window.location.origin);
+keycloakStore.init();
 app.directive("click-outside", {
   mounted(el, binding) {
     el.clickOutsideEvent = function (event: any) {

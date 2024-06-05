@@ -158,6 +158,14 @@ class FriendEndpointTest {
     }
 
     @Test
+    void inviteFriend_inviteSelf() {
+        given()
+                .auth().oauth2(getAccessToken("user5", Set.of("user")))
+                .when().post("friends/invite/send/user5")
+                .then().statusCode(400);
+    }
+
+    @Test
     void inviteFriend_unknownUser() {
         given()
                 .auth().oauth2(getAccessToken("user5", Set.of("user")))
