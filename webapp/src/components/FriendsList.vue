@@ -22,19 +22,12 @@ import {onMounted, ref} from "vue";
 import AlertCard from "@/vue/templates/AlertCard.vue";
 import {useI18n} from "vue-i18n";
 import FriendStatus from "@/vue/friends/FriendStatus.vue";
-import logo from "@/assets/icons/logo-back.svg"
 
 const {t} = useI18n()
 const friends = ref<Friend[]>([])
 
 onMounted(() => {
-  for (let x = 1; x <= 8; x++) {
-    friends.value.push({
-      online: Math.round(Math.random() * 10000) % 2 == 1,
-      icon: logo,
-      username: "Zelytra"
-    })
-  }
+
 })
 </script>
 

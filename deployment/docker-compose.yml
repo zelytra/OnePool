@@ -6,7 +6,7 @@ services:
     image: postgres:14.2-alpine
     container_name: onepool-postgres-app
     ports:
-      - "9100:5432"
+      - "24900:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./psql-data/app:/var/lib/postgresql/onepool/data/pgdata
@@ -25,7 +25,7 @@ services:
       - keycloak
       - postgres-app
     ports:
-      - "9101:8080"
+      - "24901:8080"
     environment:
       DB_HOST: postgres-app
       DB_DATABASE: OnePool
@@ -43,7 +43,7 @@ services:
       - postgres-app
       - backend
     ports:
-      - "9102:80"
+      - "24902:80"
     environment:
       VITE_BACKEND_HOST: ${PUBLIC_QUARKUS_HOSTNAME}
       VITE_KEYCLOAK_HOST: ${PUBLIC_KEYCLOAK_HOSTNAME}
@@ -53,7 +53,7 @@ services:
     image: postgres:14.2-alpine
     container_name: onepool-postgres-auth
     ports:
-      - "9103:5432"
+      - "24903:5432"
     volumes:
       - ./psql-data/auth:/var/lib/postgresql/data/pgdata
       - /etc/localtime:/etc/localtime:ro
@@ -70,7 +70,7 @@ services:
     depends_on:
       - postgres-auth
     ports:
-      - "9104:8080"
+      - "24904:8080"
     volumes:
       - ./keycloak/config:/opt/keycloak/data/import
       - ./keycloak/themes/onepool:/opt/keycloak/themes/onepool

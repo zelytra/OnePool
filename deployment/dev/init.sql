@@ -1,1 +1,0 @@
-REATE SCHEMA IF NOT EXISTS onepool;

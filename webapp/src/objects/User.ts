@@ -1,5 +1,3 @@
-import {PoolHistory} from "@/objects/pool/Pool.ts";
-
 export interface Friend {
   icon: string
   username: string
@@ -7,11 +5,12 @@ export interface Friend {
 }
 
 export interface User {
-  name: string
-  id: number
-  creationDate: Date
+  authUsername:string
+  username: string
   icon: string
-  online: string
+  online: boolean
+  createdAt: Date
   pp: number
-  history: PoolHistory[]
+  lang:string
+//history: PoolHistory[],
 }

@@ -8,7 +8,6 @@
 </template>
 
 <script setup lang="ts">
-
 import AlertFactory from "@/vue/alerts/AlertFactory.vue";
 </script>
 

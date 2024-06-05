@@ -10,6 +10,7 @@ import de from "@/assets/locales/de.json";
 import {createI18n} from "vue-i18n";
 import router from "@/router";
 import {createPinia} from "pinia";
+import {keycloakStore} from "@/objects/stores/LoginStates.ts";
 
 export const i18n = createI18n({
   legacy: false, // you must set `false`, to use Composition API
@@ -19,6 +20,7 @@ export const i18n = createI18n({
 });
 
 const app = createApp(App);
+keycloakStore.init(window.location.origin);
 app.directive("click-outside", {
   mounted(el, binding) {
     el.clickOutsideEvent = function (event: any) {
