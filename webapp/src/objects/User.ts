@@ -1,7 +1,7 @@
 export interface Friend {
-  icon: string
-  username: string
-  online: boolean
+  user1: User
+  user2: User
+  status: InviteStatus
 }
 
 export interface User {
@@ -19,4 +19,10 @@ export interface SimpleUser {
   icon: string
   username: string
   authUsername: string
+}
+
+export enum InviteStatus {
+  ACCEPT = "ACCEPT",
+  REFUSE = "REFUSE",
+  PENDING = "PENDING"
 }

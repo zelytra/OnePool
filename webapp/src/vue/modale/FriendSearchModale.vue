@@ -3,7 +3,7 @@
     <AlertCard color="" class="oskour" v-click-outside="()=>isOpen=false">
       <input type="text" v-model="inputResearch"/>
       <div class="results-wrapper">
-        <AlertCard color="#44FBF0" v-for="user of searchResult">
+        <AlertCard color="#44FBF0" v-for="user of searchResult" @click="inviteUser(user.authUsername)">
           <div class="user-wrapper">
             <img :src="user.icon" v-if="user.icon" alt="user-icon"/>
             <p>{{ user.username }}</p>
@@ -21,10 +21,14 @@ import {ref, watch} from "vue";
 import {HTTPAxios} from "@/objects/utils/HTTPAxios.ts";
 import {AxiosResponse} from "axios";
 import {SimpleUser} from "@/objects/User";
+import {AlertType, useAlertStore} from "@/vue/alerts/AlertStore.ts";
+import {useI18n} from "vue-i18n";
 
 const inputResearch = ref<string>("");
 const searchResult = ref<SimpleUser[]>([]);
 const isOpen = defineModel<boolean>("isOpen")
+const alert = useAlertStore();
+const {t} =useI18n();
 
 watch(() => inputResearch.value, () => {
   if (inputResearch.value.length == 0) return;
@@ -32,6 +36,17 @@ watch(() => inputResearch.value, () => {
     searchResult.value = response.data
   })
 })
+
+function inviteUser(username:string) {
+  new HTTPAxios("friends/invite/send/"+username).post().then(()=>{
+    alert.send({
+      content: "",
+      timeout: 1000,
+      title: t('friends.alert.invite.success.title'),
+      type: AlertType.VALID
+    })
+  })
+}
 
 </script>
 

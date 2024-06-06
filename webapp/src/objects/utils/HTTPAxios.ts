@@ -21,7 +21,7 @@ export class HTTPAxios {
     return await axios.get(urlPath, { headers: HTTPAxios.header });
   }
 
-  async post(body: any): Promise<AxiosResponse<any>> {
+  async post(body?: any): Promise<AxiosResponse<any>> {
     const urlPath = this.url + this.path;
     console.debug("[HTTPAxios.ts][POST] " + urlPath);
     return await axios.post(urlPath, body, { headers: HTTPAxios.header });
