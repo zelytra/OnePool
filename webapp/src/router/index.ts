@@ -1,6 +1,5 @@
 import {createRouter, createWebHistory, RouteMeta} from "vue-router";
 import Home from "../components/Home.vue";
-import {i18n} from "@/objects/i18n";
 import UserProfile from "@/components/UserProfile.vue";
 import FriendsList from "@/components/FriendsList.vue";
 import LeaderBoard from "@/components/LeaderBoard.vue";
@@ -9,8 +8,9 @@ import pool from "@/assets/icons/pool.svg"
 import leaderboard from "@/assets/icons/leaderboard.svg"
 import friends from "@/assets/icons/friends.svg"
 import profile from "@/assets/icons/profile.svg"
+import {tsi18n} from "@/objects/i18n";
 
-const {t} = i18n.global;
+const {t} = tsi18n.global;
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -78,15 +78,5 @@ export const router = createRouter({
   history: createWebHistory(),
   routes,
 });
-
-/*
-router.beforeEach((to, _from) => {
-  if (to.meta.requiresAuth) {
-    if (!keycloakStore.isAuthenticated || !keycloakStore.keycloak.authenticated) {
-      router.push('auth')
-    }
-  }
-})
-*/
 
 export default router;

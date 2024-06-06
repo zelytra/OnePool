@@ -1,17 +1,28 @@
-import {PoolHistory} from "@/objects/pool/Pool.ts";
-
 export interface Friend {
-  icon: string
-  username: string
-  online: boolean
+  user1: User
+  user2: User
+  status: InviteStatus
 }
 
 export interface User {
-  name: string
-  id: number
-  creationDate: Date
+  authUsername: string
+  username: string
   icon: string
-  online: string
+  online: boolean
+  createdAt: Date
   pp: number
-  history: PoolHistory[]
+  lang: string
+//history: PoolHistory[],
+}
+
+export interface SimpleUser {
+  icon: string
+  username: string
+  authUsername: string
+}
+
+export enum InviteStatus {
+  ACCEPT = "ACCEPT",
+  REFUSE = "REFUSE",
+  PENDING = "PENDING"
 }

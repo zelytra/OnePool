@@ -3,6 +3,15 @@
     "action": {
       "add": "Cliquez ici pour ajouter un(e) ami(e)s"
     },
+    "alert": {
+      "invite": {
+        "accept": "Invitation accépté",
+        "send": "viens de vous ajouter en ami(e)s !",
+        "success": {
+          "title": "Invitation envoyé"
+        }
+      }
+    },
     "status": {
       "offline": "Hors ligne",
       "online": "En ligne"

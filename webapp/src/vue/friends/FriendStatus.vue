@@ -16,12 +16,12 @@
 
 <script setup lang="ts">
 import {PropType} from "vue";
-import {Friend} from "@/objects/User.ts";
+import {User} from "@/objects/User.ts";
 import {useI18n} from "vue-i18n";
 
 const {t} = useI18n()
 defineProps({
-  friend: {type: Object as PropType<Friend>, required: true}
+  friend: {type: Object as PropType<User>, required: true}
 })
 </script>
 
