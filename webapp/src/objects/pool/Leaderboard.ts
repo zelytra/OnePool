@@ -2,7 +2,7 @@ export interface PlayerLeaderboard {
   icon?: string
   username: string
   pp: number
-  ranking: number
+  position: number
 }
 
 export function formatNumberWithSpaces(num: number): string {

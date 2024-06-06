@@ -6,4 +6,5 @@ import io.quarkus.test.junit.QuarkusTest;
 public class PoolPointCalculatorTest {
 
 
+
 }
