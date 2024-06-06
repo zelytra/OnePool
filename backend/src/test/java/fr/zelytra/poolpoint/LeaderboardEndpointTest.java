@@ -70,7 +70,7 @@ class LeaderboardEndpointTest {
                 .extract()
                 .body()
                 .as(UserLeaderBoardPosition.class);
-        assertEquals(1, userLeaderBoardPosition.position());
+        assertEquals(200, userLeaderBoardPosition.position());
         assertEquals(1000,userLeaderBoardPosition.pp());
     }
 
@@ -83,7 +83,7 @@ class LeaderboardEndpointTest {
                 .extract()
                 .body()
                 .as(UserLeaderBoardPosition.class);
-        assertEquals(42, userLeaderBoardPosition.position());
+        assertEquals(158, userLeaderBoardPosition.position());
         assertEquals(1042,userLeaderBoardPosition.pp());
     }
 

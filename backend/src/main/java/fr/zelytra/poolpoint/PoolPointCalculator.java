@@ -2,9 +2,9 @@ package fr.zelytra.poolpoint;
 
 public class PoolPointCalculator {
 
-    private int poolpoint;
-    private int k; // K-factor
-    private int totalGamePlayed;
+    private final int poolpoint;
+    private final int k; // K-factor
+    private final int totalGamePlayed;
 
     public PoolPointCalculator(int poolpoint, int totalGamePlayed) {
         this.poolpoint = poolpoint;
@@ -42,9 +42,8 @@ public class PoolPointCalculator {
      * @return p(D) Gain probability
      */
     private double getWinProbability(int opponentElo) {
-        int eloDelta = poolpoint - opponentElo; // D
-        double winProbaility = 1 / (1 + Math.pow(10, -eloDelta / 400)); // p(D)
-        return winProbaility;
+        double eloDelta = poolpoint - opponentElo; // D
+        return 1 / (1 + Math.pow(10, -eloDelta / 400));
     }
 
 
