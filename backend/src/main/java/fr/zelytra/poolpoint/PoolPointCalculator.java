@@ -1,5 +1,8 @@
 package fr.zelytra.poolpoint;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class PoolPointCalculator {
 
     private final int poolpoint;
@@ -13,7 +16,6 @@ public class PoolPointCalculator {
     }
 
     /**
-     *
      * @param partyStatus Win = 1 | Loose = 0 | Draw = 0.5
      * @param opponentElo Poolpoint of opponent
      * @return En+1 = En + K * (W - p(D)) The new elo of the player
@@ -22,7 +24,7 @@ public class PoolPointCalculator {
         return (int) Math.round(poolpoint + k * (partyStatus - getWinProbability(opponentElo)));
     }
 
-    private int getFactorK() {
+    public int getFactorK() {
         // New player with less than 30 games and less than 2300 of score
         if (totalGamePlayed < 30 && poolpoint < 2300) {
             return 40;
@@ -41,9 +43,12 @@ public class PoolPointCalculator {
      * @param opponentElo Poolpoint of opponent
      * @return p(D) Gain probability
      */
-    private double getWinProbability(int opponentElo) {
+    public double getWinProbability(int opponentElo) {
         double eloDelta = poolpoint - opponentElo; // D
-        return 1 / (1 + Math.pow(10, -eloDelta / 400));
+        if (Math.abs(eloDelta) > 400 && eloDelta != 0) {
+            eloDelta = (400 * eloDelta) / Math.abs(eloDelta);
+        }
+        return BigDecimal.valueOf(1 / (1 + Math.pow(10, -eloDelta / 400))).setScale(3, RoundingMode.HALF_UP).doubleValue();
     }
 
 

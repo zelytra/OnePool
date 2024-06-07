@@ -29,15 +29,29 @@ public class UserEntity extends PanacheEntityBase {
     @Column(columnDefinition = "integer")
     private int pp;
 
+    @Column(columnDefinition = "integer")
+    private int gamePlayed;
+
     public UserEntity() {
     }
     public UserEntity(String username){
         Log.info("New user created : " + username);
-        this.pp = 100;//TODO Need to be modify when rating system is implemented
+        this.pp = 1200;
+        this.gamePlayed = 0;
         this.authUsername=username;
         this.username=username;
         this.online=true;
         this.persistAndFlush();
+    }
+
+    public UserEntity(UserEntity user) {
+        this.authUsername = user.authUsername;
+        this.username = user.username;
+        this.icon = user.icon;
+        this.online = user.online;
+        this.createdAt = user.createdAt;
+        this.pp = user.pp;
+        this.gamePlayed = user.gamePlayed;
     }
 
     @PrePersist
@@ -93,4 +107,11 @@ public class UserEntity extends PanacheEntityBase {
         this.pp = pp;
     }
 
+    public int getGamePlayed() {
+        return gamePlayed;
+    }
+
+    public void setGamePlayed(int gamePlayed) {
+        this.gamePlayed = gamePlayed;
+    }
 }
