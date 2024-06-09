@@ -1,4 +1,4 @@
-package fr.zelytra.poolpoint;
+package fr.zelytra.poolpoint.simulation;
 
 import fr.zelytra.user.UserEntity;
 import jakarta.persistence.Entity;

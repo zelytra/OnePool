@@ -1,5 +1,6 @@
-package fr.zelytra.poolpoint;
+package fr.zelytra.poolpoint.simulation;
 
+import fr.zelytra.poolpoint.PoolPointCalculator;
 import fr.zelytra.user.UserEntity;
 import io.quarkus.logging.Log;
 

@@ -1,5 +1,6 @@
 package fr.zelytra.poolpoint;
 
+import fr.zelytra.poolpoint.simulation.PoolPlayerSimulator;
 import io.quarkus.logging.Log;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.transaction.Transactional;
@@ -48,7 +49,7 @@ class PoolPointCalculatorTest {
         int user1GamesPlayed = 80;
         int user2PP = 1600;
         PoolPointCalculator poolPointCalculator = new PoolPointCalculator(user1PP, user1GamesPlayed);
-        assertEquals(0.240, poolPointCalculator.getWinProbability(user2PP));
+        assertEquals(0.76, poolPointCalculator.getWinProbability(user2PP));
         assertEquals(20, poolPointCalculator.getFactorK());
     }
 
@@ -58,7 +59,7 @@ class PoolPointCalculatorTest {
         int user1GamesPlayed = 80;
         int user2PP = 1600;
         PoolPointCalculator poolPointCalculator = new PoolPointCalculator(user1PP, user1GamesPlayed);
-        assertEquals(0.091, poolPointCalculator.getWinProbability(user2PP));
+        assertEquals(0.909, poolPointCalculator.getWinProbability(user2PP));
         assertEquals(10, poolPointCalculator.getFactorK());
     }
 
@@ -68,9 +69,9 @@ class PoolPointCalculatorTest {
         int user1GamesPlayed = 80;
         int user2PP = 1600;
         PoolPointCalculator poolPointCalculator = new PoolPointCalculator(user1PP, user1GamesPlayed);
-        assertEquals(0.091, poolPointCalculator.getWinProbability(user2PP));
+        assertEquals(0.909, poolPointCalculator.getWinProbability(user2PP));
         assertEquals(10, poolPointCalculator.getFactorK());
-        assertEquals(2609, poolPointCalculator.computeNewElo(1, user2PP));
+        assertEquals(2601, poolPointCalculator.computeNewElo(1, user2PP));
 
     }
 
@@ -80,9 +81,9 @@ class PoolPointCalculatorTest {
         int user1GamesPlayed = 80;
         int user2PP = 1600;
         PoolPointCalculator poolPointCalculator = new PoolPointCalculator(user1PP, user1GamesPlayed);
-        assertEquals(0.091, poolPointCalculator.getWinProbability(user2PP));
+        assertEquals(0.909, poolPointCalculator.getWinProbability(user2PP));
         assertEquals(10, poolPointCalculator.getFactorK());
-        assertEquals(2599, poolPointCalculator.computeNewElo(0, user2PP));
+        assertEquals(2591, poolPointCalculator.computeNewElo(0, user2PP));
 
     }
 
