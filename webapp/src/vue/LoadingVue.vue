@@ -36,7 +36,6 @@ const preloadImage = (src: any) => {
 
 // References to the scene and white ball elements
 const scene = ref(null);
-const whiteBall = ref(null);
 
 // Ball data
 const balls = ref([
@@ -89,7 +88,7 @@ async function initializeScene() {
     await Promise.all(balls.value.map(ball => preloadImage(ball.image)));
     await preloadImage(white);
 
-    const element = scene.value;
+    const element:HTMLElement = scene.value as unknown as HTMLElement;
     if (!element) return;
     const width = element.clientWidth;
     const height = element.clientHeight;
@@ -100,7 +99,7 @@ async function initializeScene() {
     let engine = Engine.create();
     engine.gravity.y = 0;
     const world = engine.world;
-
+    if(!scene.value) return;
     const render = Render.create({
       element: scene.value,
       engine: engine,
@@ -158,10 +157,6 @@ async function initializeScene() {
         ball.position.x = matterBalls[index].position.x;
         ball.position.y = matterBalls[index].position.y;
       });
-      if (whiteBall.value) {
-        whiteBall.value.style.left = whiteBallBody.position.x + 'px';
-        whiteBall.value.style.top = whiteBallBody.position.y + 'px';
-      }
     });
 
     // Add reset logic
