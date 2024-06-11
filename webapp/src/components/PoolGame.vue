@@ -1,6 +1,8 @@
 <template>
-  <p>Pool Game</p>
-  <LoadingVue/>
+  <section>
+    <p>Pool Game</p>
+    <LoadingVue/>
+  </section>
 </template>
 
 <script setup lang="ts">
