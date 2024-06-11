@@ -46,7 +46,6 @@ watch(alerts.getAlerts, () => {
   gap: 8px;
   width: 90%;
   margin: 8px auto auto;
-  box-sizing: border-box;
   overflow: hidden;
   transition: all 200ms;
 }
