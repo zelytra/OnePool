@@ -1,6 +1,8 @@
 <template>
-  <p>User profile</p>
-  <button @click="keycloakStore.keycloak.logout()">logout</button>
+  <section>
+    <p>User profile</p>
+    <button @click="keycloakStore.keycloak.logout()">logout</button>
+  </section>
 </template>
 
 <script setup lang="ts">
