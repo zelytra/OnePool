@@ -1,9 +1,11 @@
 <template>
   <section class="leaderboard">
     <div class="header-wrapper">
-      <AlertCard color="#44FBF0">
-        <p>{{t('leaderboard.self.ranking.line1')}} <strong>35{{t('leaderboard.self.ranking.th')}}</strong> {{t('leaderboard.self.ranking.line2')}}</p>
-        <p>{{t('leaderboard.self.ranking.line3')}} <strong>17 800 {{t('leaderboard.table.column.point')}}</strong></p>
+      <AlertCard color="#44FBF0" v-if="user">
+        <p>{{ t('leaderboard.self.ranking.line1') }} <strong>{{user.position}} {{ t('leaderboard.self.ranking.th') }}</strong>
+          {{ t('leaderboard.self.ranking.line2') }}</p>
+        <p>{{ t('leaderboard.self.ranking.line3') }} <strong>{{user.pp}} {{ t('leaderboard.table.column.point') }}</strong>
+        </p>
       </AlertCard>
       <div class="filter-wrapper">
 
@@ -12,17 +14,17 @@
     <table>
       <thead>
       <tr>
-        <th>{{t('leaderboard.table.column.username')}}</th>
-        <th>{{t('leaderboard.table.column.point')}}</th>
-        <th>{{t('leaderboard.table.column.rank')}}</th>
+        <th>{{ t('leaderboard.table.column.username') }}</th>
+        <th>{{ t('leaderboard.table.column.point') }}</th>
+        <th>{{ t('leaderboard.table.column.rank') }}</th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="player in players.sort((a,b)=> a.ranking - b.ranking)">
+      <tr v-for="player in players.sort((a,b)=> a.position - b.position)">
         <td>{{ player.username }}</td>
         <td class="point">{{ formatNumberWithSpaces(player.pp) }}</td>
-        <td :class="{'rank':true,first:player.ranking == 1,second:player.ranking == 2,third:player.ranking==3}">
-          #{{ player.ranking }}
+        <td :class="{'rank':true,first:player.position == 1,second:player.position == 2,third:player.position==3}">
+          #{{ player.position }}
         </td>
       </tr>
       </tbody>
@@ -35,18 +37,24 @@ import {formatNumberWithSpaces, PlayerLeaderboard} from "@/objects/pool/Leaderbo
 import {onMounted, ref} from "vue";
 import AlertCard from "@/vue/templates/AlertCard.vue";
 import {useI18n} from "vue-i18n";
+import {HTTPAxios} from "@/objects/utils/HTTPAxios.ts";
+import {AxiosResponse} from "axios";
 
 const players = ref<PlayerLeaderboard[]>([])
+const user = ref<PlayerLeaderboard | undefined>();
+
 const {t} = useI18n()
 
 onMounted(() => {
-  for (let x = 1; x <= 100; x++) {
-    players.value.push({
-      ranking: x,
-      pp: Math.round(Math.random() * 10000),
-      username: "Zelytra"
+  new HTTPAxios("leaderboard/all").get().then((response: AxiosResponse) => {
+    players.value = response.data;
+    players.value.forEach((p, index) => {
+      p.position = index + 1
     })
-  }
+  })
+  new HTTPAxios("leaderboard/self").get().then((response: AxiosResponse) => {
+    user.value = response.data;
+  })
 })
 
 </script>

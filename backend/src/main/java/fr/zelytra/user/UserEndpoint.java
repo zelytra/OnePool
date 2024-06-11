@@ -30,6 +30,7 @@ public class UserEndpoint {
 
     @GET
     @Path("/preferences")
+
     @LogEndpoint
     @Transactional
     public Response getPreferences() {

@@ -26,7 +26,6 @@ class FriendEndpointTest {
     @Inject
     FriendService friendService;
 
-
     @BeforeEach
     @Transactional
     void init() {

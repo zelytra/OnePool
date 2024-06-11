@@ -9,6 +9,11 @@
   scrollbar-width: thin;
   color: var(--primary-text);
   user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 body {
@@ -33,16 +38,16 @@ body {
 
 html, body {
   background: var(--primary-background);
-  height: 100vh;
-  overflow: hidden;
-  overflow-y: auto;
-  width: auto;
-  position: relative;
+
 }
 
 #app {
   background: var(--primary-background);
-
+  position: relative;
+  overflow: hidden;
+  overflow-y: auto;
+  height: 100vh;
+  padding-bottom: 80px; //Simulate nav bar web flow
   // Remove when computer display is done
   max-width: 600px;
   margin: auto;
