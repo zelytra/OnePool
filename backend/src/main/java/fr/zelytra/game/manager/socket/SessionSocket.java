@@ -67,7 +67,8 @@ public class SessionSocket {
         // Handle the message based on its type
         switch (socketMessage.messageType()) {
             case CREATE_POOL -> {
-                socketService.createParty();
+                String username = objectMapper.convertValue(socketMessage.data(), String.class);
+                socketService.createParty(username);
             }
             default -> Log.info("Unhandled message type: " + socketMessage.messageType());
         }
