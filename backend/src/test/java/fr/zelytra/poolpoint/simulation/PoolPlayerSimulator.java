@@ -2,7 +2,6 @@ package fr.zelytra.poolpoint.simulation;
 
 import fr.zelytra.poolpoint.PoolPointCalculator;
 import fr.zelytra.user.UserEntity;
-import io.quarkus.logging.Log;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -69,7 +68,6 @@ public class PoolPlayerSimulator {
     }
 
     private boolean isPlayerWinningTheGame(int player1Weight, int player2Weight) {
-        Log.info(player1Weight + " " + player2Weight);
         return Math.random() < ((double) player1Weight / Math.max(1, player1Weight + player2Weight));
     }
 

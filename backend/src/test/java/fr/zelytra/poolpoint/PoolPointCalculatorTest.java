@@ -16,7 +16,7 @@ class PoolPointCalculatorTest {
     void simulation() {
         PoolPlayerSimulator poolPlayerSimulator = new PoolPlayerSimulator(101, 5000);
         Log.info(poolPlayerSimulator);
-        poolPlayerSimulator.generateCSV("game_history.csv");
+        //poolPlayerSimulator.generateCSV("game_history.csv");
     }
 
     @Test

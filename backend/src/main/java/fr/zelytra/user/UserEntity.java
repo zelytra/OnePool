@@ -34,6 +34,7 @@ public class UserEntity extends PanacheEntityBase {
 
     public UserEntity() {
     }
+
     public UserEntity(String username){
         Log.info("New user created : " + username);
         this.pp = 1200;
@@ -41,7 +42,6 @@ public class UserEntity extends PanacheEntityBase {
         this.authUsername=username;
         this.username=username;
         this.online=true;
-        this.persistAndFlush();
     }
 
     public UserEntity(UserEntity user) {

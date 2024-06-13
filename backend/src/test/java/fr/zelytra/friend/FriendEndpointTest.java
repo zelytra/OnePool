@@ -1,6 +1,7 @@
 package fr.zelytra.friend;
 
 import fr.zelytra.user.UserEntity;
+import fr.zelytra.user.UserService;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.oidc.server.OidcWiremockTestResource;
@@ -26,14 +27,17 @@ class FriendEndpointTest {
     @Inject
     FriendService friendService;
 
+    @Inject
+    UserService userService;
+
     @BeforeEach
     @Transactional
     void init() {
-        UserEntity user1 = new UserEntity("user1");
-        UserEntity user2 = new UserEntity("user2");
-        UserEntity user3 = new UserEntity("user3");
-        UserEntity user4 = new UserEntity("user4");
-        UserEntity user5 = new UserEntity("user5");
+        UserEntity user1 = userService.getOrCreateUserByName("user1");
+        UserEntity user2 = userService.getOrCreateUserByName("user2");
+        UserEntity user3 = userService.getOrCreateUserByName("user3");
+        UserEntity user4 = userService.getOrCreateUserByName("user4");
+        UserEntity user5 = userService.getOrCreateUserByName("user5");
         new FriendEntity(user1, user2, InviteStatus.ACCEPT);
         new FriendEntity(user1, user3, InviteStatus.ACCEPT);
         new FriendEntity(user2, user3, InviteStatus.ACCEPT);

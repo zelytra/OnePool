@@ -7,6 +7,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 import io.restassured.common.mapper.TypeRef;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,14 +25,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @QuarkusTestResource(OidcWiremockTestResource.class)
 class UserEndpointTest {
 
+    @Inject
+    UserService userService;
+
     @BeforeEach
     @Transactional
     void init() {
-        UserEntity user1 = new UserEntity("user1");
-        UserEntity user2 = new UserEntity("user2");
-        UserEntity user3 = new UserEntity("user3");
-        UserEntity user4 = new UserEntity("user4");
-        UserEntity user5 = new UserEntity("user5");
+        UserEntity user1 = userService.getOrCreateUserByName("user1");
+        UserEntity user2 = userService.getOrCreateUserByName("user2");
+        UserEntity user3 = userService.getOrCreateUserByName("user3");
+        UserEntity user4 = userService.getOrCreateUserByName("user4");
+        UserEntity user5 = userService.getOrCreateUserByName("user5");
         new FriendEntity(user1, user2, InviteStatus.ACCEPT);
         new FriendEntity(user1, user3, InviteStatus.ACCEPT);
         new FriendEntity(user2, user3, InviteStatus.ACCEPT);
@@ -48,7 +52,7 @@ class UserEndpointTest {
                 .body()
                 .as(UserEntity.class);
         assertNotNull(user);
-        UserEntity foundedUser = UserEntity.findById("userTest");
+        UserEntity foundedUser = userService.getUserByName("userTest");
         assertNotNull(foundedUser);
         assertEquals(foundedUser.getUsername(), "userTest", "The user found didn't match the input user");
     }

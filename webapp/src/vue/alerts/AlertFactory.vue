@@ -34,7 +34,7 @@ watch(alerts.getAlerts, () => {
         boxTotalSize += (element as HTMLDivElement).clientHeight
       }
     }
-    boxHeight.value = boxTotalSize + (8 * (alerts.getAlerts.length - 1)) // 8px for the gap, -1 minus first one
+    boxHeight.value = boxTotalSize + (8 * (alerts.getAlerts.length - 1)) // 8px for the gap, minus first one
   })
 })
 </script>

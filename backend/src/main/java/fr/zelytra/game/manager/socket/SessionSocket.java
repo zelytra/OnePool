@@ -66,7 +66,7 @@ public class SessionSocket {
 
         // Handle the message based on its type
         switch (socketMessage.messageType()) {
-            case CREATE_POOL -> {
+            case CONNECT_TO_POOL -> {
                 String username = objectMapper.convertValue(socketMessage.data(), String.class);
                 socketService.createParty(username);
             }
