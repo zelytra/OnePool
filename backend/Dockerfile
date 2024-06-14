@@ -1,11 +1,11 @@
 # Build stage
-FROM maven:3.8.3-openjdk-17 AS build
+FROM maven:3-amazoncorretto-21 AS build
 WORKDIR /app
 COPY . .
 RUN mvn quarkus:build package -Dmaven.test.skip=true -Dquarkus.profile=prod
 
 # Package stage
-FROM registry.access.redhat.com/ubi8/openjdk-17:latest
+FROM registry.access.redhat.com/ubi8/openjdk-21:latest
 ENV LANGUAGE='en_US:en'
 # We make four distinct layers so if there are application changes the library layers can be re-used
 COPY --from=build --chown=185 /app/target/quarkus-app/lib/ /deployments/lib/
