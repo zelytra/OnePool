@@ -8,7 +8,7 @@ export interface Pool {
   date: Date
   duration: number
   players: PoolPlayerStats[]
-  id:number
+  id: number
 }
 
 export interface PoolPlayerStats {
@@ -21,7 +21,7 @@ export interface PoolLog {
   shotId: number
   faults: PoolFaults[]
   ballsIn: number[]
-  duration:number
+  duration: number
 }
 
 export enum PoolFaults {
@@ -32,4 +32,8 @@ export enum PoolFaults {
   PLAYER_NO_GROUND_TOUCH,
   PLAYER_MISTAKE,
   EIGHT_NO_CALL
+}
+
+export enum GameRule {
+  AMERICAN_8 = "AMERICAN_8",
 }

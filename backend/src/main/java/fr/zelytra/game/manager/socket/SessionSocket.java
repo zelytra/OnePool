@@ -69,6 +69,7 @@ public class SessionSocket {
             case CONNECT_TO_POOL -> {
                 String username = objectMapper.convertValue(socketMessage.data(), String.class);
                 socketService.joinPool(username, sessionId);
+                removeUserFromTimeout(session.getId());
             }
             default -> Log.info("Unhandled message type: " + socketMessage.messageType());
         }
@@ -76,11 +77,20 @@ public class SessionSocket {
 
     @OnClose
     public void onClose(Session session) {
+
     }
 
     @OnError
     public void onError(Session session, Throwable throwable) throws IOException {
         Log.error("WebSocket error for session " + session.getId() + ": " + throwable);
         session.close();
+    }
+
+    private void removeUserFromTimeout(String sessionId) {
+        // Cancel the timeout task since we've received the message
+        Future<?> timeoutTask = sessionTimeoutTasks.remove(sessionId);
+        if (timeoutTask != null) {
+            timeoutTask.cancel(true);
+        }
     }
 }
