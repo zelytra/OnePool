@@ -22,13 +22,19 @@ public class SocketService {
         UserEntity user = userService.getUserByName(username);
 
         if (user == null) {
-            Log.warn("[SocketService.createParty] User not found: " + username);
+            Log.warn("[createParty] User not found: " + username);
             return null;
         }
 
+        if (isPlayerInPool(username)) {
+            Log.warn("[createParty] User already in pool: " + username);
+            PoolParty poolParty = getPoolPartyByPlayer(username);
+            removePlayerFromPool(user, poolParty.getUuid());
+        }
+
         PoolParty poolParty = new PoolParty(user);
-        games.put(username, poolParty);
-        Log.info("Creating party: " + username + " [" + poolParty.getUuid() + "]");
+        games.put(poolParty.getUuid(), poolParty);
+        Log.info("[createParty] Created: " + username + " [" + poolParty.getUuid() + "]");
         return poolParty;
     }
 
@@ -39,22 +45,29 @@ public class SocketService {
      * @param sessionID the sessionId the player want to join
      */
     public void joinPool(String username, String sessionID) {
-        Log.info("User joining pool: " + username);
+        Log.info("[joinPool] User: " + username);
         UserEntity user = userService.getUserByName(username);
 
         if (user == null) {
-            Log.warn("User not found: " + username);
+            Log.warn("[joinPool] User not found: " + username);
             return;
         }
+
         if (sessionID.isBlank() || sessionID.isEmpty()) {
             createParty(username);
+            return;
+        } else if (isPlayerInPool(username)) {
+            Log.warn("[joinPool] User already in pool: " + username);
+            PoolParty poolParty = getPoolPartyByPlayer(username);
+            removePlayerFromPool(user, poolParty.getUuid());
         } else if (!games.containsKey(sessionID)) {
-            Log.warn("Pool not found: " + username);
-        } else {
-            PoolParty poolParty = games.get(sessionID);
-            poolParty.getPlayers().add(user);
-            Log.info("User " + username + " joined pool: " + poolParty.getUuid());
+            Log.warn("[joinPool] Pool not found: " + sessionID);
+            return;
         }
+
+        PoolParty poolParty = games.get(sessionID);
+        poolParty.getPlayers().add(user);
+        Log.info("[joinPool] Joined: " + username + " [" + poolParty.getUuid() + "]");
     }
 
     /**
@@ -64,7 +77,7 @@ public class SocketService {
      * @return the user entity if found, null otherwise
      */
     public UserEntity getPlayerFromPool(String username) {
-        Log.info("Retrieving player from pool: " + username);
+        Log.info("[getPlayerFromPool] User: " + username);
 
         for (PoolParty poolParty : games.values()) {
             if (poolParty.getGameOwner().getAuthUsername().equals(username)) {
@@ -77,7 +90,7 @@ public class SocketService {
             }
         }
 
-        Log.warn("User not found in any pool: " + username);
+        Log.warn("[getPlayerFromPool] User not found: " + username);
         return null;
     }
 
@@ -88,7 +101,7 @@ public class SocketService {
      * @return true if the user is in a pool, false otherwise
      */
     public boolean isPlayerInPool(String username) {
-        Log.info("Checking if player is in pool: " + username);
+        Log.info("[isPlayerInPool] User: " + username);
 
         for (PoolParty poolParty : games.values()) {
             if (poolParty.getGameOwner().getAuthUsername().equals(username)) {
@@ -102,6 +115,61 @@ public class SocketService {
         }
 
         return false;
+    }
+
+    /**
+     * Retrieves the pool party of a specific player.
+     *
+     * @param username the username of the player
+     * @return the pool party if found, null otherwise
+     */
+    public PoolParty getPoolPartyByPlayer(String username) {
+        Log.info("[getPoolPartyByPlayer] User: " + username);
+
+        for (PoolParty poolParty : games.values()) {
+            if (poolParty.getGameOwner().getAuthUsername().equals(username)) {
+                return poolParty;
+            }
+            for (UserEntity player : poolParty.getPlayers()) {
+                if (player.getUsername().equals(username)) {
+                    return poolParty;
+                }
+            }
+        }
+
+        Log.warn("[getPoolPartyByPlayer] Pool not found for user: " + username);
+        return null;
+    }
+
+    /**
+     * Removes a player from a pool party. If the pool party becomes empty, it deletes the pool party.
+     *
+     * @param user      the username of the player to remove
+     * @param sessionID the session ID of the pool party
+     * @return true if the player was removed or the pool party was deleted, false otherwise
+     */
+    public boolean removePlayerFromPool(UserEntity user, String sessionID) {
+        Log.info("[removePlayerFromPool] User: " + user.getUsername() + " from Pool: " + sessionID);
+
+        if (!games.containsKey(sessionID)) {
+            Log.warn("[removePlayerFromPool] Pool not found: " + sessionID);
+            return false;
+        }
+
+        PoolParty poolParty = games.get(sessionID);
+
+        boolean removed = poolParty.removePlayer(user);
+        if (removed) {
+            Log.info("[removePlayerFromPool] Removed user: " + user.getUsername() + " from Pool: " + sessionID);
+            if (poolParty.getPlayers().isEmpty()) {
+                games.remove(sessionID);
+                Log.info("[removePlayerFromPool] Pool deleted: " + sessionID);
+            }
+            return true;
+        } else {
+            Log.warn("[removePlayerFromPool] User not in pool: " + user.getUsername() + " for Pool: " + sessionID);
+            return false;
+        }
     }
 
     public ConcurrentMap<String, PoolParty> getGames() {

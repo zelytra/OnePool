@@ -51,4 +51,21 @@ public class PoolParty {
     public String getUuid() {
         return uuid;
     }
+
+    /**
+     * Removes a player from the pool party. If the player is the game owner,
+     * replaces the game owner with another player from the list.
+     *
+     * @param user the user to remove
+     * @return true if the user was removed, false otherwise
+     */
+    public boolean removePlayer(UserEntity user) {
+        if (players.remove(user)) {
+            if (user.equals(gameOwner) && !players.isEmpty()) {
+                gameOwner = players.getFirst();
+            }
+            return true;
+        }
+        return false;
+    }
 }

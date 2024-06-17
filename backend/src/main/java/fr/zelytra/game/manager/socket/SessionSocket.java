@@ -68,7 +68,7 @@ public class SessionSocket {
         switch (socketMessage.messageType()) {
             case CONNECT_TO_POOL -> {
                 String username = objectMapper.convertValue(socketMessage.data(), String.class);
-                socketService.createParty(username);
+                socketService.joinPool(username, sessionId);
             }
             default -> Log.info("Unhandled message type: " + socketMessage.messageType());
         }

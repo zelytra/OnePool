@@ -1,7 +1,6 @@
 package fr.zelytra.game.manager.socket;
 
 import fr.zelytra.game.clients.PoolClient;
-import fr.zelytra.game.pool.PoolParty;
 import fr.zelytra.game.security.SocketSecurityEntity;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPResource;
@@ -10,13 +9,10 @@ import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.DeploymentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import static org.mockito.ArgumentMatchers.any;
 
 @QuarkusTest
 class SessionSocketTest {
@@ -33,8 +29,8 @@ class SessionSocketTest {
     @BeforeEach
     void setup() throws URISyntaxException, DeploymentException, IOException {
         SocketSecurityEntity socketSecurity = new SocketSecurityEntity();
-        PoolParty poolParty = socketService.createParty("user1");
-        this.uri = new URI("ws://" + websocketEndpoint.getHost() + ":" + websocketEndpoint.getPort() + "/sessions/" + socketSecurity.getKey() + "/" + );
+        //PoolParty poolParty = socketService.createParty("user1");
+        this.uri = new URI("ws://" + websocketEndpoint.getHost() + ":" + websocketEndpoint.getPort() + "/sessions/" + socketSecurity.getKey() + "/");
         poolClient = new PoolClient();
         ContainerProvider.getWebSocketContainer().connectToServer(poolClient, uri);
     }
