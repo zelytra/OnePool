@@ -3,8 +3,8 @@ import {AlertType, useAlertStore} from "@/vue/alerts/AlertStore.ts";
 import {tsi18n} from "@/objects/i18n";
 import {WebSocketMessage, WebSocketMessageType} from "@/objects/pool/WebSocet.ts";
 import {useUserStore} from "@/objects/stores/UserStore.ts";
-import {Pool} from "@/objects/pool/Pool.ts";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
+import {GameRule} from "@/objects/pool/Pool.ts";
 
 const {t} = tsi18n.global;
 
@@ -77,5 +77,14 @@ export class PoolSocket {
 
   closeSocket() {
     this.socket?.close()
+  }
+
+  public setGameRule(gameRule: GameRule) {
+    if (!this.socket) return;
+    const message: WebSocketMessage = {
+      data: gameRule,
+      messageType: WebSocketMessageType.SET_RULES,
+    };
+    this.socket.send(JSON.stringify(message));
   }
 }

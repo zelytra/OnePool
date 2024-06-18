@@ -6,5 +6,6 @@ export interface WebSocketMessage {
 export enum WebSocketMessageType {
   CREATE_POOL = "CREATE_POOL",
   CONNECT_TO_POOL = "CONNECT_TO_POOL",
-  UPDATE_POOL_DATA = "UPDATE_POOL_DATA"
+  UPDATE_POOL_DATA = "UPDATE_POOL_DATA",
+  SET_RULES="SET_RULES"
 }

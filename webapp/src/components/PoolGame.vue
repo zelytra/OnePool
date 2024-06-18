@@ -1,6 +1,6 @@
 <template>
-  <section>
-    <GameRuleSelector/>
+  <section v-if="poolStore.pool!=null">
+    <GameRuleSelector v-if="!poolStore.pool.rules"/>
   </section>
 </template>
 
@@ -10,7 +10,6 @@ import {onMounted} from "vue";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 
 const poolStore = usePoolParty();
-
 
 onMounted(() => {
   if (!poolStore.poolSocket.socket){

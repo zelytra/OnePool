@@ -5,7 +5,7 @@ import {Pool} from "@/objects/pool/Pool.ts";
 export const usePoolParty =
   defineStore('poolparty', () => {
     const poolSocket: PoolSocket = new PoolSocket()
-    const pool: Pool | undefined = undefined
+    let pool: Pool
     return {
       poolSocket,
       pool

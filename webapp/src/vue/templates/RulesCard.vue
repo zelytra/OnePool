@@ -21,6 +21,9 @@
       <p>{{ props.amount }}</p>
     </div>
     <p class="description">{{ props.description }}</p>
+    <transition>
+      <img v-if="selected" src="@/assets/icons/check-circle.svg" alt="selected"/>
+    </transition>
   </div>
 </template>
 
@@ -29,7 +32,8 @@ const props = defineProps({
   title: String,
   description: String,
   amount: String,
-  color:String
+  color: String,
+  selected: Boolean
 })
 </script>
 
@@ -61,17 +65,17 @@ const props = defineProps({
     z-index: -1;
   }
 
-  .title{
+  .title {
     display: flex;
     justify-content: space-between;
 
-    h2{
+    h2 {
       color: var(--gradient-start);
       font-weight: 600;
       font-size: 18px;
     }
 
-    p{
+    p {
       color: var(--green);
       font-weight: 800;
       font-size: 15px;
@@ -84,6 +88,12 @@ const props = defineProps({
     left: 50%;
     transform: translate(-50%);
     overflow: hidden;
+  }
+
+  img {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
   }
 }
 </style>

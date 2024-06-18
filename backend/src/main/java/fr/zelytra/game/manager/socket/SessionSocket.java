@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fr.zelytra.game.manager.message.SocketMessage;
+import fr.zelytra.game.pool.GameRules;
 import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import jakarta.websocket.*;
@@ -70,6 +71,9 @@ public class SessionSocket {
                 String username = objectMapper.convertValue(socketMessage.data(), String.class);
                 socketService.joinPool(username, sessionId, session);
                 removeUserFromTimeout(session.getId());
+            }
+            case SET_RULES -> {
+                socketService.setRule(objectMapper.convertValue(socketMessage.data(), GameRules.class),session.getId());
             }
             default -> Log.info("Unhandled message type: " + socketMessage.messageType());
         }
