@@ -3,6 +3,8 @@ import {AlertType, useAlertStore} from "@/vue/alerts/AlertStore.ts";
 import {tsi18n} from "@/objects/i18n";
 import {WebSocketMessage, WebSocketMessageType} from "@/objects/pool/WebSocet.ts";
 import {useUserStore} from "@/objects/stores/UserStore.ts";
+import {Pool} from "@/objects/pool/Pool.ts";
+import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 
 const {t} = tsi18n.global;
 
@@ -11,6 +13,7 @@ export class PoolSocket {
   public sessionId: string;
   public socket?: WebSocket;
   public userStore = useUserStore()
+  public poolStore = usePoolParty()
 
   constructor() {
     this.sessionId = "";
@@ -47,6 +50,11 @@ export class PoolSocket {
     this.socket.onmessage = (ev: MessageEvent<string>) => {
       const message: WebSocketMessage = JSON.parse(ev.data) as WebSocketMessage;
       switch (message.messageType) {
+        case WebSocketMessageType.UPDATE_POOL_DATA: {
+          this.poolStore.pool = message.data
+          console.log(this.poolStore.pool)
+          break
+        }
         default: {
           throw new Error(
             "Failed to handle this message type : " + message.messageType,
@@ -65,5 +73,9 @@ export class PoolSocket {
 
     this.socket.onclose = () => {
     }
+  }
+
+  closeSocket() {
+    this.socket?.close()
   }
 }

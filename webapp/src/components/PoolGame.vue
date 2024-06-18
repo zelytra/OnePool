@@ -1,16 +1,22 @@
 <template>
   <section>
-   <GameRuleSelector/>
+    <GameRuleSelector/>
   </section>
 </template>
 
 <script setup lang="ts">
-import {PoolSocket} from "@/objects/pool/PoolSocket.ts";
 import GameRuleSelector from "@/components/pool/GameRuleSelector.vue";
+import {onMounted} from "vue";
+import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 
-const poolParty: PoolSocket = new PoolSocket();
-poolParty.joinSession("")
+const poolStore = usePoolParty();
 
+
+onMounted(() => {
+  if (!poolStore.poolSocket.socket){
+    poolStore.poolSocket?.joinSession("")
+  }
+})
 
 </script>
 

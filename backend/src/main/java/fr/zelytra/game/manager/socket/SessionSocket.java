@@ -68,7 +68,7 @@ public class SessionSocket {
         switch (socketMessage.messageType()) {
             case CONNECT_TO_POOL -> {
                 String username = objectMapper.convertValue(socketMessage.data(), String.class);
-                socketService.joinPool(username, sessionId);
+                socketService.joinPool(username, sessionId, session);
                 removeUserFromTimeout(session.getId());
             }
             default -> Log.info("Unhandled message type: " + socketMessage.messageType());
@@ -76,8 +76,9 @@ public class SessionSocket {
     }
 
     @OnClose
-    public void onClose(Session session) {
-
+    public void onClose(Session session) throws IOException {
+        socketService.playerClosedConnection(session.getId());
+        session.close();
     }
 
     @OnError

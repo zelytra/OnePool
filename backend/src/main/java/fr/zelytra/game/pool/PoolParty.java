@@ -8,27 +8,27 @@ import java.util.UUID;
 
 public class PoolParty {
 
-    private final List<UserEntity> players = new ArrayList<>();
+    private final List<PoolPlayer> players = new ArrayList<>();
     private final String uuid = UUID.randomUUID().toString().substring(0, 7).toUpperCase();
-    private UserEntity gameOwner;
+    private PoolPlayer gameOwner;
     private GameRules rules;
     private GameStatus state;
 
-    public PoolParty(UserEntity user) {
+    public PoolParty(PoolPlayer user) {
         this.gameOwner = user;
         players.add(user);
         state = GameStatus.SETUP;
     }
 
-    public List<UserEntity> getPlayers() {
+    public List<PoolPlayer> getPlayers() {
         return players;
     }
 
-    public UserEntity getGameOwner() {
+    public PoolPlayer getGameOwner() {
         return gameOwner;
     }
 
-    public void setGameOwner(UserEntity gameOwner) {
+    public void setGameOwner(PoolPlayer gameOwner) {
         this.gameOwner = gameOwner;
     }
 
