@@ -52,7 +52,6 @@ export class PoolSocket {
       switch (message.messageType) {
         case WebSocketMessageType.UPDATE_POOL_DATA: {
           this.poolStore.pool = message.data
-          console.log(this.poolStore.pool)
           break
         }
         default: {

@@ -51,18 +51,18 @@ function loadFriendList() {
     for (let friend of friendsList) {
       if (friend.status != InviteStatus.ACCEPT) {
         if (!isRequester(friend)) {
-          pendingInvitation.value.push(getFrienUser(friend))
+          pendingInvitation.value.push(getFriendUser(friend))
         }
         continue;
       }
 
-      friends.value.push(getFrienUser(friend))
+      friends.value.push(getFriendUser(friend))
     }
   })
 }
 
 // Extract the right user from the two
-function getFrienUser(friend: Friend): User {
+function getFriendUser(friend: Friend): User {
   if (friend.user1.authUsername == currentUser.user.authUsername) {
     return friend.user2;
   }

@@ -23,6 +23,7 @@ export interface SimpleUser {
 
 export enum InviteStatus {
   ACCEPT = "ACCEPT",
+  SEND = "SEND",
   REFUSE = "REFUSE",
   PENDING = "PENDING"
 }

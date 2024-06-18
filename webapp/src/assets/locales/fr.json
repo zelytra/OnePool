@@ -42,6 +42,9 @@
     "action": {
       "continue": "Continuer"
     },
+    "friend": {
+      "selection": "Créer vos equipes !"
+    },
     "rules": {
       "card": {
         "8pool": {

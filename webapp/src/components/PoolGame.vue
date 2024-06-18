@@ -1,6 +1,7 @@
 <template>
   <section v-if="poolStore.pool!=null">
     <GameRuleSelector v-if="!poolStore.pool.rules"/>
+    <FriendInvitation v-if="poolStore.pool.rules"/>
   </section>
 </template>
 
@@ -8,6 +9,7 @@
 import GameRuleSelector from "@/components/pool/GameRuleSelector.vue";
 import {onMounted} from "vue";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
+import FriendInvitation from "@/components/pool/FriendInvitation.vue";
 
 const poolStore = usePoolParty();
 
