@@ -1,13 +1,14 @@
 <template>
-  <AlertCard :color="getGradient(alert.type)">
+  <AlertCard :color="getGradient(alert.type)" @click="emitEvent(alert.event)">
     <p class="title">{{ props.alert.title }}</p>
   </AlertCard>
 </template>
 
 <script setup lang="ts">
 import {PropType} from "vue";
-import {Alert, AlertType} from "@/vue/alerts/AlertStore.ts";
+import {Alert, AlertType, useAlertStore} from "@/vue/alerts/AlertStore.ts";
 import AlertCard from "@/vue/templates/AlertCard.vue";
+import eventBus, {MittEvents} from "@/objects/bus/EventBus.ts";
 
 const props = defineProps({
   alert: {
@@ -26,6 +27,15 @@ function getGradient(type: AlertType) {
       return "#D8E445"
     default :
       return "#FFF"
+  }
+}
+
+function emitEvent(eventName: string | undefined) {
+  if (eventName) {
+    eventBus.emit(eventName as keyof MittEvents, props.alert.data);
+    if (props.alert.id) {
+      useAlertStore().removeAlert(props.alert.id)
+    }
   }
 }
 </script>

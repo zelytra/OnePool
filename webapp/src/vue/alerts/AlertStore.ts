@@ -1,7 +1,7 @@
-import {defineStore} from "pinia";
+import { defineStore } from "pinia";
 
 export type AlertState = {
-  alerts: Alert[]
+  alerts: Alert[];
 };
 
 export type Alert = {
@@ -9,19 +9,21 @@ export type Alert = {
   title: string;
   content: string;
   id?: number;
-  timeout?: number
-}
+  timeout?: number;
+  event?: string;
+  data?: any;
+};
 
 export enum AlertType {
   VALID,
   ERROR,
-  WARNING
+  WARNING,
 }
 
 export const useAlertStore = defineStore({
   id: "alertStore",
   state: () => ({
-    alerts: []
+    alerts: [],
   } as AlertState),
   actions: {
     send(alert: Alert) {
@@ -29,16 +31,19 @@ export const useAlertStore = defineStore({
       this.alerts.push(alert);
 
       setTimeout(() => {
-        const index = this.alerts.indexOf(alert, 0);
-        if (index > -1) {
-          this.alerts.splice(index, 1);
-        }
+        this.removeAlert(alert.id!);
       }, alert.timeout || 5000);
+    },
+    removeAlert(alertId: number) {
+      const index = this.alerts.findIndex(alert => alert.id === alertId);
+      if (index !== -1) {
+        this.alerts.splice(index, 1);
+      }
     }
   },
   getters: {
     getAlerts(): Alert[] {
-      return this.alerts
+      return this.alerts;
     }
   }
-})
+});

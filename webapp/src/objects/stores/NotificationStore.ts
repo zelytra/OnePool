@@ -4,7 +4,6 @@ import {AlertType, useAlertStore} from "@/vue/alerts/AlertStore.ts";
 import {WebSocketMessage, WebSocketMessageType} from "@/objects/pool/WebSocet.ts";
 import {tsi18n} from "@/objects/i18n";
 import eventBus from "@/objects/bus/EventBus.ts";
-import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 
 const {t} = tsi18n.global;
 
@@ -92,7 +91,14 @@ export const useNotification =
           break
         }
         case NotificationType.INVITE_TO_GAME: {
-          usePoolParty().poolSocket.joinSession(notificationMessage.data.data as string)
+          useAlertStore().send({
+            type: AlertType.VALID,
+            title: "viens",
+            event: "joinPoolParty",
+            content: "",
+            data: notificationMessage.data.data,
+            timeout: 10000
+          })
           break
         }
         default: {
