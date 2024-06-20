@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 import static fr.zelytra.game.manager.message.ObjectMapperConfig.objectMapper;
 
 // WebSocket endpoint
-@ServerEndpoint(value = "/notification/{token}")
+@ServerEndpoint(value = "/notifications/{token}")
 public class NotificationSocket {
 
     private final SocketTimeOutManager socketTimeOutManager = new SocketTimeOutManager();
@@ -25,7 +25,7 @@ public class NotificationSocket {
     @OnOpen
     public void onOpen(Session session) {
         socketTimeOutManager.initLogin(session);
-        Log.info("[ANYONE] Connecting...");
+        Log.info("[notification:OPEN] Connecting...");
     }
 
 
@@ -42,19 +42,20 @@ public class NotificationSocket {
                 String username = objectMapper.convertValue(socketMessage.data(), String.class);
                 sessions.put(username, session);
                 socketTimeOutManager.completeLogin(session.getId());
+                Log.info("[notification:INIT_NOTIFICATION] " + username + " connected");
             }
             case SEND_NOTIFICATION -> {
-                NotificationMessage<Object> notificationMessage = objectMapper.convertValue(socketMessage.data(), NotificationMessage.class);
-                SocketMessage<NotificationMessage<Object>> socketMessageHandler = new SocketMessage<>(MessageType.SEND_NOTIFICATION, notificationMessage);
+                NotificationMessage<?> notificationMessage = objectMapper.convertValue(socketMessage.data(), NotificationMessage.class);
+                SocketMessage<NotificationMessage<?>> socketMessageHandler = new SocketMessage<>(MessageType.SEND_NOTIFICATION, notificationMessage);
 
                 for (String username : notificationMessage.users()) {
                     if (!sessions.containsKey(username)) {
-                        Log.warn("[notification] User " + username + " not found");
+                        Log.warn("[notification:SEND_NOTIFICATION] User " + username + " not found");
                         continue;
                     }
                     socketMessageHandler.sendDataToPlayer(sessions.get(username));
                 }
-                Log.info("[notification] Notifications pushed to " + notificationMessage.users().size() + " users");
+                Log.info("[notification:SEND_NOTIFICATION] Notifications pushed to " + notificationMessage.users().size() + " users");
             }
             default -> Log.info("Unhandled message type: " + socketMessage.messageType());
         }
@@ -62,13 +63,22 @@ public class NotificationSocket {
 
     @OnClose
     public void onClose(Session session) throws IOException {
-
-        session.close();
+        Log.info("[notification:CLOSE] " + session.getId());
+        closeSocket(session);
     }
 
     @OnError
     public void onError(Session session, Throwable throwable) throws IOException {
-        Log.error("WebSocket error for session " + session.getId() + ": " + throwable);
+        Log.error("[notification:ERROR] WebSocket error for session " + session.getId() + ": " + throwable);
+        closeSocket(session);
+    }
+
+    private void closeSocket(Session session) throws IOException {
+        for (var entry : sessions.entrySet()) {
+            if (entry.getValue().getId().equalsIgnoreCase(session.getId())) {
+                sessions.remove(entry.getKey());
+            }
+        }
         session.close();
     }
 }

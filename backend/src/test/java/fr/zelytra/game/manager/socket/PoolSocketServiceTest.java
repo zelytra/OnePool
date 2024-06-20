@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
-class SocketServiceTest {
+class PoolSocketServiceTest {
 
     @InjectMocks
     PoolSocketService socketService;
