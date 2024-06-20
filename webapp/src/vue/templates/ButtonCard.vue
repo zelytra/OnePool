@@ -39,6 +39,7 @@ defineProps({
   width: 100%;
   height: 170px;
   gap: 8px;
+  border-radius: 15px;
 
   &:before {
     content: "";

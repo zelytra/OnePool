@@ -7,12 +7,32 @@
                         :status="friend.gameInviteStatus || InviteStatus.REFUSE"
                         :friend="friend" @click="inviteToGame(friend)"
       />
+      <transition>
+        <p v-if="filterPlayer(friends).length==0">Plus d'amis à inviter</p>
+      </transition>
     </div>
   </div>
   <div class="friend-wrapper">
     <h2>Joueurs de la partie</h2>
     <div class="invite-wrapper">
       <FriendPoolInvite v-for="friend of poolStore.pool.players" :status="InviteStatus.ACCEPT" :friend="friend"/>
+    </div>
+  </div>
+  <div class="friend-wrapper">
+    <h2>Vos équipes</h2>
+    <div class="button-wrapper">
+      <ButtonCard color="#D25A34">
+        <div class="button-content-wrapper">
+          <img src="@/assets/icons/diversity.svg" alt="random-team"/>
+          <p class="button-title orange">{{ t('pool.action.continue') }}</p>
+        </div>
+      </ButtonCard>
+      <ButtonCard color="#7034D2">
+        <div class="button-content-wrapper">
+          <img src="@/assets/icons/groups.svg" alt="manual-team"/>
+          <p class="button-title purple">{{ t('pool.action.continue') }}</p>
+        </div>
+      </ButtonCard>
     </div>
   </div>
   <AlertCard color="#27A27A">
@@ -31,6 +51,7 @@ import {useUserStore} from "@/objects/stores/UserStore.ts";
 import FriendPoolInvite from "@/vue/friends/FriendPoolInvite.vue";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 import {NotificationType, useNotification} from "@/objects/stores/NotificationStore.ts";
+import ButtonCard from "@/vue/templates/ButtonCard.vue";
 
 const {t} = useI18n();
 const friends = ref<User[]>([])
@@ -109,6 +130,37 @@ p.button-title {
     font-size: 20px;
   }
 
+  .button-wrapper {
+    display: flex;
+    justify-content: space-between;
+    gap: 13px;
+    width: 100%;
+
+    .button-content-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px;
+      width: 100%;
+
+      img {
+        width: 43px;
+        height: 43px;
+      }
+
+      p {
+
+        &.purple {
+          color: #7034D2;
+        }
+
+        &.orange {
+          color: #D25A34;
+        }
+      }
+    }
+  }
+
 
   .invite-wrapper {
     width: 100%;
@@ -117,6 +169,14 @@ p.button-title {
     gap: 8px;
     max-height: 172px;
     overflow-y: auto;
+
+    p {
+      margin-top: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      color: var(--secondary-text);
+    }
   }
 }
 </style>
