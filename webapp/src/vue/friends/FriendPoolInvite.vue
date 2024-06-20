@@ -30,10 +30,29 @@ defineProps({
 </script>
 
 <style scoped lang="scss">
-.friend-invite-wrapper{
+.friend-invite-wrapper {
   padding: 16px;
   border-radius: 6px;
   display: flex;
   justify-content: space-between;
+  width: 100%;
+
+  p{
+    color: var(--primary-text);
+    font-weight: 600;
+  }
+
+  &.send {
+    background: linear-gradient(100deg, #4581DC, #222536);
+    cursor: pointer;
+  }
+
+  &.pending {
+    background: linear-gradient(100deg, #D25A34, #222536);
+  }
+
+  &.accepted {
+    background: linear-gradient(100deg, #27A27A, #222536);
+  }
 }
 </style>

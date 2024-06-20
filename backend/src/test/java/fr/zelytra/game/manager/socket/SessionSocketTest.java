@@ -24,7 +24,7 @@ class SessionSocketTest {
     URI websocketEndpoint;
 
     @InjectMock
-    SocketService socketService;
+    PoolSocketService socketService;
 
     @BeforeEach
     void setup() throws URISyntaxException, DeploymentException, IOException {

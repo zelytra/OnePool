@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 class SocketServiceTest {
 
     @InjectMocks
-    SocketService socketService;
+    PoolSocketService socketService;
 
     @InjectMock
     UserService userService;

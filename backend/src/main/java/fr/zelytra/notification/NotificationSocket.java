@@ -1,32 +1,26 @@
-package fr.zelytra.game.manager.socket;
+package fr.zelytra.notification;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import fr.zelytra.game.manager.message.MessageType;
 import fr.zelytra.game.manager.message.SocketMessage;
 import fr.zelytra.game.manager.message.SocketTimeOutManager;
-import fr.zelytra.game.pool.GameRules;
 import io.quarkus.logging.Log;
-import jakarta.inject.Inject;
 import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static fr.zelytra.game.manager.message.ObjectMapperConfig.objectMapper;
 
 // WebSocket endpoint
-@ServerEndpoint(value = "/sessions/{token}/{sessionId}")
-public class SessionSocket {
+@ServerEndpoint(value = "/notification/{token}")
+public class NotificationSocket {
 
     private final SocketTimeOutManager socketTimeOutManager = new SocketTimeOutManager();
-
-    //TODO Handle list of version, not only the latest
-    @ConfigProperty(name = "app.version")
-    String appVersion;
-
-    @Inject
-    PoolSocketService socketService;
+    private final ConcurrentMap<String, Session> sessions = new ConcurrentHashMap<>();
 
     @OnOpen
     public void onOpen(Session session) {
@@ -36,7 +30,7 @@ public class SessionSocket {
 
 
     @OnMessage
-    public void onMessage(String message, Session session, @PathParam("sessionId") String sessionId, @PathParam("token") String token) throws IOException {
+    public void onMessage(String message, Session session, @PathParam("token") String token) throws IOException {
 
         // Deserialize the incoming message to SocketMessage<?>
         SocketMessage<?> socketMessage = objectMapper.readValue(message, new TypeReference<>() {
@@ -44,13 +38,23 @@ public class SessionSocket {
 
         // Handle the message based on its type
         switch (socketMessage.messageType()) {
-            case CONNECT_TO_POOL -> {
+            case INIT_NOTIFICATION -> {
                 String username = objectMapper.convertValue(socketMessage.data(), String.class);
-                socketService.joinPool(username, sessionId, session);
+                sessions.put(username, session);
                 socketTimeOutManager.completeLogin(session.getId());
             }
-            case SET_RULES -> {
-                socketService.setRule(objectMapper.convertValue(socketMessage.data(), GameRules.class), session.getId());
+            case SEND_NOTIFICATION -> {
+                NotificationMessage<Object> notificationMessage = objectMapper.convertValue(socketMessage.data(), NotificationMessage.class);
+                SocketMessage<NotificationMessage<Object>> socketMessageHandler = new SocketMessage<>(MessageType.SEND_NOTIFICATION, notificationMessage);
+
+                for (String username : notificationMessage.users()) {
+                    if (!sessions.containsKey(username)) {
+                        Log.warn("[notification] User " + username + " not found");
+                        continue;
+                    }
+                    socketMessageHandler.sendDataToPlayer(sessions.get(username));
+                }
+                Log.info("[notification] Notifications pushed to " + notificationMessage.users().size() + " users");
             }
             default -> Log.info("Unhandled message type: " + socketMessage.messageType());
         }
@@ -58,7 +62,7 @@ public class SessionSocket {
 
     @OnClose
     public void onClose(Session session) throws IOException {
-        socketService.playerClosedConnection(session.getId());
+
         session.close();
     }
 

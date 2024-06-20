@@ -1,9 +1,5 @@
 package fr.zelytra.game.manager.socket;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fr.zelytra.game.manager.message.MessageType;
 import fr.zelytra.game.manager.message.SocketMessage;
 import fr.zelytra.game.pool.GameRules;
@@ -16,12 +12,11 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.websocket.Session;
 
-import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 @ApplicationScoped
-public class SocketService {
+public class PoolSocketService {
 
     @Inject
     UserService userService;
@@ -77,7 +72,8 @@ public class SocketService {
 
         if (sessionID.isBlank() || sessionID.isEmpty()) {
             PoolParty poolParty = createParty(username, socketSession);
-            sendDataToPlayer(poolPlayer.getSocketSession(), MessageType.UPDATE_POOL_DATA, poolParty);
+            SocketMessage<PoolParty> socketMessage = new SocketMessage<>(MessageType.UPDATE_POOL_DATA,poolParty);
+            socketMessage.sendDataToPlayer(poolPlayer.getSocketSession());
             return;
         } else if (isPlayerInPool(username)) {
             Log.warn("[joinPool][N/A] User already in pool: " + username);
@@ -91,7 +87,8 @@ public class SocketService {
         PoolParty poolParty = games.get(sessionID);
         poolParty.getPlayers().add(poolPlayer);
         Log.info("[joinPool][" + poolParty.getUuid() + "] Joined: " + username);
-        sendDataToPlayer(poolPlayer.getSocketSession(), MessageType.UPDATE_POOL_DATA, poolParty);
+        SocketMessage<PoolParty> socketMessage = new SocketMessage<>(MessageType.UPDATE_POOL_DATA,poolParty);
+        socketMessage.sendDataToPlayer(poolPlayer.getSocketSession());
     }
 
     /**
@@ -249,7 +246,7 @@ public class SocketService {
     /**
      * Sets the game rules for a specific pool party.
      *
-     * @param gameRules      the game rules to set
+     * @param gameRules       the game rules to set
      * @param socketSessionId the socket session ID of the player setting the rules
      */
     public void setRule(GameRules gameRules, String socketSessionId) {
@@ -281,66 +278,15 @@ public class SocketService {
         }
 
         for (PoolPlayer player : poolParty.getPlayers()) {
-            sendDataToPlayer(player.getSocketSession(), MessageType.UPDATE_POOL_DATA, poolParty);
+            SocketMessage<PoolParty> socketMessage = new SocketMessage<>(MessageType.UPDATE_POOL_DATA, poolParty);
+            socketMessage.sendDataToPlayer(player.getSocketSession());
             Log.info("[broadcastPoolDataToParty][" + poolParty.getUuid() + "] Data sent to: " + player.getUsername());
         }
 
         // Ensure the game owner also receives the data
-        sendDataToPlayer(poolParty.getGameOwner().getSocketSession(), MessageType.UPDATE_POOL_DATA, poolParty);
+        SocketMessage<PoolParty> socketMessage = new SocketMessage<>(MessageType.UPDATE_POOL_DATA, poolParty);
+        socketMessage.sendDataToPlayer(poolParty.getGameOwner().getSocketSession());
         Log.info("[broadcastPoolDataToParty][" + poolParty.getUuid() + "] Data sent to game owner: " + poolParty.getGameOwner().getUsername());
     }
 
-
-    /**
-     * Sends a message to a player within a session identified by the WebSocket ID.
-     *
-     * @param <T>         The type of data to be sent. This allows the method to be used with various types of data objects.
-     * @param session     The WebSocket to which the data will be sent. This is used to identify the player who should receive the message.
-     * @param messageType The type of the message to be sent. This helps in identifying the purpose or action of the message on the client side.
-     * @param data        The data to be sent. This is the actual content of the message being sent to the player. The type of this data is generic, allowing for flexibility in what can be sent.
-     * @throws Error if there is an issue with converting the {@link SocketMessage} object to a JSON string.
-     */
-    public <T> void sendDataToPlayer(Session session, MessageType messageType, T data) {
-        String json = formatMessage(messageType, data);
-
-        if (session == null || session.getAsyncRemote() == null) {
-            Log.error("[sendDataToPlayer][N/A] Failed to get the player socket");
-            return;
-        }
-
-        // Send the data to the specific WebSocket connection
-        session.getAsyncRemote().sendText(json, result -> {
-            if (result.isOK()) {
-                Log.info("[sendDataToPlayer][N/A] Type: " + messageType.name());
-            }
-            if (result.getException() != null) {
-                Log.error("[sendDataToPlayer][N/A] Unable to send message to [" + session.getId() + "]: " + result.getException());
-            }
-        });
-    }
-
-    /**
-     * Formats a message to be sent to a player.
-     *
-     * @param <T>         The type of data in the message.
-     * @param messageType The type of the message.
-     * @param data        The data to be included in the message.
-     * @return a JSON string representation of the message
-     * @throws Error if there is an issue with converting the {@link SocketMessage} object to a JSON string.
-     */
-    private <T> String formatMessage(MessageType messageType, T data) {
-        SocketMessage<T> message = new SocketMessage<>(messageType, data);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // To serialize as ISO-8601 strings
-        objectMapper.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String json;
-        try {
-            json = objectMapper.writeValueAsString(message);
-        } catch (JsonProcessingException e) {
-            throw new Error(e);
-        }
-        return json;
-    }
 }

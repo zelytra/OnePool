@@ -1,9 +1,15 @@
 <template>
   <h1>{{ t('pool.friend.selection') }}</h1>
-  <div class="friend-invitation-wrapper">
-    <h2>Test</h2>
-    <div class="send-invite-wrapper">
+  <div class="friend-wrapper">
+    <h2>Vos amis</h2>
+    <div class="invite-wrapper">
       <FriendPoolInvite v-for="friend of friends" :status="InviteStatus.SEND" :friend="friend"/>
+    </div>
+  </div>
+  <div class="friend-wrapper">
+    <h2>Joueurs de la partie</h2>
+    <div class="invite-wrapper">
+      <FriendPoolInvite v-for="friend of poolStore.pool.players" :status="InviteStatus.ACCEPT" :friend="friend"/>
     </div>
   </div>
   <AlertCard color="#27A27A">
@@ -20,11 +26,12 @@ import {HTTPAxios} from "@/objects/utils/HTTPAxios.ts";
 import {AxiosResponse} from "axios";
 import {useUserStore} from "@/objects/stores/UserStore.ts";
 import FriendPoolInvite from "@/vue/friends/FriendPoolInvite.vue";
+import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 
 const {t} = useI18n();
 const friends = ref<User[]>([])
 const currentUser = useUserStore();
-//const poolStore = usePoolParty();
+const poolStore = usePoolParty();
 
 onMounted(() => {
   loadFriendList()
@@ -38,7 +45,6 @@ function loadFriendList() {
       if (friend.status != InviteStatus.ACCEPT) {
         continue;
       }
-
       friends.value.push(getFriendUser(friend))
     }
   })
@@ -63,5 +69,28 @@ p.button-title {
   font-weight: 800;
   font-size: 25px;
   cursor: pointer;
+}
+
+.friend-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+
+  h2 {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 20px;
+  }
+
+
+  .invite-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 172px;
+    overflow-y: auto;
+  }
 }
 </style>
