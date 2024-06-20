@@ -87,8 +87,7 @@ public class PoolSocketService {
         PoolParty poolParty = games.get(sessionID);
         poolParty.getPlayers().add(poolPlayer);
         Log.info("[joinPool][" + poolParty.getUuid() + "] Joined: " + username);
-        SocketMessage<PoolParty> socketMessage = new SocketMessage<>(MessageType.UPDATE_POOL_DATA,poolParty);
-        socketMessage.sendDataToPlayer(poolPlayer.getSocketSession());
+        broadcastPoolDataToParty(poolParty);
     }
 
     /**
@@ -205,6 +204,7 @@ public class PoolSocketService {
         PoolPlayer foundedPlayer = getPlayerFromPool(user.getAuthUsername());
 
         boolean removed = poolParty.removePlayer(foundedPlayer);
+        broadcastPoolDataToParty(poolParty);
         if (removed) {
             Log.info("[removePlayerFromPool][" + sessionID + "] Removed user: " + user.getUsername());
             if (poolParty.getPlayers().isEmpty()) {

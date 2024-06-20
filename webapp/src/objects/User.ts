@@ -11,7 +11,8 @@ export interface User {
   online: boolean
   createdAt: Date
   pp: number
-  lang: string
+  lang: string,
+  gameInviteStatus?:InviteStatus
 //history: PoolHistory[],
 }
 

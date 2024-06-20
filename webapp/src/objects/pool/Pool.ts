@@ -1,6 +1,7 @@
 import {User} from "@/objects/User.ts";
 
 export interface Pool {
+  uuid:string
   gameOwner?: User
   players: User[]
   rules: GameRule | null

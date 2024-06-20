@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import {Friend, InviteStatus, User} from "@/objects/User.ts";
-import {onMounted, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import AlertCard from "@/vue/templates/AlertCard.vue";
 import {useI18n} from "vue-i18n";
 import FriendStatus from "@/vue/friends/FriendStatus.vue";
@@ -31,6 +31,8 @@ import {AxiosResponse} from "axios";
 import FriendSearchModale from "@/vue/modale/FriendSearchModale.vue";
 import {useUserStore} from "@/objects/stores/UserStore.ts";
 import {AlertType, useAlertStore} from "@/vue/alerts/AlertStore.ts";
+import eventBus from "@/objects/bus/EventBus.ts";
+import {NotificationType, useNotification} from "@/objects/stores/NotificationStore.ts";
 
 const {t} = useI18n()
 const friends = ref<User[]>([])
@@ -38,10 +40,16 @@ const pendingInvitation = ref<User[]>([])
 const isResearchOpen = ref<boolean>(false)
 const currentUser = useUserStore();
 const alert = useAlertStore();
+const notification = useNotification();
 
 onMounted(() => {
   loadFriendList()
+  eventBus.on('refreshFriendInvites', loadFriendList);
 })
+
+onUnmounted(() => {
+  eventBus.off('refreshFriendInvites', loadFriendList);
+});
 
 function loadFriendList() {
   new HTTPAxios("friends/list").get().then((response: AxiosResponse) => {
@@ -81,7 +89,14 @@ function acceptInvite(username: string) {
       title: t('friends.alert.invite.accept'),
       type: AlertType.VALID
     })
-    loadFriendList();
+    notification.send({
+      users: [username],
+      data: {
+        data: null,
+        type: NotificationType.INVITE_TO_FRIEND
+      }
+    })
+    loadFriendList()
   })
 }
 </script>

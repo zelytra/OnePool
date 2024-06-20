@@ -23,12 +23,14 @@ import {AxiosResponse} from "axios";
 import {SimpleUser} from "@/objects/User";
 import {AlertType, useAlertStore} from "@/vue/alerts/AlertStore.ts";
 import {useI18n} from "vue-i18n";
+import {NotificationType, useNotification} from "@/objects/stores/NotificationStore.ts";
 
 const inputResearch = ref<string>("");
 const searchResult = ref<SimpleUser[]>([]);
 const isOpen = defineModel<boolean>("isOpen")
 const alert = useAlertStore();
-const {t} =useI18n();
+const {t} = useI18n();
+const notification = useNotification();
 
 watch(() => inputResearch.value, () => {
   if (inputResearch.value.length == 0) return;
@@ -37,14 +39,22 @@ watch(() => inputResearch.value, () => {
   })
 })
 
-function inviteUser(username:string) {
-  new HTTPAxios("friends/invite/send/"+username).post().then(()=>{
+function inviteUser(username: string) {
+  new HTTPAxios("friends/invite/send/" + username).post().then(() => {
     alert.send({
       content: "",
       timeout: 1000,
       title: t('friends.alert.invite.success.title'),
       type: AlertType.VALID
     })
+    notification.send({
+      users: [username],
+      data: {
+        data: null,
+        type: NotificationType.INVITE_TO_FRIEND
+      }
+    })
+    isOpen.value=false;
   })
 }
 

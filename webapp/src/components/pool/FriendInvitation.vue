@@ -3,7 +3,10 @@
   <div class="friend-wrapper">
     <h2>Vos amis</h2>
     <div class="invite-wrapper">
-      <FriendPoolInvite v-for="friend of friends" :status="InviteStatus.SEND" :friend="friend"/>
+      <FriendPoolInvite v-for="friend of filterPlayer(friends)"
+                        :status="friend.gameInviteStatus || InviteStatus.REFUSE"
+                        :friend="friend" @click="inviteToGame(friend)"
+      />
     </div>
   </div>
   <div class="friend-wrapper">
@@ -27,11 +30,13 @@ import {AxiosResponse} from "axios";
 import {useUserStore} from "@/objects/stores/UserStore.ts";
 import FriendPoolInvite from "@/vue/friends/FriendPoolInvite.vue";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
+import {NotificationType, useNotification} from "@/objects/stores/NotificationStore.ts";
 
 const {t} = useI18n();
 const friends = ref<User[]>([])
 const currentUser = useUserStore();
 const poolStore = usePoolParty();
+const notification = useNotification();
 
 onMounted(() => {
   loadFriendList()
@@ -45,7 +50,9 @@ function loadFriendList() {
       if (friend.status != InviteStatus.ACCEPT) {
         continue;
       }
-      friends.value.push(getFriendUser(friend))
+      const user: User = getFriendUser(friend)
+      user.gameInviteStatus = InviteStatus.SEND
+      friends.value.push(user)
     }
   })
 }
@@ -56,6 +63,25 @@ function getFriendUser(friend: Friend): User {
     return friend.user2;
   }
   return friend.user1;
+}
+
+function inviteToGame(user: User) {
+  notification.send({
+    users: [user.authUsername],
+    data: {
+      data: poolStore.pool.uuid,
+      type: NotificationType.INVITE_TO_GAME
+    }
+  });
+  user.gameInviteStatus = InviteStatus.PENDING;
+}
+
+function filterPlayer(users: User[]): User[] {
+  // Extract the usernames of players already in the game
+  const playersInGame = new Set(poolStore.pool.players.map(player => player.authUsername));
+
+  // Filter the users who are not already in the game
+  return users.filter(user => !playersInGame.has(user.authUsername));
 }
 </script>
 
