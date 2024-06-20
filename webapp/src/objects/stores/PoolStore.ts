@@ -6,6 +6,7 @@ export const usePoolParty =
   defineStore('poolparty', () => {
     const poolSocket: PoolSocket = new PoolSocket()
     let pool: Pool = {
+      uuid: "",
       players: [],
       rules: null,
       state: GameState.SETUP
