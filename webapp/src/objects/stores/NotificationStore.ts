@@ -3,8 +3,23 @@ import {HTTPAxios} from "@/objects/utils/HTTPAxios.ts";
 import {AlertType, useAlertStore} from "@/vue/alerts/AlertStore.ts";
 import {WebSocketMessage, WebSocketMessageType} from "@/objects/pool/WebSocet.ts";
 import {tsi18n} from "@/objects/i18n";
+import eventBus from "@/objects/bus/EventBus.ts";
 
 const {t} = tsi18n.global;
+
+export enum NotificationType {
+  INVITE_TO_GAME,
+  INVITE_TO_FRIEND,
+  ERROR
+}
+
+export interface NotificationMessage {
+  data: {
+    type: NotificationType,
+    data: unknown
+  }
+  users: string[]
+}
 
 export const useNotification =
   defineStore('notifications', () => {
@@ -42,7 +57,7 @@ export const useNotification =
         const message: WebSocketMessage = JSON.parse(ev.data) as WebSocketMessage;
         switch (message.messageType) {
           case WebSocketMessageType.SEND_NOTIFICATION: {
-
+            handleNotification(message.data as NotificationMessage)
             break
           }
           default: {
@@ -69,8 +84,32 @@ export const useNotification =
       socket?.close()
     }
 
+    function handleNotification(notificationMessage: NotificationMessage) {
+      switch (notificationMessage.data.type) {
+        case NotificationType.INVITE_TO_FRIEND: {
+          eventBus.emit('refreshFriendInvites');
+          break
+        }
+        default: {
+          throw new Error(
+            "Failed to handle this message type : " + notificationMessage.data.type,
+          );
+        }
+      }
+    }
+
+    function send(notification: NotificationMessage) {
+      if (!socket) return;
+      const message: WebSocketMessage = {
+        data: notification,
+        messageType: WebSocketMessageType.SEND_NOTIFICATION,
+      };
+      socket.send(JSON.stringify(message));
+    }
+
     return {
       init,
+      send,
       closeSocket
     };
   });

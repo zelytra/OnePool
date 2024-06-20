@@ -20,7 +20,7 @@ import static fr.zelytra.game.manager.message.ObjectMapperConfig.objectMapper;
 public class NotificationSocket {
 
     private final SocketTimeOutManager socketTimeOutManager = new SocketTimeOutManager();
-    private final ConcurrentMap<String, Session> sessions = new ConcurrentHashMap<>();
+    private final static ConcurrentMap<String, Session> sessions = new ConcurrentHashMap<>();
 
     @OnOpen
     public void onOpen(Session session) {
