@@ -42,10 +42,10 @@
       <h3>Equipe 2</h3>
       <GamePlayerSlot v-for="(player, index) in team2WithEmptySlots" :key="'team2-' + index"
                       draggable="true"
-                      @dragstart="startDragFromSlot($event, player)"
+                      @dragstart="startDragFromSlot($event,player)"
                       @drop="onDrop($event, 2, index)"
                       @dragover="allowDrop($event)"
-                      @touchstart="startTouchFromSlot($event, player)"
+                      @touchstart="startTouchFromSlot($event,player)"
                       @touchend="onTouchEnd($event, 2, index)" style="touch-action: none">
         <PlayerCard v-if="player.username" color="#EE2727">
           {{ player.username }}
@@ -63,11 +63,13 @@ import PlayerCard from "@/vue/templates/PlayerCard.vue";
 import GamePlayerSlot from "@/vue/templates/GamePlayerSlot.vue";
 import {User} from "@/objects/User.ts";
 import {computed} from "vue";
+import 'drag-drop-touch';
+
 
 const {t} = useI18n();
 const pool = usePoolParty();
 
-let touchedPlayer: User | null = null;
+let touchedPlayer: User | null;
 
 function startDrag(evt: DragEvent, user: User) {
   evt.dataTransfer!.dropEffect = 'move';
@@ -75,17 +77,17 @@ function startDrag(evt: DragEvent, user: User) {
   evt.dataTransfer!.setData("user", JSON.stringify(user));
 }
 
-function startDragFromSlot(evt: DragEvent, player: User) {
+function startDragFromSlot(evt: DragEvent, player: { username: string }) {
   evt.dataTransfer!.dropEffect = 'move';
   evt.dataTransfer!.effectAllowed = 'move';
   evt.dataTransfer!.setData("playerFromSlot", JSON.stringify(player));
 }
 
-function startTouch(evt: TouchEvent, user: User) {
+function startTouch(_evt: TouchEvent, user: User) {
   touchedPlayer = user;
 }
 
-function startTouchFromSlot(evt: TouchEvent, player: User) {
+function startTouchFromSlot(_evt: TouchEvent, player: User) {
   touchedPlayer = player;
 }
 
@@ -150,8 +152,7 @@ const team1 = computed(() => pool.pool.players.filter(x => x.teamId === 1));
 const team2 = computed(() => pool.pool.players.filter(x => x.teamId === 2));
 
 const createTeamWithEmptySlots = (team: User[]) => {
-  const slots = Array.from({length: 3}, (_, index) => team.find(player => player.slotIndex === index) || {username: ''});
-  return slots;
+  return Array.from({length: 3}, (_, index) => team.find(player => player.slotIndex === index) || {username: ''} as User);
 };
 
 const team1WithEmptySlots = computed(() => createTeamWithEmptySlots(team1.value));

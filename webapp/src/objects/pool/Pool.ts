@@ -6,7 +6,7 @@ export interface Pool {
   players: User[]
   rules: GameRule | null
   state: GameState
-  maxPlayerAmount: number
+  maxPlayerAmount?: number
 }
 
 export enum GameRule {

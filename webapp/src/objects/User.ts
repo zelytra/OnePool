@@ -6,7 +6,7 @@ export interface Friend {
 
 export interface CustomUserMetadata {
   gameInviteStatus?: InviteStatus,
-  teamId: number
+  teamId?: number
   slotIndex?:number
 }
 
