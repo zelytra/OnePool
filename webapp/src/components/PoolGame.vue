@@ -1,6 +1,6 @@
 <template>
   <section>
-    <transition>
+    <transition name="fade">
       <GameRuleSelector v-if="poolStore.pool.state==GameState.SETUP"/>
       <FriendInvitation v-else-if="poolStore.pool.state==GameState.INVITE_PLAYER"/>
       <TeamingPlayers v-else-if="poolStore.pool.state==GameState.TEAMING_PLAYERS"/>

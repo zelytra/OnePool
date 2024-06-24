@@ -7,6 +7,7 @@ public enum MessageType {
     UPDATE_POOL_DATA, // When the party need to be broadcast to all player in the party
     SET_RULES,
     CHANGE_GAME_STATES,
+    UPDATE_TEAMS,
 
     //Notification message types
     INIT_NOTIFICATION,

@@ -7,6 +7,12 @@ export interface Pool {
   rules: GameRule | null
   state: GameState
   maxPlayerAmount?: number
+  teams: PoolTeams
+}
+
+export interface PoolTeams {
+  team1: string[]
+  team2: string[]
 }
 
 export enum GameRule {

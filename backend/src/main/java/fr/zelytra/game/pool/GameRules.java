@@ -1,7 +1,7 @@
 package fr.zelytra.game.pool;
 
 public enum GameRules {
-    AMERICAN_8(4);
+    AMERICAN_8(6);
     //AMERICAN_9,
     //AMERICAN_9_CONTINUE,
     //AMERICAN_10,

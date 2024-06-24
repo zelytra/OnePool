@@ -14,11 +14,13 @@ public class PoolParty {
     private GameRules rules;
     private GameStatus state;
     private int maxPlayerAmount;
+    private final PoolTeam teams;
 
     public PoolParty(PoolPlayer user) {
         this.gameOwner = user;
         players.add(user);
-        state = GameStatus.TEAMING_PLAYERS;
+        state = GameStatus.SETUP;
+        teams = new PoolTeam(new ArrayList<>(), new ArrayList<>());
     }
 
     public List<PoolPlayer> getPlayers() {
@@ -42,12 +44,31 @@ public class PoolParty {
         this.maxPlayerAmount = rules.maxTotalPlayer;
     }
 
+    public boolean setTeams(PoolTeam teams) {
+        // Limit player amount by rules
+        if (teams.team1().size() + teams.team2().size() > maxPlayerAmount) {
+            return false;
+        }
+        this.teams.team1().clear();
+        this.teams.team2().clear();
+        this.teams.team1().addAll(teams.team1());
+        this.teams.team2().addAll(teams.team2());
+        return true;
+    }
+
     public GameStatus getState() {
         return state;
     }
 
-    public void setState(GameStatus state) {
+    public boolean setState(GameStatus state) {
+        // No empty teams
+        if (this.state == GameStatus.TEAMING_PLAYERS && state == GameStatus.RUNNING) {
+            if (this.teams.team1().isEmpty() || this.teams.team2().isEmpty()) {
+                return false;
+            }
+        }
         this.state = state;
+        return true;
     }
 
     public String getUuid() {
@@ -56,6 +77,10 @@ public class PoolParty {
 
     public int getMaxPlayerAmount() {
         return maxPlayerAmount;
+    }
+
+    public PoolTeam getTeams() {
+        return teams;
     }
 
     /**

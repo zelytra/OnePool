@@ -2,10 +2,7 @@ package fr.zelytra.game.manager.socket;
 
 import fr.zelytra.game.manager.message.MessageType;
 import fr.zelytra.game.manager.message.SocketMessage;
-import fr.zelytra.game.pool.GameRules;
-import fr.zelytra.game.pool.GameStatus;
-import fr.zelytra.game.pool.PoolParty;
-import fr.zelytra.game.pool.PoolPlayer;
+import fr.zelytra.game.pool.*;
 import fr.zelytra.user.UserEntity;
 import fr.zelytra.user.UserService;
 import io.quarkus.logging.Log;
@@ -270,6 +267,20 @@ public class PoolSocketService {
         poolParty.setState(gameStatus);
         broadcastPoolDataToParty(poolParty);
         Log.info("[setStatus][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " set status: " + gameStatus);
+    }
+
+    /**
+     * Sets the teams for a specific pool party.
+     *
+     * @param team       the teams of the party
+     * @param socketSessionId the socket session ID of the player setting the rules
+     */
+    public void setPlayersTeam(PoolTeam team, String socketSessionId) {
+        PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
+        PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
+        poolParty.setTeams(team);
+        broadcastPoolDataToParty(poolParty);
+        Log.info("[setPlayersTeam][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " set new teams !");
     }
 
     /**
