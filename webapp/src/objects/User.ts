@@ -4,7 +4,13 @@ export interface Friend {
   status: InviteStatus
 }
 
-export interface User {
+export interface CustomUserMetadata {
+  gameInviteStatus?: InviteStatus,
+  teamId: number
+  slotIndex?:number
+}
+
+export interface User extends CustomUserMetadata {
   authUsername: string
   username: string
   icon: string
@@ -12,7 +18,7 @@ export interface User {
   createdAt: Date
   pp: number
   lang: string,
-  gameInviteStatus?:InviteStatus
+
 //history: PoolHistory[],
 }
 

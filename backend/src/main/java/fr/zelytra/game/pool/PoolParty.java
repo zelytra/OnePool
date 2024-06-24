@@ -13,11 +13,12 @@ public class PoolParty {
     private PoolPlayer gameOwner;
     private GameRules rules;
     private GameStatus state;
+    private int maxPlayerAmount;
 
     public PoolParty(PoolPlayer user) {
         this.gameOwner = user;
         players.add(user);
-        state = GameStatus.SETUP;
+        state = GameStatus.TEAMING_PLAYERS;
     }
 
     public List<PoolPlayer> getPlayers() {
@@ -38,6 +39,7 @@ public class PoolParty {
 
     public void setRules(GameRules rules) {
         this.rules = rules;
+        this.maxPlayerAmount = rules.maxTotalPlayer;
     }
 
     public GameStatus getState() {
@@ -50,6 +52,10 @@ public class PoolParty {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public int getMaxPlayerAmount() {
+        return maxPlayerAmount;
     }
 
     /**

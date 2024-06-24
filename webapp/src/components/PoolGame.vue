@@ -1,7 +1,10 @@
 <template>
-  <section v-if="poolStore.pool!=null">
-    <GameRuleSelector v-if="!poolStore.pool.rules"/>
-    <FriendInvitation v-if="poolStore.pool.rules"/>
+  <section>
+    <transition>
+      <GameRuleSelector v-if="poolStore.pool.state==GameState.SETUP"/>
+      <FriendInvitation v-else-if="poolStore.pool.state==GameState.INVITE_PLAYER"/>
+      <TeamingPlayers v-else-if="poolStore.pool.state==GameState.TEAMING_PLAYERS"/>
+    </transition>
   </section>
 </template>
 
@@ -10,11 +13,13 @@ import GameRuleSelector from "@/components/pool/GameRuleSelector.vue";
 import {onMounted} from "vue";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 import FriendInvitation from "@/components/pool/FriendInvitation.vue";
+import {GameState} from "@/objects/pool/Pool.ts";
+import TeamingPlayers from "@/components/pool/TeamingPlayers.vue";
 
 const poolStore = usePoolParty();
 
 onMounted(() => {
-  if (!poolStore.poolSocket.socket){
+  if (!poolStore.poolSocket.socket) {
     poolStore.poolSocket?.joinSession("")
   }
 })

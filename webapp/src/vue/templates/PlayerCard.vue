@@ -1,9 +1,7 @@
 <template>
-  <div class="button-card-wrapper" :style="{
-    '--gradient-start': color,
-    'height': height,
-    'width': width,
-  }">
+  <div class="player-card" :style="{
+    '--gradient-start': color}">
+    <slot/>
     <svg width="355" height="104" viewBox="0 0 355 104" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g filter="url(#filter0_f_26_130)">
         <ellipse cx="178.59" cy="-1.32812" rx="134.764" ry="54.4531" :fill="color" fill-opacity="0.2"/>
@@ -17,7 +15,6 @@
         </filter>
       </defs>
     </svg>
-    <slot/>
   </div>
 </template>
 
@@ -25,31 +22,25 @@
 defineProps({
   color: {
     type: String,
-    required: true
+    default: () => "#FFF"
   },
-  height: {
-    type: String,
-    default: () => "auto"
-  },
-  width: {
-    type: String,
-    default: () => "100%"
-  }
 })
 </script>
 
 <style scoped lang="scss">
-.button-card-wrapper {
+.player-card {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
   overflow: hidden;
-  width: 100%;
+  width: 94px;
+  height: 94px;
   gap: 8px;
   border-radius: 15px;
   cursor: pointer;
+  background: #0C0B0B;
 
   &:before {
     content: "";
@@ -63,10 +54,9 @@ defineProps({
     mask-composite: exclude;
   }
 
-
   svg {
     position: absolute;
-    top: 0;
+    top: -20%;
     left: 50%;
     transform: translate(-50%, 0);
     z-index: 99;

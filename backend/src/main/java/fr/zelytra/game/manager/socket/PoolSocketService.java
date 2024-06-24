@@ -3,6 +3,7 @@ package fr.zelytra.game.manager.socket;
 import fr.zelytra.game.manager.message.MessageType;
 import fr.zelytra.game.manager.message.SocketMessage;
 import fr.zelytra.game.pool.GameRules;
+import fr.zelytra.game.pool.GameStatus;
 import fr.zelytra.game.pool.PoolParty;
 import fr.zelytra.game.pool.PoolPlayer;
 import fr.zelytra.user.UserEntity;
@@ -255,6 +256,20 @@ public class PoolSocketService {
         poolParty.setRules(gameRules);
         broadcastPoolDataToParty(poolParty);
         Log.info("[setRule][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " set rule: " + gameRules);
+    }
+
+    /**
+     * Sets the game status for a specific pool party.
+     *
+     * @param gameStatus       the game rules to set
+     * @param socketSessionId the socket session ID of the player setting the rules
+     */
+    public void setStatus(GameStatus gameStatus, String socketSessionId) {
+        PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
+        PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
+        poolParty.setState(gameStatus);
+        broadcastPoolDataToParty(poolParty);
+        Log.info("[setStatus][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " set status: " + gameStatus);
     }
 
     /**

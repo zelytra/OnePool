@@ -18,24 +18,7 @@
       <FriendPoolInvite v-for="friend of poolStore.pool.players" :status="InviteStatus.ACCEPT" :friend="friend"/>
     </div>
   </div>
-  <div class="friend-wrapper">
-    <h2>Vos équipes</h2>
-    <div class="button-wrapper">
-      <ButtonCard color="#D25A34">
-        <div class="button-content-wrapper">
-          <img src="@/assets/icons/diversity.svg" alt="random-team"/>
-          <p class="button-title orange">{{ t('pool.action.continue') }}</p>
-        </div>
-      </ButtonCard>
-      <ButtonCard color="#7034D2">
-        <div class="button-content-wrapper">
-          <img src="@/assets/icons/groups.svg" alt="manual-team"/>
-          <p class="button-title purple">{{ t('pool.action.continue') }}</p>
-        </div>
-      </ButtonCard>
-    </div>
-  </div>
-  <AlertCard color="#27A27A">
+  <AlertCard color="#27A27A" @click="poolStore.poolSocket.setGameStatus(GameState.TEAMING_PLAYERS)">
     <p class="button-title">{{ t('pool.action.continue') }}</p>
   </AlertCard>
 </template>
@@ -51,7 +34,7 @@ import {useUserStore} from "@/objects/stores/UserStore.ts";
 import FriendPoolInvite from "@/vue/friends/FriendPoolInvite.vue";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 import {NotificationType, useNotification} from "@/objects/stores/NotificationStore.ts";
-import ButtonCard from "@/vue/templates/ButtonCard.vue";
+import {GameState} from "@/objects/pool/Pool.ts";
 
 const {t} = useI18n();
 const friends = ref<User[]>([])

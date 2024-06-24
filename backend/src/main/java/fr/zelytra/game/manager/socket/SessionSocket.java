@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import fr.zelytra.game.manager.message.SocketMessage;
 import fr.zelytra.game.manager.message.SocketTimeOutManager;
 import fr.zelytra.game.pool.GameRules;
+import fr.zelytra.game.pool.GameStatus;
 import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import jakarta.websocket.*;
@@ -51,6 +52,10 @@ public class SessionSocket {
             }
             case SET_RULES -> {
                 socketService.setRule(objectMapper.convertValue(socketMessage.data(), GameRules.class), session.getId());
+            }
+            case CHANGE_GAME_STATES -> {
+                GameStatus status = objectMapper.convertValue(socketMessage.data(), GameStatus.class);
+                socketService.setStatus(status, session.getId());
             }
             default -> Log.info("Unhandled message type: " + socketMessage.messageType());
         }

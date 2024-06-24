@@ -6,6 +6,7 @@ public enum MessageType {
     CONNECT_TO_POOL, // When a player try to join a pool party
     UPDATE_POOL_DATA, // When the party need to be broadcast to all player in the party
     SET_RULES,
+    CHANGE_GAME_STATES,
 
     //Notification message types
     INIT_NOTIFICATION,
