@@ -132,7 +132,7 @@ public class PoolSocketService {
                 return true;
             }
             for (UserEntity player : poolParty.getPlayers()) {
-                if (player.getUsername().equals(username)) {
+                if (player.getAuthUsername().equals(username)) {
                     return true;
                 }
             }
@@ -156,7 +156,7 @@ public class PoolSocketService {
                 return poolParty;
             }
             for (PoolPlayer player : poolParty.getPlayers()) {
-                if (player.getUsername().equals(username)) {
+                if (player.getAuthUsername().equals(username)) {
                     return poolParty;
                 }
             }

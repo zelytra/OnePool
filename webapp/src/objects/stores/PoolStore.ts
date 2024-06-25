@@ -9,7 +9,11 @@ export const usePoolParty =
       uuid: "",
       players: [],
       rules: null,
-      state: GameState.SETUP
+      state: GameState.SETUP,
+      teams: {
+        team1: [],
+        team2: []
+      }
     }
     return {
       poolSocket,
