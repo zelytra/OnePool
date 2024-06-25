@@ -21,6 +21,7 @@ public class UserService implements PanacheRepository<UserEntity> {
         //Creating user if it not exists
         if (user == null) {
             user = new UserEntity(username);
+            user.persist();
         }
 
         return user;

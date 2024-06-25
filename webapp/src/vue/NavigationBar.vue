@@ -37,6 +37,7 @@ nav {
   padding: 18px;
   background: var(--secondary-background);
   margin-top: 4px;
+  z-index: 999;
   border-radius: 0 0 4px 4px;
 }
 </style>

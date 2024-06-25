@@ -1,5 +1,6 @@
 package fr.zelytra.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.logging.Log;
 import jakarta.persistence.*;
@@ -30,10 +31,12 @@ public class UserEntity extends PanacheEntityBase {
     private int pp;
 
     @Column(columnDefinition = "integer")
+    @JsonIgnore
     private int gamePlayed;
 
     public UserEntity() {
     }
+
     public UserEntity(String username){
         Log.info("New user created : " + username);
         this.pp = 1200;
@@ -41,7 +44,6 @@ public class UserEntity extends PanacheEntityBase {
         this.authUsername=username;
         this.username=username;
         this.online=true;
-        this.persistAndFlush();
     }
 
     public UserEntity(UserEntity user) {

@@ -1,14 +1,16 @@
 package fr.zelytra.poolpoint;
 
 import fr.zelytra.user.UserEntity;
+import fr.zelytra.user.UserService;
 import fr.zelytra.user.reflections.LeaderBoardUser;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 import io.restassured.common.mapper.TypeRef;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -22,11 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @QuarkusTestResource(OidcWiremockTestResource.class)
 class LeaderboardEndpointTest {
 
-    @BeforeAll
+    @Inject
+    UserService userService;
+
+    @BeforeEach
     @Transactional
-    static void init() {
+    void init() {
         for (int x = 0; x < 200; x++) {
-            UserEntity user = new UserEntity("User" + x);
+            UserEntity user = userService.getOrCreateUserByName("User" + x);
             user.setPp(1000 + x);
         }
     }

@@ -9,7 +9,7 @@
           class="router-link"
           :to="route.path"
       >
-        <ButtonCard :color="getGradient(route.path)">
+        <ButtonCard :color="getGradient(route.path)" height="170px">
           <img v-if="route.meta.icon" :src="route.meta.icon" alt="nav icon"/>
           <h1>{{ route.name }}</h1>
           <p class="secondary">{{ route.meta.subTitle }}</p>

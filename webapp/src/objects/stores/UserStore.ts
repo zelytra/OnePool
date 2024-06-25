@@ -5,6 +5,7 @@ import {User} from "@/objects/User.ts";
 import {defineStore} from "pinia";
 import {HTTPAxios} from "@/objects/utils/HTTPAxios.ts";
 import {AxiosResponse} from "axios";
+import {useNotification} from "@/objects/stores/NotificationStore.ts";
 
 
 export const useUserStore = defineStore('user', () => {
@@ -35,6 +36,7 @@ export const useUserStore = defineStore('user', () => {
         ...response.data,
         lang: browserLang,
       }
+      useNotification().init(user.value.authUsername);
       isUserInit.value = true;
     })
 

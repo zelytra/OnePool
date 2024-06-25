@@ -1,6 +1,8 @@
 <template>
   <div class="button-card-wrapper" :style="{
     '--gradient-start': color,
+    'height': height,
+    'width': width,
   }">
     <svg width="355" height="104" viewBox="0 0 355 104" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g filter="url(#filter0_f_26_130)">
@@ -25,6 +27,14 @@ defineProps({
     type: String,
     required: true
   },
+  height: {
+    type: String,
+    default: () => "auto"
+  },
+  width: {
+    type: String,
+    default: () => "100%"
+  }
 })
 </script>
 
@@ -37,8 +47,9 @@ defineProps({
   position: relative;
   overflow: hidden;
   width: 100%;
-  height: 170px;
   gap: 8px;
+  border-radius: 15px;
+  cursor: pointer;
 
   &:before {
     content: "";

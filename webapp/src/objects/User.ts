@@ -4,14 +4,21 @@ export interface Friend {
   status: InviteStatus
 }
 
-export interface User {
+export interface CustomUserMetadata {
+  gameInviteStatus?: InviteStatus,
+  teamId?: number
+  slotIndex?:number
+}
+
+export interface User extends CustomUserMetadata {
   authUsername: string
   username: string
   icon: string
   online: boolean
   createdAt: Date
   pp: number
-  lang: string
+  lang: string,
+
 //history: PoolHistory[],
 }
 
@@ -23,6 +30,7 @@ export interface SimpleUser {
 
 export enum InviteStatus {
   ACCEPT = "ACCEPT",
+  SEND = "SEND",
   REFUSE = "REFUSE",
   PENDING = "PENDING"
 }

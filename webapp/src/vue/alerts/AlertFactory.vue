@@ -13,7 +13,10 @@
 <script setup lang="ts">
 import AlertBox from "./AlertBox.vue";
 import {useAlertStore} from "@/vue/alerts/AlertStore.ts";
-import {nextTick, ref, watch} from "vue";
+import {nextTick, onMounted, onUnmounted, ref, watch} from "vue";
+import eventBus from "@/objects/bus/EventBus.ts";
+import {usePoolParty} from "@/objects/stores/PoolStore.ts";
+import router from "@/router";
 
 const alerts = useAlertStore();
 const alertBox = ref<HTMLDivElement>()
@@ -34,8 +37,20 @@ watch(alerts.getAlerts, () => {
         boxTotalSize += (element as HTMLDivElement).clientHeight
       }
     }
-    boxHeight.value = boxTotalSize + (8 * (alerts.getAlerts.length - 1)) // 8px for the gap, -1 minus first one
+    boxHeight.value = boxTotalSize + (8 * (alerts.getAlerts.length - 1)) // 8px for the gap, minus first one
   })
+})
+
+//Handle notifications event
+onMounted(() => {
+  eventBus.on('joinPoolParty', (sessionId:string)=>{
+    usePoolParty().poolSocket.joinSession(sessionId)
+    router.push("/pool")
+  });
+})
+
+onUnmounted(() => {
+  eventBus.off('joinPoolParty');
 })
 </script>
 

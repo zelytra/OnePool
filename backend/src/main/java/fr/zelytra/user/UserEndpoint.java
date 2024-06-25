@@ -34,10 +34,7 @@ public class UserEndpoint {
     @LogEndpoint
     @Transactional
     public Response getPreferences() {
-        UserEntity user = userService.getUserByName(securityIdentity.getPrincipal().getName());
-        if (user == null) {
-            user = new UserEntity(securityIdentity.getPrincipal().getName());
-        }
+        UserEntity user = userService.getOrCreateUserByName(securityIdentity.getPrincipal().getName());
         return Response.ok(user).build();
     }
 

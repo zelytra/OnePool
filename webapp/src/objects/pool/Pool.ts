@@ -1,35 +1,28 @@
-export interface PoolHistory {
-  date: Date,
-  score: string
-  duration: number
-}
+import {User} from "@/objects/User.ts";
 
 export interface Pool {
-  date: Date
-  duration: number
-  players: PoolPlayerStats[]
-  id:number
+  uuid: string
+  gameOwner?: User
+  players: User[]
+  rules: GameRule | null
+  state: GameState
+  maxPlayerAmount?: number
+  teams: PoolTeams
 }
 
-export interface PoolPlayerStats {
-  score: number
-  shot: number
-  logs: PoolLog[]
+export interface PoolTeams {
+  team1: string[]
+  team2: string[]
 }
 
-export interface PoolLog {
-  shotId: number
-  faults: PoolFaults[]
-  ballsIn: number[]
-  duration:number
+export enum GameRule {
+  AMERICAN_8 = "AMERICAN_8"
 }
 
-export enum PoolFaults {
-  WHITE_IN,
-  NO_BAND,
-  WHITE_DOUBLE_CONTACT,
-  BALL_OUT,
-  PLAYER_NO_GROUND_TOUCH,
-  PLAYER_MISTAKE,
-  EIGHT_NO_CALL
+export enum GameState {
+  SETUP = "SETUP",
+  INVITE_PLAYER = "INVITE_PLAYER",
+  TEAMING_PLAYERS = "TEAMING_PLAYERS",
+  RUNNING = "RUNNING",
+  END = "END"
 }

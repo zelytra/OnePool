@@ -43,7 +43,6 @@ defineProps({
   gap: 8px;
   padding: 16px;
   border-radius: 15px;
-  z-index: 1;
 
   &:before {
     content: "";
@@ -55,7 +54,6 @@ defineProps({
     -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    z-index: -1;
   }
 
   &:deep(p) {
