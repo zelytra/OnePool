@@ -5,11 +5,13 @@ import fr.zelytra.game.manager.message.SocketMessage;
 import fr.zelytra.game.pool.*;
 import fr.zelytra.user.UserEntity;
 import fr.zelytra.user.UserService;
+import io.quarkus.arc.Lock;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.websocket.Session;
 
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -28,6 +30,7 @@ public class PoolSocketService {
      * @param socketSession the WebSocket session of the user
      * @return the created PoolParty or null if the user is not found
      */
+    @Lock(value = Lock.Type.WRITE, time = 200)
     public PoolParty createParty(String username, Session socketSession) {
         UserEntity userEntity = userService.getUserByName(username);
 
@@ -57,6 +60,7 @@ public class PoolSocketService {
      * @param sessionID     the session ID of the pool the player wants to join
      * @param socketSession the WebSocket session of the user
      */
+    @Lock(value = Lock.Type.WRITE, time = 200)
     public void joinPool(String username, String sessionID, Session socketSession) {
         Log.info("[joinPool][N/A] User: " + username);
         UserEntity user = userService.getUserByName(username);
@@ -94,6 +98,7 @@ public class PoolSocketService {
      * @param username the username of the user to retrieve
      * @return the PoolPlayer if found, null otherwise
      */
+    @Lock(value = Lock.Type.READ, time = 200)
     public PoolPlayer getPlayerFromPool(String username) {
         Log.info("[getPlayerFromPool][N/A] User: " + username);
 
@@ -118,6 +123,7 @@ public class PoolSocketService {
      * @param username the username of the user to check
      * @return true if the user is in a pool, false otherwise
      */
+    @Lock(value = Lock.Type.READ, time = 200)
     public boolean isPlayerInPool(String username) {
         Log.info("[isPlayerInPool][N/A] User: " + username);
 
@@ -141,6 +147,7 @@ public class PoolSocketService {
      * @param username the username of the player
      * @return the PoolParty if found, null otherwise
      */
+    @Lock(value = Lock.Type.READ, time = 200)
     public PoolParty getPoolPartyByPlayer(String username) {
         Log.info("[getPoolPartyByPlayer][N/A] User: " + username);
 
@@ -165,15 +172,16 @@ public class PoolSocketService {
      * @param socketSessionId the socket session ID of the player
      * @return the PoolPlayer if found, null otherwise
      */
+    @Lock(value = Lock.Type.READ, time = 200)
     public PoolPlayer getPlayerBySocketSessionId(String socketSessionId) {
         Log.info("[getPlayerBySocketSessionId][N/A] User: " + socketSessionId);
 
         for (PoolParty poolParty : games.values()) {
-            if (poolParty.getGameOwner().getSocketSession().getId().equals(socketSessionId)) {
+            if (Objects.equals(poolParty.getGameOwner().getSocketSession().getId(), socketSessionId)) {
                 return poolParty.getGameOwner();
             }
             for (PoolPlayer player : poolParty.getPlayers()) {
-                if (player.getAuthUsername().equals(socketSessionId)) {
+                if (Objects.equals(player.getSocketSession().getId(), socketSessionId)) {
                     return player;
                 }
             }
@@ -190,6 +198,7 @@ public class PoolSocketService {
      * @param sessionID the session ID of the pool party
      * @return true if the player was removed or the pool party was deleted, false otherwise
      */
+    @Lock(value = Lock.Type.WRITE, time = 200)
     public boolean removePlayerFromPool(PoolPlayer user, String sessionID) {
         Log.info("[removePlayerFromPool][" + sessionID + "] User: " + user.getUsername());
 
@@ -221,6 +230,7 @@ public class PoolSocketService {
      *
      * @param socketSessionId the socket session ID of the player
      */
+    @Lock(value = Lock.Type.WRITE, time = 200)
     public void playerClosedConnection(String socketSessionId) {
         Log.info("[playerClosedConnection][N/A] User: " + socketSessionId);
         PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
@@ -247,6 +257,7 @@ public class PoolSocketService {
      * @param gameRules       the game rules to set
      * @param socketSessionId the socket session ID of the player setting the rules
      */
+    @Lock(value = Lock.Type.WRITE, time = 200)
     public void setRule(GameRules gameRules, String socketSessionId) {
         PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
         PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
@@ -261,6 +272,7 @@ public class PoolSocketService {
      * @param gameStatus       the game rules to set
      * @param socketSessionId the socket session ID of the player setting the rules
      */
+    @Lock(value = Lock.Type.WRITE, time = 200)
     public void setStatus(GameStatus gameStatus, String socketSessionId) {
         PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
         PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
@@ -275,6 +287,7 @@ public class PoolSocketService {
      * @param team       the teams of the party
      * @param socketSessionId the socket session ID of the player setting the rules
      */
+    @Lock(value = Lock.Type.WRITE, time = 200)
     public void setPlayersTeam(PoolTeam team, String socketSessionId) {
         PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
         PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
@@ -288,6 +301,7 @@ public class PoolSocketService {
      *
      * @return a map of session IDs to PoolParty instances
      */
+    @Lock(value = Lock.Type.READ, time = 200)
     public ConcurrentMap<String, PoolParty> getGames() {
         return games;
     }
@@ -297,6 +311,7 @@ public class PoolSocketService {
      *
      * @param poolParty the pool party whose data is to be broadcast
      */
+    @Lock(value = Lock.Type.WRITE, time = 200)
     public void broadcastPoolDataToParty(PoolParty poolParty) {
         if (poolParty == null) {
             Log.warn("[broadcastPoolDataToParty][N/A] Pool party is null");

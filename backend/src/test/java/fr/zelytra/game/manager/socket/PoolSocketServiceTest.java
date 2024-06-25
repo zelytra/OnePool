@@ -43,7 +43,7 @@ class PoolSocketServiceTest {
     @Test
     void createParty() {
         when(userService.getUserByName("user1")).thenReturn(new UserEntity("user1"));
-        PoolParty poolParty = socketService.createParty("user1",session);
+        PoolParty poolParty = socketService.createParty("user1", session);
         ConcurrentMap<String, PoolParty> games = socketService.getGames();
         assertEquals(1, games.size());
         assertEquals(1, poolParty.getPlayers().size());
@@ -52,7 +52,7 @@ class PoolSocketServiceTest {
 
     @Test
     void createParty_unknownUser() {
-        socketService.createParty("user1",session);
+        socketService.createParty("user1", session);
         ConcurrentMap<String, PoolParty> games = socketService.getGames();
         assertEquals(0, games.size());
     }
@@ -61,8 +61,8 @@ class PoolSocketServiceTest {
     void joinPool() {
         when(userService.getUserByName("user1")).thenReturn(new UserEntity("user1"));
         when(userService.getUserByName("user2")).thenReturn(new UserEntity("user2"));
-        PoolParty poolParty = socketService.createParty("user1",session);
-        socketService.joinPool("user2", poolParty.getUuid(),session2);
+        PoolParty poolParty = socketService.createParty("user1", session);
+        socketService.joinPool("user2", poolParty.getUuid(), session2);
 
         assertEquals(2, poolParty.getPlayers().size());
     }
@@ -71,8 +71,8 @@ class PoolSocketServiceTest {
     void joinPool_emptySessionId() {
         when(userService.getUserByName("user1")).thenReturn(new UserEntity("user1"));
         when(userService.getUserByName("user2")).thenReturn(new UserEntity("user2"));
-        socketService.joinPool("user1", "",session);
-        socketService.joinPool("user2", " ",session2);
+        socketService.joinPool("user1", "", session);
+        socketService.joinPool("user2", " ", session2);
 
         ConcurrentMap<String, PoolParty> games = socketService.getGames();
         assertEquals(2, games.size());
@@ -81,8 +81,8 @@ class PoolSocketServiceTest {
     @Test
     void joinPool_sameUserConnectToAnotherSession() {
         when(userService.getUserByName("user1")).thenReturn(new UserEntity("user1"));
-        socketService.joinPool("user1", "",session);
-        socketService.joinPool("user1", "",session);
+        socketService.joinPool("user1", "", session);
+        socketService.joinPool("user1", "", session);
 
         ConcurrentMap<String, PoolParty> games = socketService.getGames();
         assertEquals(1, games.size());
@@ -90,7 +90,7 @@ class PoolSocketServiceTest {
 
     @Test
     void joinPool_unknownUser() {
-        socketService.joinPool("user3", "",session);
+        socketService.joinPool("user3", "", session);
         ConcurrentMap<String, PoolParty> games = socketService.getGames();
         assertEquals(0, games.size());
     }
@@ -99,8 +99,8 @@ class PoolSocketServiceTest {
     void joinPool_unknownPoolId() {
         when(userService.getUserByName("user1")).thenReturn(new UserEntity("user1"));
         when(userService.getUserByName("user2")).thenReturn(new UserEntity("user2"));
-        PoolParty poolParty = socketService.createParty("user1",session);
-        socketService.joinPool("user2", "ABCDEF",session2);
+        PoolParty poolParty = socketService.createParty("user1", session);
+        socketService.joinPool("user2", "ABCDEF", session2);
 
         ConcurrentMap<String, PoolParty> games = socketService.getGames();
         assertEquals(1, games.size());
@@ -110,7 +110,7 @@ class PoolSocketServiceTest {
     @Test
     void getPoolPartyByPlayer() {
         when(userService.getUserByName("user1")).thenReturn(new UserEntity("user1"));
-        PoolParty poolParty = socketService.createParty("user1",session);
+        PoolParty poolParty = socketService.createParty("user1", session);
 
         PoolParty retrieveParty = socketService.getPoolPartyByPlayer("user1");
 
@@ -131,10 +131,10 @@ class PoolSocketServiceTest {
     void getPlayerFromPool() {
         UserEntity user1 = new UserEntity("user1");
         //when(session).thenReturn(Mockito);
-        PoolPlayer poolPlayer = new PoolPlayer(user1,session);
+        PoolPlayer poolPlayer = new PoolPlayer(user1, session);
 
         when(userService.getUserByName("user1")).thenReturn(user1);
-        socketService.createParty("user1",poolPlayer.getSocketSession());
+        socketService.createParty("user1", poolPlayer.getSocketSession());
 
         PoolPlayer user = socketService.getPlayerFromPool("user1");
 
@@ -151,19 +151,19 @@ class PoolSocketServiceTest {
     @Test
     void isPlayerInPool() {
         when(userService.getUserByName("user1")).thenReturn(new UserEntity("user1"));
-        socketService.createParty("user1",session);
+        socketService.createParty("user1", session);
         assertTrue(socketService.isPlayerInPool("user1"));
     }
 
     @Test
     void removePlayerFromPool() {
         UserEntity user2 = new UserEntity("user2");
-        PoolPlayer poolPlayer = new PoolPlayer(user2,session2);
+        PoolPlayer poolPlayer = new PoolPlayer(user2, session2);
 
         when(userService.getUserByName("user1")).thenReturn(new UserEntity("user1"));
         when(userService.getUserByName("user2")).thenReturn(user2);
-        PoolParty poolParty = socketService.createParty("user1",session);
-        socketService.joinPool("user2", poolParty.getUuid(),poolPlayer.getSocketSession());
+        PoolParty poolParty = socketService.createParty("user1", session);
+        socketService.joinPool("user2", poolParty.getUuid(), poolPlayer.getSocketSession());
 
 
         boolean removed = socketService.removePlayerFromPool(poolPlayer, poolParty.getUuid());
@@ -176,9 +176,9 @@ class PoolSocketServiceTest {
         UserEntity user2 = new UserEntity("user2");
         when(userService.getUserByName("user1")).thenReturn(new UserEntity("user1"));
         when(userService.getUserByName("user2")).thenReturn(user2);
-        PoolParty poolParty = socketService.createParty("user1",session);
-        socketService.joinPool("user2", poolParty.getUuid(),session2);
-        PoolPlayer poolPlayer = new PoolPlayer(user2,session2);
+        PoolParty poolParty = socketService.createParty("user1", session);
+        socketService.joinPool("user2", poolParty.getUuid(), session2);
+        PoolPlayer poolPlayer = new PoolPlayer(user2, session2);
 
         boolean removed = socketService.removePlayerFromPool(poolPlayer, "ABCDEF");
         assertFalse(removed);
@@ -190,14 +190,48 @@ class PoolSocketServiceTest {
         UserEntity user2 = new UserEntity("user2");
         when(userService.getUserByName("user1")).thenReturn(new UserEntity("user1"));
         when(userService.getUserByName("user2")).thenReturn(user2);
-        PoolParty poolParty1 = socketService.createParty("user1",session);
-        PoolParty poolParty2 = socketService.createParty("user2",session2);
-        PoolPlayer poolPlayer = new PoolPlayer(user2,session2);
+        PoolParty poolParty1 = socketService.createParty("user1", session);
+        PoolParty poolParty2 = socketService.createParty("user2", session2);
+        PoolPlayer poolPlayer = new PoolPlayer(user2, session2);
 
         boolean removed = socketService.removePlayerFromPool(poolPlayer, poolParty1.getUuid());
         assertFalse(removed);
         assertEquals(1, poolParty1.getPlayers().size());
         assertEquals(1, poolParty2.getPlayers().size());
+    }
+
+    @Test
+    void getPlayerBySocketSessionId_gameOwner() {
+        UserEntity user1 = new UserEntity("user1");
+        when(userService.getUserByName("user1")).thenReturn(user1);
+        when(session.getId()).thenReturn("sessionId1");
+        socketService.createParty("user1", session);
+        PoolPlayer poolPlayer = new PoolPlayer(user1, session);
+
+        PoolPlayer poolPlayer1 = socketService.getPlayerBySocketSessionId(session.getId());
+        assertNotNull(poolPlayer1);
+        assertEquals(poolPlayer.getSocketSession().getId(), poolPlayer1.getSocketSession().getId());
+    }
+
+    @Test
+    void getPlayerBySocketSessionId_notGameOwner() {
+        UserEntity user1 = new UserEntity("user1");
+        UserEntity user2 = new UserEntity("user2");
+
+        when(userService.getUserByName("user1")).thenReturn(user1);
+        when(userService.getUserByName("user2")).thenReturn(user2);
+
+        when(session.getId()).thenReturn("sessionId1");
+        when(session2.getId()).thenReturn("sessionId2");
+
+        PoolParty poolParty = socketService.createParty("user1", session);
+        socketService.joinPool("user2", poolParty.getUuid(), session2);
+
+        PoolPlayer poolPlayer2 = new PoolPlayer(user2, session2);
+
+        PoolPlayer retrievedPoolPlayer2 = socketService.getPlayerBySocketSessionId(session2.getId());
+        assertNotNull(retrievedPoolPlayer2);
+        assertEquals(poolPlayer2.getSocketSession().getId(), retrievedPoolPlayer2.getSocketSession().getId());
     }
 
     @AfterEach
