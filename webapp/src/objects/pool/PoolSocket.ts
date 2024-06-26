@@ -51,7 +51,6 @@ export class PoolSocket {
       const message: WebSocketMessage = JSON.parse(ev.data) as WebSocketMessage;
       switch (message.messageType) {
         case WebSocketMessageType.UPDATE_POOL_DATA: {
-          console.log(message.data)
           this.poolStore.pool = message.data
           break
         }

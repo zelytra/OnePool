@@ -23,7 +23,7 @@ defineProps({
     required: true
   },
   status: {
-    type: Object as PropType<InviteStatus>,
+    type: String as PropType<InviteStatus>,
     required: true
   }
 })

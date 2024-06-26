@@ -1,16 +1,18 @@
 <template>
-  <h1>{{ t('pool.rules.selection') }}</h1>
-  <RulesCard
-      :title="t('pool.rules.card.8pool.title')"
-      :amount="t('pool.rules.card.8pool.amount')"
-      :description="t('pool.rules.card.8pool.description')"
-      :color="'#D8E445'"
-      :selected="selectedRules == GameRule.AMERICAN_8"
-      @click="selectedRules = GameRule.AMERICAN_8"
-  />
-  <AlertCard color="#27A27A" @click="setGameRule()">
-    <p class="button-title">{{ t('pool.action.continue') }}</p>
-  </AlertCard>
+  <section>
+    <h1>{{ t('pool.rules.selection') }}</h1>
+    <RulesCard
+        :title="t('pool.rules.card.8pool.title')"
+        :amount="t('pool.rules.card.8pool.amount')"
+        :description="t('pool.rules.card.8pool.description')"
+        :color="'#D8E445'"
+        :selected="selectedRules == GameRule.AMERICAN_8"
+        @click="selectedRules = GameRule.AMERICAN_8"
+    />
+    <AlertCard color="#27A27A" @click="setGameRule()">
+      <p class="button-title">{{ t('pool.action.continue') }}</p>
+    </AlertCard>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -32,6 +34,12 @@ function setGameRule() {
 </script>
 
 <style scoped lang="scss">
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
 h1 {
   text-align: center;
 }

@@ -1,72 +1,74 @@
 <template>
-  <h1>{{ t('pool.rules.selection') }}</h1>
-  <div class="button-section">
-    <ButtonCard color="#D25A34" @click="randomizeTeams">
-      <div class="button-content main">
-        <img src="@/assets/icons/diversity.svg" alt="random teaming"/>
-        <p style="color: #D25A34">Randomisé</p>
-      </div>
-    </ButtonCard>
-    <ButtonCard color="#44A03B" width="50%">
-      <div class="button-content">
-        <p style="color: #44A03B">Classées</p>
-      </div>
-    </ButtonCard>
-  </div>
-  <div class="player-list">
-    <PlayerCard v-for="user in noTeamList" :key="user.username"
-                draggable="true"
-                @dragstart="startDrag($event, user)"
-                @touchstart="startTouch($event, user)"
-                style="touch-action: none">
-      {{ user.authUsername }}
-    </PlayerCard>
-  </div>
-  <hr/>
-  <div class="player-selector">
-    <div class="team">
-      <h3>Equipe 1</h3>
-      <GamePlayerSlot v-for="(player, index) in team1WithEmptySlots" :key="'team1-' + index"
-                      draggable="true"
-                      @dragstart="startDragFromSlot($event, player)"
-                      @drop="onDrop($event, 1, index)"
-                      @dragover="allowDrop($event)"
-                      @touchstart="startTouchFromSlot($event, player)"
-                      @touchend="onTouchEnd($event, 1, index)" style="touch-action: none">
-        <PlayerCard v-if="player.username" color="#EE9E27">
-          {{ player.username }}
-        </PlayerCard>
-      </GamePlayerSlot>
+  <section>
+    <h1>{{ t('pool.rules.selection') }}</h1>
+    <div class="button-section">
+      <ButtonCard color="#D25A34" @click="randomizeTeams">
+        <div class="button-content main">
+          <img src="@/assets/icons/diversity.svg" alt="random teaming"/>
+          <p style="color: #D25A34">Randomisé</p>
+        </div>
+      </ButtonCard>
+      <ButtonCard color="#44A03B" width="50%">
+        <div class="button-content">
+          <p style="color: #44A03B">Classées</p>
+        </div>
+      </ButtonCard>
     </div>
-    <div class="team">
-      <h3>Equipe 2</h3>
-      <GamePlayerSlot v-for="(player, index) in team2WithEmptySlots" :key="'team2-' + index"
-                      draggable="true"
-                      @dragstart="startDragFromSlot($event, player)"
-                      @drop="onDrop($event, 2, index)"
-                      @dragover="allowDrop($event)"
-                      @touchstart="startTouchFromSlot($event, player)"
-                      @touchend="onTouchEnd($event, 2, index)" style="touch-action: none">
-        <PlayerCard v-if="player.username" color="#EE2727">
-          {{ player.username }}
-        </PlayerCard>
-      </GamePlayerSlot>
+    <div class="player-list">
+      <PlayerCard v-for="user in noTeamList" :key="user.username"
+                  draggable="true"
+                  @dragstart="startDrag($event, user)"
+                  @touchstart="startTouch($event, user)"
+                  style="touch-action: none">
+        {{ user.authUsername }}
+      </PlayerCard>
     </div>
-  </div>
+    <hr/>
+    <div class="player-selector">
+      <div class="team">
+        <h3>Equipe 1</h3>
+        <GamePlayerSlot v-for="(player, index) in team1WithEmptySlots" :key="'team1-' + index"
+                        draggable="true"
+                        @dragstart="startDragFromSlot($event, player)"
+                        @drop="onDrop($event, 1, index)"
+                        @dragover="allowDrop($event)"
+                        @touchstart="startTouchFromSlot($event, player)"
+                        @touchend="onTouchEnd($event, 1, index)" style="touch-action: none">
+          <PlayerCard v-if="player.username" color="#EE9E27">
+            {{ player.username }}
+          </PlayerCard>
+        </GamePlayerSlot>
+      </div>
+      <div class="team">
+        <h3>Equipe 2</h3>
+        <GamePlayerSlot v-for="(player, index) in team2WithEmptySlots" :key="'team2-' + index"
+                        draggable="true"
+                        @dragstart="startDragFromSlot($event, player)"
+                        @drop="onDrop($event, 2, index)"
+                        @dragover="allowDrop($event)"
+                        @touchstart="startTouchFromSlot($event, player)"
+                        @touchend="onTouchEnd($event, 2, index)" style="touch-action: none">
+          <PlayerCard v-if="player.username" color="#EE2727">
+            {{ player.username }}
+          </PlayerCard>
+        </GamePlayerSlot>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import {useI18n} from "vue-i18n";
 import ButtonCard from "@/vue/templates/ButtonCard.vue";
-import { usePoolParty } from "@/objects/stores/PoolStore.ts";
+import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 import PlayerCard from "@/vue/templates/PlayerCard.vue";
 import GamePlayerSlot from "@/vue/templates/GamePlayerSlot.vue";
-import { User } from "@/objects/User.ts";
-import { computed, reactive, watch } from "vue";
+import {User} from "@/objects/User.ts";
+import {computed, reactive, watch} from "vue";
 import 'drag-drop-touch';
-import { PoolTeams } from "@/objects/pool/Pool.ts";
+import {PoolTeams} from "@/objects/pool/Pool.ts";
 
-const { t } = useI18n();
+const {t} = useI18n();
 const pool = usePoolParty();
 const noTeamList = computed(() => pool.pool.players.filter(x => !pool.pool.teams.team1.includes(x.authUsername) && !pool.pool.teams.team2.includes(x.authUsername)));
 
@@ -87,7 +89,7 @@ const frontendTeams = reactive<PoolTeams>({
 watch(() => pool.pool.teams, (teams) => {
   frontendTeams.team1 = [...teams.team1];
   frontendTeams.team2 = [...teams.team2];
-}, { immediate: true, deep: true });
+}, {immediate: true, deep: true});
 
 function startDrag(evt: DragEvent, user: User) {
   evt.dataTransfer!.dropEffect = 'move';
@@ -159,7 +161,7 @@ function updateTeamAssignment(username: string, teamId: number, slotIndex: numbe
 }
 
 function createTeamWithEmptySlots(team: User[]) {
-  return Array.from({ length: 3 }, (_, index) => team[index] || { username: '' } as User);
+  return Array.from({length: 3}, (_, index) => team[index] || {username: ''} as User);
 }
 
 function randomizeTeams() {
@@ -190,12 +192,18 @@ watch(
         pool.poolSocket.setPlayersTeam(teams);
       }
     },
-    { deep: true }
+    {deep: true}
 );
 </script>
 
 
 <style scoped lang="scss">
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 h1 {
   text-align: center;
 }
