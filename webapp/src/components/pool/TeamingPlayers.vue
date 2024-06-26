@@ -54,6 +54,9 @@
         </GamePlayerSlot>
       </div>
     </div>
+    <AlertCard color="#27A27A" @click="poolStore.poolSocket.setGameStatus(GameState.RUNNING)">
+      <p class="button-title">{{ t('pool.action.continue') }}</p>
+    </AlertCard>
   </section>
 </template>
 
@@ -66,14 +69,15 @@ import GamePlayerSlot from "@/vue/templates/GamePlayerSlot.vue";
 import {User} from "@/objects/User.ts";
 import {computed, reactive, watch} from "vue";
 import 'drag-drop-touch';
-import {PoolTeams} from "@/objects/pool/Pool.ts";
+import {GameState, PoolTeams} from "@/objects/pool/Pool.ts";
+import AlertCard from "@/vue/templates/AlertCard.vue";
 
 const {t} = useI18n();
-const pool = usePoolParty();
-const noTeamList = computed(() => pool.pool.players.filter(x => !pool.pool.teams.team1.includes(x.authUsername) && !pool.pool.teams.team2.includes(x.authUsername)));
+const poolStore = usePoolParty();
+const noTeamList = computed(() => poolStore.pool.players.filter(x => !poolStore.pool.teams.team1.includes(x.authUsername) && !poolStore.pool.teams.team2.includes(x.authUsername)));
 
-const team1 = computed(() => pool.pool.players.filter(x => pool.pool.teams.team1.includes(x.authUsername)));
-const team2 = computed(() => pool.pool.players.filter(x => pool.pool.teams.team2.includes(x.authUsername)));
+const team1 = computed(() => poolStore.pool.players.filter(x => poolStore.pool.teams.team1.includes(x.authUsername)));
+const team2 = computed(() => poolStore.pool.players.filter(x => poolStore.pool.teams.team2.includes(x.authUsername)));
 
 const team1WithEmptySlots = computed(() => createTeamWithEmptySlots(team1.value));
 const team2WithEmptySlots = computed(() => createTeamWithEmptySlots(team2.value));
@@ -86,7 +90,7 @@ const frontendTeams = reactive<PoolTeams>({
   team2: []
 });
 
-watch(() => pool.pool.teams, (teams) => {
+watch(() => poolStore.pool.teams, (teams) => {
   frontendTeams.team1 = [...teams.team1];
   frontendTeams.team2 = [...teams.team2];
 }, {immediate: true, deep: true});
@@ -157,7 +161,7 @@ function updateTeamAssignment(username: string, teamId: number, slotIndex: numbe
     team1: [...frontendTeams.team1],
     team2: [...frontendTeams.team2]
   };
-  pool.poolSocket.setPlayersTeam(teams);
+  poolStore.poolSocket.setPlayersTeam(teams);
 }
 
 function createTeamWithEmptySlots(team: User[]) {
@@ -165,7 +169,7 @@ function createTeamWithEmptySlots(team: User[]) {
 }
 
 function randomizeTeams() {
-  const players = pool.pool.players.map(player => player.authUsername);
+  const players = poolStore.pool.players.map(player => player.authUsername);
   const shuffledPlayers = players.sort(() => Math.random() - 0.5);
 
   const midIndex = Math.ceil(shuffledPlayers.length / 2);
@@ -176,7 +180,7 @@ function randomizeTeams() {
     team1: team1Players,
     team2: team2Players
   };
-  pool.poolSocket.setPlayersTeam(teams);
+  poolStore.poolSocket.setPlayersTeam(teams);
 }
 
 watch(
@@ -189,7 +193,7 @@ watch(
           team1: newTeam1,
           team2: newTeam2
         };
-        pool.poolSocket.setPlayersTeam(teams);
+        poolStore.poolSocket.setPlayersTeam(teams);
       }
     },
     {deep: true}
@@ -252,5 +256,12 @@ h1 {
     align-items: center;
     gap: 12px;
   }
+}
+
+p.button-title {
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 25px;
+  cursor: pointer;
 }
 </style>

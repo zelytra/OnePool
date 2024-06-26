@@ -1,8 +1,10 @@
 <template>
   <section>
-    <div class="progress-bar">
-      <div class="progression" :style="{width:getProgressionPercentage(poolStore.pool.state)+'%'}"/>
-    </div>
+    <transition name="fade">
+      <div class="progress-bar" v-if="poolStore.pool.state!==GameState.RUNNING">
+        <div class="progression" :style="{width:getProgressionPercentage(poolStore.pool.state)+'%'}"/>
+      </div>
+    </transition>
     <transition
         name="slide-fade"
         mode="out-in"
@@ -10,6 +12,7 @@
       <GameRuleSelector v-if="poolStore.pool.state==GameState.SETUP" key="setup"/>
       <FriendInvitation v-else-if="poolStore.pool.state==GameState.INVITE_PLAYER" key="invite"/>
       <TeamingPlayers v-else-if="poolStore.pool.state==GameState.TEAMING_PLAYERS" key="teaming"/>
+      <EightPoolGame v-else-if="poolStore.pool.state==GameState.RUNNING" key="8-pool"/>
     </transition>
   </section>
 </template>
@@ -21,6 +24,7 @@ import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 import FriendInvitation from "@/components/pool/FriendInvitation.vue";
 import {GameState} from "@/objects/pool/Pool.ts";
 import TeamingPlayers from "@/components/pool/TeamingPlayers.vue";
+import EightPoolGame from "@/components/pool/pools/EightPoolGame.vue";
 
 const poolStore = usePoolParty();
 
@@ -32,7 +36,7 @@ onMounted(() => {
 
 function getProgressionPercentage(currentState: GameState): number {
   const states = Object.values(GameState);
-  const currentIndex = states.indexOf(currentState)+1;
+  const currentIndex = states.indexOf(currentState) + 1;
 
   if (currentIndex === -1) {
     throw new Error("Invalid game state");

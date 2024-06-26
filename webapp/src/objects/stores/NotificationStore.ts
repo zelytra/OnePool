@@ -8,9 +8,9 @@ import eventBus from "@/objects/bus/EventBus.ts";
 const {t} = tsi18n.global;
 
 export enum NotificationType {
-  INVITE_TO_GAME,
-  INVITE_TO_FRIEND,
-  ERROR
+  INVITE_TO_GAME = "INVITE_TO_GAME",
+  INVITE_TO_FRIEND = "INVITE_TO_FRIEND",
+  MESSAGE = "MESSAGE"
 }
 
 export interface NotificationMessage {
@@ -98,6 +98,15 @@ export const useNotification =
             content: "",
             data: notificationMessage.data.data,
             timeout: 10000
+          })
+          break
+        }
+        case NotificationType.MESSAGE: {
+          useAlertStore().send({
+            type: AlertType.VALID,
+            title: t(notificationMessage.data.data as unknown as string),
+            content: "",
+            timeout: 3000
           })
           break
         }

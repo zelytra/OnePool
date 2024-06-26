@@ -38,6 +38,9 @@
       }
     }
   },
+  "notification": {
+    "emptyTeam": "Les équipes ne possèdent pas le nombre de joueurs nécessaire"
+  },
   "pool": {
     "action": {
       "continue": "Continuer"

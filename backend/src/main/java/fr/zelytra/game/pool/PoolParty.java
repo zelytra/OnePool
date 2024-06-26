@@ -1,5 +1,7 @@
 package fr.zelytra.game.pool;
 
+import fr.zelytra.game.manager.socket.PoolSocketService;
+import fr.zelytra.notification.NotificationMessageKey;
 import fr.zelytra.user.UserEntity;
 
 import java.util.ArrayList;
@@ -64,6 +66,7 @@ public class PoolParty {
         // No empty teams
         if (this.state == GameStatus.TEAMING_PLAYERS && state == GameStatus.RUNNING) {
             if (this.teams.team1().isEmpty() || this.teams.team2().isEmpty()) {
+                PoolSocketService.broadcastNotificationToParty(this, NotificationMessageKey.EMPTY_TEAM);
                 return false;
             }
         }

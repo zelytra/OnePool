@@ -3,6 +3,10 @@ package fr.zelytra.game.manager.socket;
 import fr.zelytra.game.manager.message.MessageType;
 import fr.zelytra.game.manager.message.SocketMessage;
 import fr.zelytra.game.pool.*;
+import fr.zelytra.notification.Notification;
+import fr.zelytra.notification.NotificationMessageKey;
+import fr.zelytra.notification.NotificationMessageType;
+import fr.zelytra.notification.NotificationSocket;
 import fr.zelytra.user.UserEntity;
 import fr.zelytra.user.UserService;
 import io.quarkus.arc.Lock;
@@ -74,7 +78,7 @@ public class PoolSocketService {
 
         if (sessionID.isBlank() || sessionID.isEmpty()) {
             PoolParty poolParty = createParty(username, socketSession);
-            SocketMessage<PoolParty> socketMessage = new SocketMessage<>(MessageType.UPDATE_POOL_DATA,poolParty);
+            SocketMessage<PoolParty> socketMessage = new SocketMessage<>(MessageType.UPDATE_POOL_DATA, poolParty);
             socketMessage.sendDataToPlayer(poolPlayer.getSocketSession());
             return;
         } else if (isPlayerInPool(username)) {
@@ -269,7 +273,7 @@ public class PoolSocketService {
     /**
      * Sets the game status for a specific pool party.
      *
-     * @param gameStatus       the game rules to set
+     * @param gameStatus      the game rules to set
      * @param socketSessionId the socket session ID of the player setting the rules
      */
     @Lock(value = Lock.Type.WRITE, time = 200)
@@ -284,7 +288,7 @@ public class PoolSocketService {
     /**
      * Sets the teams for a specific pool party.
      *
-     * @param team       the teams of the party
+     * @param team            the teams of the party
      * @param socketSessionId the socket session ID of the player setting the rules
      */
     @Lock(value = Lock.Type.WRITE, time = 200)
@@ -323,11 +327,25 @@ public class PoolSocketService {
             socketMessage.sendDataToPlayer(player.getSocketSession());
             Log.info("[broadcastPoolDataToParty][" + poolParty.getUuid() + "] Data sent to: " + player.getUsername());
         }
+    }
 
-        // Ensure the game owner also receives the data
-        SocketMessage<PoolParty> socketMessage = new SocketMessage<>(MessageType.UPDATE_POOL_DATA, poolParty);
-        socketMessage.sendDataToPlayer(poolParty.getGameOwner().getSocketSession());
-        Log.info("[broadcastPoolDataToParty][" + poolParty.getUuid() + "] Data sent to game owner: " + poolParty.getGameOwner().getUsername());
+    /**
+     * Broadcasts the pool data to all players in the party.
+     *
+     * @param poolParty the pool party whose data is to be broadcast
+     */
+    @Lock(value = Lock.Type.WRITE, time = 200)
+    public static void broadcastNotificationToParty(PoolParty poolParty, NotificationMessageKey messageKey) {
+        if (poolParty == null) {
+            Log.warn("[broadcastNotificationToParty][N/A] Pool party is null");
+            return;
+        }
+
+        Notification<String> message = new Notification<>(NotificationMessageType.MESSAGE, messageKey.getKey());
+        for (PoolPlayer player : poolParty.getPlayers()) {
+            NotificationSocket.sendNotification(message, player.getAuthUsername());
+            Log.info("[broadcastNotificationToParty][" + poolParty.getUuid() + "] Data sent to: " + player.getUsername());
+        }
     }
 
 }
