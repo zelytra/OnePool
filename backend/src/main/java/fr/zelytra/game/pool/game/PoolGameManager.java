@@ -9,13 +9,14 @@ import java.util.List;
 public class PoolGameManager {
 
     private final PoolTeam teams = new PoolTeam(new ArrayList<>(), new ArrayList<>());
-    private long startingTime;
+    private final long startingTime;
     private long endTime;
     private final List<GameAction> history = new ArrayList<>();
     private String userPlayingRound;
     private boolean paused = false;
 
     public PoolGameManager() {
+        startingTime = System.currentTimeMillis();
     }
 
     public void setPaused(boolean paused) {

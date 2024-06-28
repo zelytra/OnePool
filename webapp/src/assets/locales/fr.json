@@ -48,6 +48,9 @@
     "friend": {
       "selection": "Créer vos equipes !"
     },
+    "game": {
+      "chrono": "Chrono"
+    },
     "rules": {
       "card": {
         "8pool": {

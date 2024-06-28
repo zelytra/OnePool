@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
-import ButtonCard from "@/vue/templates/ButtonCard.vue";
+import ButtonCard from "@/vue/templates/GlassCard.vue";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 import PlayerCard from "@/vue/templates/PlayerCard.vue";
 import GamePlayerSlot from "@/vue/templates/GamePlayerSlot.vue";

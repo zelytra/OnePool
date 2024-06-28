@@ -10,4 +10,13 @@ export abstract class Utils {
 
     return `#${r}${g}${b}${opacity}`;
   }
+
+  public static updateElapsedTime(startTime: number):string {
+    const now = Date.now();
+    const delta = now - startTime || 0;
+    const hours = Math.floor(delta / 3600000);
+    const minutes = Math.floor((delta % 3600000) / 60000);
+    const seconds = Math.floor((delta % 60000) / 1000);
+    return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
 }

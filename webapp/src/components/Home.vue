@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
 import {routes} from "@/router";
-import ButtonCard from "@/vue/templates/ButtonCard.vue";
+import ButtonCard from "@/vue/templates/GlassCard.vue";
 
 const {t} = useI18n()
 

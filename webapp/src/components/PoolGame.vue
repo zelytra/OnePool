@@ -12,7 +12,8 @@
       <GameRuleSelector v-if="poolStore.pool.state==GameState.SETUP" key="setup"/>
       <FriendInvitation v-else-if="poolStore.pool.state==GameState.INVITE_PLAYER" key="invite"/>
       <TeamingPlayers v-else-if="poolStore.pool.state==GameState.TEAMING_PLAYERS" key="teaming"/>
-      <EightPoolGame v-else-if="poolStore.pool.state==GameState.RUNNING" key="8-pool"/>
+      <EightPoolGame v-else-if="poolStore.pool.state==GameState.RUNNING && poolStore.pool.rules == GameRule.AMERICAN_8"
+                     key="8-pool"/>
     </transition>
   </section>
 </template>
@@ -22,7 +23,7 @@ import GameRuleSelector from "@/components/pool/GameRuleSelector.vue";
 import {onMounted} from "vue";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 import FriendInvitation from "@/components/pool/FriendInvitation.vue";
-import {GameState} from "@/objects/pool/Pool.ts";
+import {GameRule, GameState} from "@/objects/pool/Pool.ts";
 import TeamingPlayers from "@/components/pool/TeamingPlayers.vue";
 import EightPoolGame from "@/components/pool/pools/EightPoolGame.vue";
 
