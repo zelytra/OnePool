@@ -74,10 +74,10 @@ import AlertCard from "@/vue/templates/AlertCard.vue";
 
 const {t} = useI18n();
 const poolStore = usePoolParty();
-const noTeamList = computed(() => poolStore.pool.players.filter(x => !poolStore.pool.teams.team1.includes(x.authUsername) && !poolStore.pool.teams.team2.includes(x.authUsername)));
+const noTeamList = computed(() => poolStore.pool.players.filter(x => !poolStore.pool.game.teams.team1.includes(x.authUsername) && !poolStore.pool.game.teams.team2.includes(x.authUsername)));
 
-const team1 = computed(() => poolStore.pool.players.filter(x => poolStore.pool.teams.team1.includes(x.authUsername)));
-const team2 = computed(() => poolStore.pool.players.filter(x => poolStore.pool.teams.team2.includes(x.authUsername)));
+const team1 = computed(() => poolStore.pool.players.filter(x => poolStore.pool.game.teams.team1.includes(x.authUsername)));
+const team2 = computed(() => poolStore.pool.players.filter(x => poolStore.pool.game.teams.team2.includes(x.authUsername)));
 
 const team1WithEmptySlots = computed(() => createTeamWithEmptySlots(team1.value));
 const team2WithEmptySlots = computed(() => createTeamWithEmptySlots(team2.value));
@@ -90,7 +90,7 @@ const frontendTeams = reactive<PoolTeams>({
   team2: []
 });
 
-watch(() => poolStore.pool.teams, (teams) => {
+watch(() => poolStore.pool.game.teams, (teams) => {
   frontendTeams.team1 = [...teams.team1];
   frontendTeams.team2 = [...teams.team2];
 }, {immediate: true, deep: true});

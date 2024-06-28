@@ -1,7 +1,10 @@
 package fr.zelytra.game.pool;
 
-import fr.zelytra.game.manager.socket.PoolSocketService;
-import fr.zelytra.notification.NotificationMessageKey;
+import fr.zelytra.game.pool.data.GameRules;
+import fr.zelytra.game.pool.data.GameStatus;
+import fr.zelytra.game.pool.data.PoolTeam;
+import fr.zelytra.game.pool.game.AmericanEightPoolGame;
+import fr.zelytra.game.pool.game.PoolGameInterface;
 import fr.zelytra.user.UserEntity;
 
 import java.util.ArrayList;
@@ -15,14 +18,12 @@ public class PoolParty {
     private PoolPlayer gameOwner;
     private GameRules rules;
     private GameStatus state;
-    private int maxPlayerAmount;
-    private final PoolTeam teams;
+    private PoolGameInterface game;
 
     public PoolParty(PoolPlayer user) {
         this.gameOwner = user;
         players.add(user);
         state = GameStatus.SETUP;
-        teams = new PoolTeam(new ArrayList<>(), new ArrayList<>());
     }
 
     public List<PoolPlayer> getPlayers() {
@@ -41,20 +42,30 @@ public class PoolParty {
         return rules;
     }
 
+    public void startGame() {
+        switch (rules) {
+            case AMERICAN_8:
+                game = new AmericanEightPoolGame();
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported game type: " + rules);
+        }
+    }
+
     public void setRules(GameRules rules) {
         this.rules = rules;
-        this.maxPlayerAmount = rules.maxTotalPlayer;
+        startGame();
     }
 
     public boolean setTeams(PoolTeam teams) {
         // Limit player amount by rules
-        if (teams.team1().size() + teams.team2().size() > maxPlayerAmount) {
+        if (teams.team1().size() + teams.team2().size() > rules.maxTotalPlayer) {
             return false;
         }
-        this.teams.team1().clear();
-        this.teams.team2().clear();
-        this.teams.team1().addAll(teams.team1());
-        this.teams.team2().addAll(teams.team2());
+        this.game.getTeams().team1().clear();
+        this.game.getTeams().team2().clear();
+        this.game.getTeams().team1().addAll(teams.team1());
+        this.game.getTeams().team2().addAll(teams.team2());
         return true;
     }
 
@@ -64,12 +75,14 @@ public class PoolParty {
 
     public boolean setState(GameStatus state) {
         // No empty teams
+        /*
         if (this.state == GameStatus.TEAMING_PLAYERS && state == GameStatus.RUNNING) {
             if (this.teams.team1().isEmpty() || this.teams.team2().isEmpty()) {
                 PoolSocketService.broadcastNotificationToParty(this, NotificationMessageKey.EMPTY_TEAM);
                 return false;
             }
         }
+        */
         this.state = state;
         return true;
     }
@@ -79,11 +92,14 @@ public class PoolParty {
     }
 
     public int getMaxPlayerAmount() {
-        return maxPlayerAmount;
+        if (rules == null) {
+            return 0;
+        }
+        return rules.maxTotalPlayer;
     }
 
-    public PoolTeam getTeams() {
-        return teams;
+    public PoolGameInterface getGame() {
+        return game;
     }
 
     /**

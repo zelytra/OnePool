@@ -7,7 +7,32 @@ export interface Pool {
   rules: GameRule | null
   state: GameState
   maxPlayerAmount?: number
+  game: Game
+}
+
+export interface Game {
+  startingTime?: number
+  endingTime?: number
+  history: GameAction[]
+  userPlayingRound?: string // Who's turn is
   teams: PoolTeams
+  paused?: boolean
+}
+
+export interface GameAction {
+  balls: number[]
+  faults: PoolFaults[]
+  username: string
+}
+
+export enum PoolFaults {
+  WHITE_IN,
+  NO_BAND,
+  WHITE_DOUBLE_CONTACT,
+  BALL_OUT,
+  PLAYER_NO_GROUND_TOUCH,
+  PLAYER_MISTAKE,
+  EIGHT_NO_CALL
 }
 
 export interface PoolTeams {

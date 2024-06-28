@@ -10,9 +10,12 @@ export const usePoolParty =
       players: [],
       rules: null,
       state: GameState.SETUP,
-      teams: {
-        team1: [],
-        team2: []
+      game: {
+        history: [],
+        teams: {
+          team1: [],
+          team2: []
+        }
       }
     }
     return {
