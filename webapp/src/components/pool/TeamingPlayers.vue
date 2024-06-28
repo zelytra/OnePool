@@ -2,17 +2,17 @@
   <section>
     <h1>{{ t('pool.rules.selection') }}</h1>
     <div class="button-section">
-      <ButtonCard color="#D25A34" @click="randomizeTeams">
+      <GlassCard color="#D25A34" @click="randomizeTeams">
         <div class="button-content main">
           <img src="@/assets/icons/diversity.svg" alt="random teaming"/>
           <p style="color: #D25A34">Randomisé</p>
         </div>
-      </ButtonCard>
-      <ButtonCard color="#44A03B" width="50%">
+      </GlassCard>
+      <GlassCard color="#44A03B" width="50%">
         <div class="button-content">
           <p style="color: #44A03B">Classées</p>
         </div>
-      </ButtonCard>
+      </GlassCard>
     </div>
     <div class="player-list">
       <PlayerCard v-for="user in noTeamList" :key="user.username"
@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
-import ButtonCard from "@/vue/templates/GlassCard.vue";
+import GlassCard from "@/vue/templates/GlassCard.vue";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 import PlayerCard from "@/vue/templates/PlayerCard.vue";
 import GamePlayerSlot from "@/vue/templates/GamePlayerSlot.vue";

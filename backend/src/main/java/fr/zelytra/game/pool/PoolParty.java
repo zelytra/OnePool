@@ -23,8 +23,7 @@ public class PoolParty {
     public PoolParty(PoolPlayer user) {
         this.gameOwner = user;
         players.add(user);
-        setRules(GameRules.AMERICAN_8);
-        state = GameStatus.RUNNING;
+        state = GameStatus.SETUP;
     }
 
     public List<PoolPlayer> getPlayers() {
