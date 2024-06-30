@@ -23,6 +23,21 @@
         </div>
       </div>
     </GlassCard>
+    <GlassCard color="#44FBF0">
+      <div class="round-wrapper">
+        <img class="dropdown-icon" src="@/assets/icons/move-location.svg" alt="next player"/>
+        <p>{{ t('pool.game.round') }} -> {{ poolStore.pool.game.userPlayingRound }}</p>
+      </div>
+    </GlassCard>
+    <DropdownTemplate color="#27A27A">
+      <template #title>
+        <img src="@/assets/icons/pool.svg" alt="pool"/>
+        <p>{{ t('pool.game.balls') }}</p>
+      </template>
+      <template #content>
+        <BallForm :balls="balls"/>
+      </template>
+    </DropdownTemplate>
   </section>
 </template>
 
@@ -33,10 +48,30 @@ import GlassCard from "@/vue/templates/GlassCard.vue";
 import {onMounted, onUnmounted, ref} from "vue";
 import {Utils} from "@/objects/utils/Utils.ts";
 import {PoolTeams} from "@/objects/pool/Pool.ts";
+import DropdownTemplate from "@/vue/templates/DropdownTemplate.vue";
+import BallForm from "@/vue/forms/BallForm.vue";
+import {BallsFormInterfaces} from "@/vue/forms/BallsFormInterfaces.ts";
 
 const {t} = useI18n();
 const poolStore = usePoolParty();
 const elapsedTime = ref<string>('0:00:00');
+const balls = ref<BallsFormInterfaces[]>([
+  {ball: 1, selected: false, disable: false},
+  {ball: 2, selected: false, disable: false},
+  {ball: 3, selected: false, disable: false},
+  {ball: 4, selected: false, disable: false},
+  {ball: 5, selected: false, disable: false},
+  {ball: 6, selected: false, disable: false},
+  {ball: 7, selected: false, disable: false},
+  {ball: 8, selected: false, disable: false},
+  {ball: 9, selected: false, disable: false},
+  {ball: 10, selected: false, disable: false},
+  {ball: 11, selected: false, disable: false},
+  {ball: 12, selected: false, disable: false},
+  {ball: 13, selected: false, disable: false},
+  {ball: 14, selected: false, disable: false},
+  {ball: 15, selected: false, disable: false},
+])
 let interval: number;
 
 onMounted(() => {
@@ -100,6 +135,19 @@ section {
       }
     }
   }
+
+  .round-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  img.dropdown-icon {
+    width: 50px;
+    height: 50px;
+  }
+
 }
 
 h1 {

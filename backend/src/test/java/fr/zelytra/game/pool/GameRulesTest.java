@@ -1,6 +1,6 @@
 package fr.zelytra.game.pool;
 
-import fr.zelytra.game.pool.data.GameRules;
+import fr.zelytra.game.pool.data .GameRules;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 

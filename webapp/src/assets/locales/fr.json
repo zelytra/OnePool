@@ -49,7 +49,9 @@
       "selection": "Créer vos equipes !"
     },
     "game": {
-      "chrono": "Chrono"
+      "balls": "Boules",
+      "chrono": "Chrono",
+      "round": "Tour"
     },
     "rules": {
       "card": {
