@@ -63,7 +63,7 @@
     <div class="action-wrapper">
       <GlassCard color="#FFF" width="20%">
         <div class="action-content-wrapper chrono">
-          <img class="chrono" src="@/assets/icons/timer-pause.svg"/>
+          <img class="chrono" src="@/assets/icons/timer-pause.svg" alt="chrono"/>
         </div>
       </GlassCard>
       <GlassCard color="#FF8717">
