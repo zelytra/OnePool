@@ -12,6 +12,12 @@ export const usePoolParty =
       state: GameState.SETUP,
       game: {
         history: [],
+        currentAction: {
+          roundId: 0,
+          balls: [],
+          faults: [],
+          username: ""
+        },
         teams: {
           team1: [],
           team2: []

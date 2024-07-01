@@ -136,7 +136,7 @@ function getBallsForm(): BallsFormInterfaces[] {
 }
 
 function onBallsUpdate(event: any) {
-  poolStore.pool.game.currentAction.balls = event.value.filter((x: BallsFormInterfaces) => x.selected).map(x => x.ball);
+  poolStore.pool.game.currentAction.balls = event.value.filter((x: BallsFormInterfaces) => x.selected).map((x: BallsFormInterfaces) => x.ball);
   poolStore.poolSocket.updateGameAction(poolStore.pool.game.currentAction)
 }
 
