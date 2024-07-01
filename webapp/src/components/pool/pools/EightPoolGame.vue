@@ -25,13 +25,13 @@
     </GlassCard>
     <GlassCard color="#44FBF0">
       <div class="round-wrapper">
-        <img class="dropdown-icon" src="@/assets/icons/move-location.svg" alt="next player"/>
+        <img src="@/assets/icons/move-location.svg" alt="next player"/>
         <p>{{ t('pool.game.round') }} -> {{ poolStore.pool.game.userPlayingRound }}</p>
       </div>
     </GlassCard>
     <DropdownTemplate color="#27A27A">
       <template #title>
-        <img src="@/assets/icons/pool.svg" alt="pool"/>
+        <img class="dropdown-icon" src="@/assets/icons/pool.svg" alt="pool"/>
         <p>{{ t('pool.game.balls') }}</p>
       </template>
       <template #content>
