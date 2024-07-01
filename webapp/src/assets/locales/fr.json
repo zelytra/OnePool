@@ -51,6 +51,7 @@
     "game": {
       "balls": "Boules",
       "chrono": "Chrono",
+      "endTurn": "Fin du tour",
       "faults": {
         "AMERICAN_8": {
           "BALL_OUT": "Une boulle est sortie du terrain",

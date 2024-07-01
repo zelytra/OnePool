@@ -60,6 +60,18 @@
         </div>
       </div>
     </GlassCard>
+    <div class="action-wrapper">
+      <GlassCard color="#FFF" width="20%">
+        <div class="action-content-wrapper chrono">
+          <img class="chrono" src="@/assets/icons/timer-pause.svg"/>
+        </div>
+      </GlassCard>
+      <GlassCard color="#FF8717">
+        <div class="action-content-wrapper">
+          <h2 class="end-turn-button">{{ t('pool.game.endTurn') }}</h2>
+        </div>
+      </GlassCard>
+    </div>
   </section>
 </template>
 
@@ -207,7 +219,30 @@ section {
     .content-wrapper {
       width: 50%;
       height: 100%;
+    }
+  }
 
+  .action-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .action-content-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      height: 60px;
+    }
+
+    h2.end-turn-button {
+      color: #FF8717;
+      font-weight: 700;
+      font-size: 26px;
+    }
+
+    img.chrono {
+      width: 29px;
     }
   }
 
