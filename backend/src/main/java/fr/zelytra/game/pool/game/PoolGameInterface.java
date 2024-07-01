@@ -9,4 +9,5 @@ public interface PoolGameInterface {
 
     // Add methods to access PoolGameManager properties if needed
     PoolTeam getTeams();
+    void initGame();
 }

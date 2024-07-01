@@ -107,12 +107,7 @@ const balls = ref<BallsFormInterfaces[]>([
   {ball: 14, selected: false, disable: false},
   {ball: 15, selected: false, disable: false},
 ])
-const currentAction = ref<GameAction>({
-  balls: [1, 2, 3],
-  faults: [PoolFault.PLAYER_NO_GROUND_TOUCH, PoolFault.NO_BAND],
-  roundId: 0,
-  username: "admin"
-})
+const currentAction = ref<GameAction>(poolStore.pool.game.history[poolStore.pool.game.history.length - 1])
 let interval: number;
 
 onMounted(() => {

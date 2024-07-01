@@ -19,6 +19,10 @@ public class PoolGameManager {
         startingTime = System.currentTimeMillis();
     }
 
+    public void initGame() {
+        this.getHistory().add(new GameAction(0, new ArrayList<>(), new ArrayList<>(), this.getTeams().team1().getFirst()));
+    }
+
     public void setPaused(boolean paused) {
         this.paused = paused;
     }

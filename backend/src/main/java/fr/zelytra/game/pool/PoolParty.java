@@ -1,10 +1,12 @@
 package fr.zelytra.game.pool;
 
+import fr.zelytra.game.manager.socket.PoolSocketService;
 import fr.zelytra.game.pool.data.GameRules;
 import fr.zelytra.game.pool.data.GameStatus;
 import fr.zelytra.game.pool.data.PoolTeam;
 import fr.zelytra.game.pool.game.AmericanEightPoolGame;
 import fr.zelytra.game.pool.game.PoolGameInterface;
+import fr.zelytra.notification.NotificationMessageKey;
 import fr.zelytra.user.UserEntity;
 
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ public class PoolParty {
         return rules;
     }
 
-    public void startGame() {
+    public void setGame() {
         switch (rules) {
             case AMERICAN_8:
                 game = new AmericanEightPoolGame();
@@ -50,11 +52,12 @@ public class PoolParty {
             default:
                 throw new IllegalArgumentException("Unsupported game type: " + rules);
         }
+
     }
 
     public void setRules(GameRules rules) {
         this.rules = rules;
-        startGame();
+        setGame();
     }
 
     public boolean setTeams(PoolTeam teams) {
@@ -75,14 +78,13 @@ public class PoolParty {
 
     public boolean setState(GameStatus state) {
         // No empty teams
-        /*
         if (this.state == GameStatus.TEAMING_PLAYERS && state == GameStatus.RUNNING) {
-            if (this.teams.team1().isEmpty() || this.teams.team2().isEmpty()) {
+            if (this.game.getTeams().team1().isEmpty() || this.game.getTeams().team2().isEmpty()) {
                 PoolSocketService.broadcastNotificationToParty(this, NotificationMessageKey.EMPTY_TEAM);
                 return false;
             }
+            game.initGame();
         }
-        */
         this.state = state;
         return true;
     }
