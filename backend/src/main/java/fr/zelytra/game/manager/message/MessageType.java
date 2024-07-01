@@ -8,6 +8,7 @@ public enum MessageType {
     SET_RULES,
     CHANGE_GAME_STATES,
     UPDATE_TEAMS,
+    UPDATE_GAME_ACTION,
 
     //Notification message types
     INIT_NOTIFICATION,

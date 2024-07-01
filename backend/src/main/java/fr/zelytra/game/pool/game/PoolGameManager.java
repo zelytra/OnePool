@@ -12,6 +12,7 @@ public class PoolGameManager {
     private final long startingTime;
     private long endTime;
     private final List<GameAction> history = new ArrayList<>();
+    private GameAction currentAction;
     private String userPlayingRound;
     private boolean paused = false;
 
@@ -20,7 +21,7 @@ public class PoolGameManager {
     }
 
     public void initGame() {
-        this.getHistory().add(new GameAction(0, new ArrayList<>(), new ArrayList<>(), this.getTeams().team1().getFirst()));
+        this.currentAction = new GameAction(0, new ArrayList<>(), new ArrayList<>(), this.getTeams().team1().getFirst());
     }
 
     public void setPaused(boolean paused) {
@@ -29,6 +30,14 @@ public class PoolGameManager {
 
     public PoolTeam getTeams() {
         return teams;
+    }
+
+    public GameAction getCurrentAction() {
+        return currentAction;
+    }
+
+    public void setCurrentAction(GameAction action) {
+        currentAction = action;
     }
 
     public long getStartingTime() {

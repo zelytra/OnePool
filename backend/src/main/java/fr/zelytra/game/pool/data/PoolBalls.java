@@ -1,5 +1,7 @@
 package fr.zelytra.game.pool.data;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum PoolBalls {
     WHITE(0),
     ONE(1),
@@ -31,6 +33,11 @@ public enum PoolBalls {
             }
         }
         throw new IllegalArgumentException("No pool ball with number: " + number);
+    }
+
+    @JsonValue
+    public int toValue() {
+        return number;
     }
 }
 

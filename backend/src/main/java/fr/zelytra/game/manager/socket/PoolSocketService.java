@@ -2,7 +2,9 @@ package fr.zelytra.game.manager.socket;
 
 import fr.zelytra.game.manager.message.MessageType;
 import fr.zelytra.game.manager.message.SocketMessage;
-import fr.zelytra.game.pool.*;
+import fr.zelytra.game.pool.PoolParty;
+import fr.zelytra.game.pool.PoolPlayer;
+import fr.zelytra.game.pool.data.GameAction;
 import fr.zelytra.game.pool.data.GameRules;
 import fr.zelytra.game.pool.data.GameStatus;
 import fr.zelytra.game.pool.data.PoolTeam;
@@ -303,6 +305,15 @@ public class PoolSocketService {
         Log.info("[setPlayersTeam][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " set new teams !");
     }
 
+    @Lock(value = Lock.Type.WRITE, time = 200)
+    public void updateCurrentGameAction(GameAction gameAction, String socketSessionId) {
+        PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
+        PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
+        poolParty.setCurrentAction(gameAction);
+        broadcastPoolDataToParty(poolParty);
+        Log.info("[updateCurrentGameAction][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " update current game action");
+    }
+
     /**
      * Retrieves all active pool parties.
      *
@@ -350,5 +361,4 @@ public class PoolSocketService {
             Log.info("[broadcastNotificationToParty][" + poolParty.getUuid() + "] Data sent to: " + player.getUsername());
         }
     }
-
 }

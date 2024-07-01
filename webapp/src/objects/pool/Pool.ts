@@ -22,6 +22,7 @@ export interface Game {
   startingTime?: number
   endingTime?: number
   history: GameAction[]
+  currentAction: GameAction
   teams: PoolTeams
   paused?: boolean
 }

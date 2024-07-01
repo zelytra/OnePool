@@ -23,10 +23,10 @@
         </div>
       </div>
     </GlassCard>
-    <GlassCard color="#44FBF0" v-if="currentAction">
+    <GlassCard color="#44FBF0" v-if="poolStore.pool.game.currentAction">
       <div class="round-wrapper">
         <img src="@/assets/icons/move-location.svg" alt="next player"/>
-        <p>{{ t('pool.game.round') }} -> {{ currentAction.username }}</p>
+        <p>{{ t('pool.game.round') }} -> {{ poolStore.pool.game.currentAction.username }}</p>
       </div>
     </GlassCard>
     <DropdownTemplate color="#27A27A">
@@ -35,7 +35,7 @@
         <p>{{ t('pool.game.balls') }}</p>
       </template>
       <template #content>
-        <BallForm :balls="balls"/>
+        <BallForm :balls="getBallsForm()" @update:balls="onBallsUpdate($event)"/>
       </template>
     </DropdownTemplate>
     <DropdownTemplate color="#BD3A3A">
@@ -52,11 +52,11 @@
     <GlassCard color="#FFF">
       <div class="summary-wrapper">
         <div class="content-wrapper balls">
-          <BallForm :balls="balls.filter(x=>x.selected)" :disable-form="true"/>
+          <BallForm :balls="getBallsForm().filter(x=>x.selected)" :disable-form="true"/>
         </div>
         <hr/>
         <div class="content-wrapper faults">
-          <img v-for="fault of currentAction.faults" :src="getFaultIcon(fault)" alt="fault-icon"/>
+          <img v-for="fault of poolStore.pool.game.currentAction.faults" :src="getFaultIcon(fault)" alt="fault-icon"/>
         </div>
       </div>
     </GlassCard>
@@ -81,7 +81,7 @@ import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 import GlassCard from "@/vue/templates/GlassCard.vue";
 import {onMounted, onUnmounted, ref} from "vue";
 import {Utils} from "@/objects/utils/Utils.ts";
-import {GameAction, getFaultIcon, PoolFault, PoolTeams} from "@/objects/pool/Pool.ts";
+import {getFaultIcon, PoolFault, PoolTeams} from "@/objects/pool/Pool.ts";
 import DropdownTemplate from "@/vue/templates/DropdownTemplate.vue";
 import BallForm from "@/vue/forms/BallForm.vue";
 import {BallsFormInterfaces} from "@/vue/forms/BallsFormInterfaces.ts";
@@ -90,24 +90,6 @@ import FaultSelector from "@/vue/templates/FaultSelector.vue";
 const {t} = useI18n();
 const poolStore = usePoolParty();
 const elapsedTime = ref<string>('0:00:00');
-const balls = ref<BallsFormInterfaces[]>([
-  {ball: 1, selected: false, disable: false},
-  {ball: 2, selected: false, disable: false},
-  {ball: 3, selected: false, disable: false},
-  {ball: 4, selected: false, disable: false},
-  {ball: 5, selected: false, disable: false},
-  {ball: 6, selected: false, disable: false},
-  {ball: 7, selected: false, disable: false},
-  {ball: 8, selected: false, disable: false},
-  {ball: 9, selected: false, disable: false},
-  {ball: 10, selected: false, disable: false},
-  {ball: 11, selected: false, disable: false},
-  {ball: 12, selected: false, disable: false},
-  {ball: 13, selected: false, disable: false},
-  {ball: 14, selected: false, disable: false},
-  {ball: 15, selected: false, disable: false},
-])
-const currentAction = ref<GameAction>(poolStore.pool.game.history[poolStore.pool.game.history.length - 1])
 let interval: number;
 
 onMounted(() => {
@@ -131,6 +113,29 @@ function getScoreTeam(teamNumber: number): number {
     }
   }
   return score;
+}
+
+function getBallsForm(): BallsFormInterfaces[] {
+  const balls: Map<number, BallsFormInterfaces> = Utils.getRawBallsMap();
+
+  // Disable ball in history
+  for (let action of poolStore.pool.game.history) {
+    for (let ball of action.balls) {
+      balls.get(ball)!.disable = true;
+    }
+  }
+
+  // Select ball in current action
+  for (let ball of poolStore.pool.game.currentAction.balls) {
+    balls.get(ball)!.selected = true;
+  }
+
+  return Array.from(balls.values());
+}
+
+function onBallsUpdate(event: any) {
+  poolStore.pool.game.currentAction.balls = event.value.filter((x: BallsFormInterfaces) => x.selected).map(x => x.ball);
+  poolStore.poolSocket.updateGameAction(poolStore.pool.game.currentAction)
 }
 
 </script>

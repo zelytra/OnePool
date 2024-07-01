@@ -1,6 +1,7 @@
 package fr.zelytra.game.pool;
 
 import fr.zelytra.game.manager.socket.PoolSocketService;
+import fr.zelytra.game.pool.data.GameAction;
 import fr.zelytra.game.pool.data.GameRules;
 import fr.zelytra.game.pool.data.GameStatus;
 import fr.zelytra.game.pool.data.PoolTeam;
@@ -58,6 +59,10 @@ public class PoolParty {
     public void setRules(GameRules rules) {
         this.rules = rules;
         setGame();
+    }
+
+    public void setCurrentAction(GameAction action) {
+        this.game.setCurrentAction(action);
     }
 
     public boolean setTeams(PoolTeam teams) {
