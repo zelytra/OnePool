@@ -10,6 +10,7 @@ import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -20,7 +21,7 @@ import static fr.zelytra.game.manager.message.ObjectMapperConfig.objectMapper;
 public class NotificationSocket {
 
     private final SocketTimeOutManager socketTimeOutManager = new SocketTimeOutManager();
-    private final static ConcurrentMap<String, Session> sessions = new ConcurrentHashMap<>();
+    public final static ConcurrentMap<String, Session> notificationSessions = new ConcurrentHashMap<>();
 
     @OnOpen
     public void onOpen(Session session) {
@@ -40,7 +41,7 @@ public class NotificationSocket {
         switch (socketMessage.messageType()) {
             case INIT_NOTIFICATION -> {
                 String username = objectMapper.convertValue(socketMessage.data(), String.class);
-                sessions.put(username, session);
+                notificationSessions.put(username, session);
                 socketTimeOutManager.completeLogin(session.getId());
                 Log.info("[notification:INIT_NOTIFICATION] " + username + " connected");
             }
@@ -49,11 +50,11 @@ public class NotificationSocket {
                 SocketMessage<NotificationMessage<?>> socketMessageHandler = new SocketMessage<>(MessageType.SEND_NOTIFICATION, notificationMessage);
 
                 for (String username : notificationMessage.users()) {
-                    if (!sessions.containsKey(username)) {
+                    if (!notificationSessions.containsKey(username)) {
                         Log.warn("[notification:SEND_NOTIFICATION] User " + username + " not found");
                         continue;
                     }
-                    socketMessageHandler.sendDataToPlayer(sessions.get(username));
+                    socketMessageHandler.sendDataToPlayer(notificationSessions.get(username));
                 }
                 Log.info("[notification:SEND_NOTIFICATION] Notifications pushed to " + notificationMessage.users().size() + " users");
             }
@@ -74,11 +75,21 @@ public class NotificationSocket {
     }
 
     private void closeSocket(Session session) throws IOException {
-        for (var entry : sessions.entrySet()) {
+        for (var entry : notificationSessions.entrySet()) {
             if (entry.getValue().getId().equalsIgnoreCase(session.getId())) {
-                sessions.remove(entry.getKey());
+                notificationSessions.remove(entry.getKey());
             }
         }
         session.close();
+    }
+
+    public static void sendNotification(Notification<String> notificationMessage, String username) {
+        NotificationMessage<Notification<String>> formatedMessage = new NotificationMessage<>(new ArrayList<>(), notificationMessage);
+        SocketMessage<NotificationMessage<Notification<String>>> socketMessageHandler = new SocketMessage<>(MessageType.SEND_NOTIFICATION, formatedMessage);
+        if (!notificationSessions.containsKey(username)) {
+            Log.warn("[notification:SEND_NOTIFICATION] User " + username + " not found");
+            return;
+        }
+        socketMessageHandler.sendDataToPlayer(notificationSessions.get(username));
     }
 }

@@ -1,4 +1,4 @@
-package fr.zelytra.game.pool;
+package fr.zelytra.game.pool.data;
 
 public enum GameRules {
     AMERICAN_8(6);

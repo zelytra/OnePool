@@ -1,4 +1,4 @@
-package fr.zelytra.game.pool;
+package fr.zelytra.game.pool.data;
 
 import java.util.List;
 

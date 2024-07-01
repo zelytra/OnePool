@@ -1,26 +1,28 @@
 <template>
-  <h1>{{ t('pool.friend.selection') }}</h1>
-  <div class="friend-wrapper">
-    <h2>Vos amis</h2>
-    <div class="invite-wrapper">
-      <FriendPoolInvite v-for="friend of filterPlayer(friends)"
-                        :status="friend.gameInviteStatus || InviteStatus.REFUSE"
-                        :friend="friend" @click="inviteToGame(friend)"
-      />
-      <transition>
-        <p v-if="filterPlayer(friends).length==0">Plus d'amis à inviter</p>
-      </transition>
+  <section>
+    <h1>{{ t('pool.friend.selection') }}</h1>
+    <div class="friend-wrapper">
+      <h2>Vos amis</h2>
+      <div class="invite-wrapper">
+        <FriendPoolInvite v-for="friend of filterPlayer(friends)"
+                          :status="friend.gameInviteStatus || InviteStatus.REFUSE"
+                          :friend="friend" @click="inviteToGame(friend)"
+        />
+        <transition>
+          <p v-if="filterPlayer(friends).length==0">Plus d'amis à inviter</p>
+        </transition>
+      </div>
     </div>
-  </div>
-  <div class="friend-wrapper">
-    <h2>Joueurs de la partie</h2>
-    <div class="invite-wrapper">
-      <FriendPoolInvite v-for="friend of poolStore.pool.players" :status="InviteStatus.ACCEPT" :friend="friend"/>
+    <div class="friend-wrapper">
+      <h2>Joueurs de la partie</h2>
+      <div class="invite-wrapper">
+        <FriendPoolInvite v-for="friend of poolStore.pool.players" :status="InviteStatus.ACCEPT" :friend="friend"/>
+      </div>
     </div>
-  </div>
-  <AlertCard color="#27A27A" @click="poolStore.poolSocket.setGameStatus(GameState.TEAMING_PLAYERS)">
-    <p class="button-title">{{ t('pool.action.continue') }}</p>
-  </AlertCard>
+    <AlertCard color="#27A27A" @click="poolStore.poolSocket.setGameStatus(GameState.TEAMING_PLAYERS)">
+      <p class="button-title">{{ t('pool.action.continue') }}</p>
+    </AlertCard>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -90,6 +92,12 @@ function filterPlayer(users: User[]): User[] {
 </script>
 
 <style scoped lang="scss">
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
 h1 {
   text-align: center;
 }

@@ -1,4 +1,3 @@
-version: '3.4'
 name: onepool
 services:
 
@@ -32,11 +31,10 @@ services:
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       KEYCLOAK_HOST: ${PUBLIC_KEYCLOAK_HOSTNAME}
-      PROXY_CHECK_API_KEY: ${PROXY_CHECK_API_KEY}
     restart: unless-stopped
 
   frontend:
-    image: zelytra/onepool-website:latest
+    image: zelytra/onepool-webapp:latest
     container_name: onepool-website
     depends_on:
       - keycloak

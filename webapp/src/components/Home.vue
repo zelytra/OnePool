@@ -9,11 +9,11 @@
           class="router-link"
           :to="route.path"
       >
-        <ButtonCard :color="getGradient(route.path)" height="170px">
+        <GlassCard :color="getGradient(route.path)" height="170px">
           <img v-if="route.meta.icon" :src="route.meta.icon" alt="nav icon"/>
           <h1>{{ route.name }}</h1>
           <p class="secondary">{{ route.meta.subTitle }}</p>
-        </ButtonCard>
+        </GlassCard>
       </router-link>
     </nav>
   </section>
@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
 import {routes} from "@/router";
-import ButtonCard from "@/vue/templates/ButtonCard.vue";
+import GlassCard from "@/vue/templates/GlassCard.vue";
 
 const {t} = useI18n()
 
