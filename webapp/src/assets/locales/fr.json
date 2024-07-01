@@ -51,6 +51,18 @@
     "game": {
       "balls": "Boules",
       "chrono": "Chrono",
+      "faults": {
+        "AMERICAN_8": {
+          "BALL_OUT": "Une boulle est sortie du terrain",
+          "EIGHT_NO_CALL": "La huite à été rentré sans pré-avis",
+          "NO_BAND": "Aucune bande n'as été touché",
+          "PLAYER_MISTAKE": "Le joueur à effectué un coup illégale",
+          "PLAYER_NO_GROUND_TOUCH": "Le joueur n'as pas de contacte avec le sol",
+          "WHITE_DOUBLE_CONTACT": "Double contacte avec la blanche",
+          "WHITE_IN": "La boule blanche est empoché"
+        },
+        "title": "Fautes"
+      },
       "round": "Tour"
     },
     "rules": {

@@ -9,7 +9,7 @@
     }"
           :style="{
       '--color-ball':getBallColor(ball.ball)
-    }" @click="ball.selected = !ball.disable? !ball.selected: !ball.disable">
+    }" @click="ball.selected = !ball.disable && !disableForm? !ball.selected: !ball.disable">
       {{ ball.ball }}
     </span>
     </div>
@@ -20,6 +20,12 @@
 import {BallsFormInterfaces} from "@/vue/forms/BallsFormInterfaces.ts";
 
 const balls = defineModel<BallsFormInterfaces[]>('balls')
+defineProps({
+  disableForm: {
+    type: Boolean,
+    default: () => false
+  }
+})
 
 function getBallColor(ballValue: number) {
   switch (ballValue) {
