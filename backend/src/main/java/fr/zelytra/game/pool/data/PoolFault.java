@@ -7,5 +7,6 @@ public enum PoolFault {
     BALL_OUT,
     PLAYER_NO_GROUND_TOUCH,
     PLAYER_MISTAKE,
-    EIGHT_NO_CALL;
+    EIGHT_NO_CALL,
+    NOT_GOOD_FAMILY
 }

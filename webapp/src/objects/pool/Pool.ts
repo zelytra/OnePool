@@ -7,6 +7,7 @@ import personAlert from "@/assets/icons/person-alert.svg"
 import changeHistory from "@/assets/icons/change-history.svg"
 import bottomRightClick from "@/assets/icons/bottom-right-click.svg"
 import crisisAlert from "@/assets/icons/crisis-alert.svg"
+import whereToVote from "@/assets/icons/where-to-vote.svg"
 
 export interface Pool {
   uuid: string
@@ -58,7 +59,8 @@ export enum PoolFault {
   BALL_OUT = "BALL_OUT",
   PLAYER_NO_GROUND_TOUCH = "PLAYER_NO_GROUND_TOUCH",
   PLAYER_MISTAKE = "PLAYER_MISTAKE",
-  EIGHT_NO_CALL = "EIGHT_NO_CALL"
+  EIGHT_NO_CALL = "EIGHT_NO_CALL",
+  NOT_GOOD_FAMILY = "NOT_GOOD_FAMILY",
 }
 
 export function getFaultIcon(fault: PoolFault) {
@@ -77,6 +79,8 @@ export function getFaultIcon(fault: PoolFault) {
       return changeHistory;
     case PoolFault.WHITE_IN:
       return bottomRightClick;
+    case PoolFault.NOT_GOOD_FAMILY:
+      return whereToVote;
     default:
       return crisisAlert;
 
