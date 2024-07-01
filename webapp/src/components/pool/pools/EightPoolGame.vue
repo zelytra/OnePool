@@ -45,7 +45,9 @@
       </template>
       <template #content>
         <div class="faults-wrapper">
-          <FaultSelector v-for="fault of Object.values(PoolFault)" :fault="fault"/>
+          <FaultSelector v-for="fault of Object.values(PoolFault)" :fault="fault"
+                         @update:selected="onFaultUpdate(fault)"
+                         :selected="poolStore.pool.game.currentAction.faults.includes(fault)"/>
         </div>
       </template>
     </DropdownTemplate>
@@ -135,6 +137,15 @@ function getBallsForm(): BallsFormInterfaces[] {
 
 function onBallsUpdate(event: any) {
   poolStore.pool.game.currentAction.balls = event.value.filter((x: BallsFormInterfaces) => x.selected).map(x => x.ball);
+  poolStore.poolSocket.updateGameAction(poolStore.pool.game.currentAction)
+}
+
+function onFaultUpdate(fault: PoolFault) {
+  if (poolStore.pool.game.currentAction.faults.includes(fault)) {
+    poolStore.pool.game.currentAction.faults.splice(poolStore.pool.game.currentAction.faults.indexOf(fault), 1);
+  } else {
+    poolStore.pool.game.currentAction.faults.push(fault)
+  }
   poolStore.poolSocket.updateGameAction(poolStore.pool.game.currentAction)
 }
 
