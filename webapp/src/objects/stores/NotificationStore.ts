@@ -93,7 +93,7 @@ export const useNotification =
         case NotificationType.INVITE_TO_GAME: {
           useAlertStore().send({
             type: AlertType.VALID,
-            title: "viens",
+            title: t('notification.joinParty'),
             event: "joinPoolParty",
             content: "",
             data: notificationMessage.data.data,

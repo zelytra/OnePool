@@ -39,7 +39,8 @@
     }
   },
   "notification": {
-    "emptyTeam": "Les équipes ne possèdent pas le nombre de joueurs nécessaire"
+    "emptyTeam": "Les équipes ne possèdent pas le nombre de joueurs nécessaire",
+    "joinParty": "Vous avez recu une invitation, cliquer pour rejoindre la partie"
   },
   "pool": {
     "action": {
@@ -56,6 +57,7 @@
         "AMERICAN_8": {
           "BALL_OUT": "Une boulle est sortie du terrain",
           "EIGHT_NO_CALL": "La huite à été rentré sans pré-avis",
+          "EIGHT_OUT": "La huite est sortie du terrain",
           "NOT_GOOD_FAMILY": "Boule d'un autre famille touché/empoché",
           "NO_BAND": "Aucune bande n'as été touché",
           "PLAYER_MISTAKE": "Le joueur à effectué un coup illégale",
@@ -65,7 +67,9 @@
         },
         "title": "Fautes"
       },
-      "round": "Tour"
+      "loose": "Looser bhouuuu",
+      "round": "Tour",
+      "win": "Vainqueur(s)"
     },
     "rules": {
       "card": {
