@@ -107,7 +107,6 @@ public class UserEntity extends PanacheEntityBase {
 
     public void setPp(int pp) {
         this.pp = pp;
-        this.persist();
     }
 
     public int getGamePlayed() {
