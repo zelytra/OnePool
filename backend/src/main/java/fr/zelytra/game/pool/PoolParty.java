@@ -1,10 +1,7 @@
 package fr.zelytra.game.pool;
 
 import fr.zelytra.game.manager.socket.PoolSocketService;
-import fr.zelytra.game.pool.data.GameAction;
-import fr.zelytra.game.pool.data.GameRules;
-import fr.zelytra.game.pool.data.GameStatus;
-import fr.zelytra.game.pool.data.PoolTeam;
+import fr.zelytra.game.pool.data.*;
 import fr.zelytra.game.pool.game.AmericanEightPoolGame;
 import fr.zelytra.game.pool.game.PoolGameInterface;
 import fr.zelytra.game.pool.game.PoolVictoryState;
@@ -24,6 +21,7 @@ public class PoolParty {
     private GameRules rules;
     private GameStatus state;
     private PoolGameInterface game;
+    private GameReport gameReport;
 
     public PoolParty(PoolPlayer user) {
         this.gameOwner = user;
@@ -65,6 +63,14 @@ public class PoolParty {
 
     public void setCurrentAction(GameAction action) {
         this.game.setCurrentAction(action);
+    }
+
+    public GameReport getGameReport() {
+        return gameReport;
+    }
+
+    public void setGameReport(GameReport gameReport) {
+        this.gameReport = gameReport;
     }
 
     public boolean setTeams(PoolTeam teams) {
@@ -128,14 +134,37 @@ public class PoolParty {
         return false;
     }
 
-    public void winHandler(PoolVictoryState victoryState) {
+    public GameReport winHandler(PoolVictoryState victoryState) {
         game.setVictoryState(victoryState);
         setState(GameStatus.END);
+        GameReport gameReport = new GameReport(new ArrayList<>(), new ArrayList<>());
         for (PoolPlayer player : players) {
             PoolPointCalculator poolPointCalculator = new PoolPointCalculator(player.getPp(), player.getGamePlayed());
-            player.setGamePlayed(player.getGamePlayed() + 1);
+            List<Integer> opponentPPs = getPoolPlayersByTeam(victoryState.getInvertTeam()).stream().map(UserEntity::getPp).toList();
+
+            if ((victoryState == PoolVictoryState.TEAM1 && game.getTeams().team1().contains(player.getAuthUsername())) ||
+                    (victoryState == PoolVictoryState.TEAM2 && game.getTeams().team2().contains(player.getAuthUsername()))) {
+                // Player is in the winning team
+                int newPlayerPP = poolPointCalculator.computeNewElo(1.0, opponentPPs);
+                gameReport.victoryPlayer().add(new GameReportPlayer(player.getPp(), newPlayerPP, player.getUsername()));
+            } else {
+                // Player is in the losing team
+                int newPlayerPP = poolPointCalculator.computeNewElo(0, opponentPPs);
+                gameReport.looserPlayer().add(new GameReportPlayer(player.getPp(), newPlayerPP, player.getUsername()));
+            }
         }
+        return gameReport;
+    }
 
-
+    public List<PoolPlayer> getPoolPlayersByTeam(PoolVictoryState poolVictoryState) {
+        List<PoolPlayer> poolPlayers = new ArrayList<>();
+        for (PoolPlayer player : players) {
+            if (poolVictoryState == PoolVictoryState.TEAM1 && game.getTeams().team1().contains(player.getAuthUsername())) {
+                poolPlayers.add(player);
+            } else if (poolVictoryState == PoolVictoryState.TEAM2 && game.getTeams().team2().contains(player.getAuthUsername())) {
+                poolPlayers.add(player);
+            }
+        }
+        return poolPlayers;
     }
 }

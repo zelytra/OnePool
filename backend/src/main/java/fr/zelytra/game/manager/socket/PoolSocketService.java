@@ -4,10 +4,7 @@ import fr.zelytra.game.manager.message.MessageType;
 import fr.zelytra.game.manager.message.SocketMessage;
 import fr.zelytra.game.pool.PoolParty;
 import fr.zelytra.game.pool.PoolPlayer;
-import fr.zelytra.game.pool.data.GameAction;
-import fr.zelytra.game.pool.data.GameRules;
-import fr.zelytra.game.pool.data.GameStatus;
-import fr.zelytra.game.pool.data.PoolTeam;
+import fr.zelytra.game.pool.data.*;
 import fr.zelytra.game.pool.game.PoolVictoryState;
 import fr.zelytra.notification.Notification;
 import fr.zelytra.notification.NotificationMessageKey;
@@ -19,6 +16,7 @@ import io.quarkus.arc.Lock;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.websocket.Session;
 
 import java.util.Objects;
@@ -316,6 +314,7 @@ public class PoolSocketService {
     }
 
     @Lock(value = Lock.Type.WRITE, time = 200)
+    @Transactional
     public void playAction(GameAction gameAction, String socketSessionId) {
         PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
         PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
@@ -324,7 +323,19 @@ public class PoolSocketService {
         PoolVictoryState victoryState = poolParty.getGame().winDetection();
 
         if (victoryState != PoolVictoryState.NONE) {
-            poolParty.winHandler(victoryState);
+            GameReport gameReport = poolParty.winHandler(victoryState);
+            poolParty.setGameReport(gameReport);
+
+            // Updating players data in DB
+            for (PoolPlayer x : poolParty.getPlayers()) {
+                UserEntity user = userService.getUserByName(x.getUsername());
+                GameReportPlayer reportPlayer = gameReport.getFromUsername(x.getAuthUsername());
+                if (reportPlayer == null) {
+                    continue;
+                }
+                user.setPp(reportPlayer.pp());
+                user.setGamePlayed(user.getGamePlayed() + 1);
+            }
         }
         broadcastPoolDataToParty(poolParty);
         Log.info("[playAction][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " play game action");

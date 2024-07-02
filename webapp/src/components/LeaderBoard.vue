@@ -2,9 +2,13 @@
   <section class="leaderboard">
     <div class="header-wrapper">
       <AlertCard color="#44FBF0" v-if="user">
-        <p>{{ t('leaderboard.self.ranking.line1') }} <strong>{{user.position}} {{ t('leaderboard.self.ranking.th') }}</strong>
+        <p>{{ t('leaderboard.self.ranking.line1') }} <strong>{{ user.position }} {{
+            t('leaderboard.self.ranking.th')
+          }}</strong>
           {{ t('leaderboard.self.ranking.line2') }}</p>
-        <p>{{ t('leaderboard.self.ranking.line3') }} <strong>{{user.pp}} {{ t('leaderboard.table.column.point') }}</strong>
+        <p>{{ t('leaderboard.self.ranking.line3') }} <strong>{{ user.pp }} {{
+            t('leaderboard.table.column.point')
+          }}</strong>
         </p>
       </AlertCard>
       <div class="filter-wrapper">
@@ -48,9 +52,10 @@ const {t} = useI18n()
 onMounted(() => {
   new HTTPAxios("leaderboard/all").get().then((response: AxiosResponse) => {
     players.value = response.data;
-    players.value.forEach((p, index) => {
+    players.value.sort((a, b) => b.pp - a.pp).forEach((p, index) => {
       p.position = index + 1
     })
+    console.log(players.value)
   })
   new HTTPAxios("leaderboard/self").get().then((response: AxiosResponse) => {
     user.value = response.data;

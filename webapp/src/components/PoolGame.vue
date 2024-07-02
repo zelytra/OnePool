@@ -1,7 +1,8 @@
 <template>
   <section>
     <transition name="fade">
-      <div class="progress-bar" v-if="poolStore.pool.state!==GameState.RUNNING">
+      <div class="progress-bar"
+           v-if="poolStore.pool.state!==GameState.RUNNING && poolStore.pool.state !== GameState.END">
         <div class="progression" :style="{width:getProgressionPercentage(poolStore.pool.state)+'%'}"/>
       </div>
     </transition>

@@ -18,6 +18,7 @@ export interface Pool {
   state: GameState
   maxPlayerAmount?: number
   game: Game
+  gameReport?: GameReport
 }
 
 export interface Game {
@@ -40,6 +41,17 @@ export interface GameAction {
 export interface PoolTeams {
   team1: string[]
   team2: string[]
+}
+
+export interface GameReport {
+  victoryPlayer: GameReportPlayer[]
+  looserPlayer: GameReportPlayer[]
+}
+
+export interface GameReportPlayer {
+  previousPP: number
+  pp: number
+  username: string
 }
 
 export enum GameRule {

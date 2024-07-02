@@ -2,6 +2,7 @@ package fr.zelytra.poolpoint;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 public class PoolPointCalculator {
 
@@ -22,6 +23,20 @@ public class PoolPointCalculator {
      */
     public int computeNewElo(double partyStatus, int opponentElo) {
         return (int) Math.round(poolpoint + k * (partyStatus - getWinProbability(opponentElo)));
+    }
+
+    /**
+     * @param partyStatus Win = 1 | Loose = 0 | Draw = 0.5
+     * @param opponentElo Poolpoint of opponent
+     * @return En+1 = En + K * (W - p(D)) The new elo of the player
+     */
+    public int computeNewElo(double partyStatus, List<Integer> opponentElo) {
+        int totalElo = 0;
+        for (int x : opponentElo) {
+            totalElo += x;
+        }
+        int eloMedian = totalElo / opponentElo.size();
+        return (int) Math.round(poolpoint + k * (partyStatus - getWinProbability(eloMedian)));
     }
 
     public int getFactorK() {
