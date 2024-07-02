@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {PoolSocket} from "@/objects/pool/PoolSocket.ts";
-import {GameState, Pool} from "@/objects/pool/Pool.ts";
+import {GameState, Pool, PoolVictoryState} from "@/objects/pool/Pool.ts";
 
 export const usePoolParty =
   defineStore('poolparty', () => {
@@ -11,6 +11,7 @@ export const usePoolParty =
       rules: null,
       state: GameState.SETUP,
       game: {
+        victoryState:PoolVictoryState.NONE,
         history: [],
         currentAction: {
           roundId: 0,
