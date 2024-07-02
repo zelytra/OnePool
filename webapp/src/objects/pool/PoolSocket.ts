@@ -96,6 +96,15 @@ export class PoolSocket {
     this.socket.send(JSON.stringify(message));
   }
 
+  public runGameAction(gameAction: GameAction) {
+    if (!this.socket) return;
+    const message: WebSocketMessage = {
+      data: gameAction,
+      messageType: WebSocketMessageType.PLAY_GAME_ACTION,
+    };
+    this.socket.send(JSON.stringify(message));
+  }
+
   public setGameStatus(gameStatus: GameState) {
     if (!this.socket) return;
     const message: WebSocketMessage = {

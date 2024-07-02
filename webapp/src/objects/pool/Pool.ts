@@ -8,6 +8,7 @@ import changeHistory from "@/assets/icons/change-history.svg"
 import bottomRightClick from "@/assets/icons/bottom-right-click.svg"
 import crisisAlert from "@/assets/icons/crisis-alert.svg"
 import whereToVote from "@/assets/icons/where-to-vote.svg"
+import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 
 export interface Pool {
   uuid: string
@@ -26,6 +27,7 @@ export interface Game {
   currentAction: GameAction
   teams: PoolTeams
   paused?: boolean
+  victoryState: PoolVictoryState
 }
 
 export interface GameAction {
@@ -42,6 +44,12 @@ export interface PoolTeams {
 
 export enum GameRule {
   AMERICAN_8 = "AMERICAN_8"
+}
+
+export enum PoolVictoryState {
+  NONE = "NONE",
+  TEAM1 = "TEAM1",
+  TEAM2 = "TEAM2"
 }
 
 export enum GameState {
@@ -61,6 +69,7 @@ export enum PoolFault {
   PLAYER_MISTAKE = "PLAYER_MISTAKE",
   EIGHT_NO_CALL = "EIGHT_NO_CALL",
   NOT_GOOD_FAMILY = "NOT_GOOD_FAMILY",
+  EIGHT_OUT = "EIGHT_OUT"
 }
 
 export function getFaultIcon(fault: PoolFault) {
@@ -68,6 +77,7 @@ export function getFaultIcon(fault: PoolFault) {
     case PoolFault.PLAYER_NO_GROUND_TOUCH:
       return foot;
     case PoolFault.BALL_OUT:
+    case PoolFault.EIGHT_OUT:
       return tennis;
     case PoolFault.EIGHT_NO_CALL:
       return voiceHover;
@@ -85,4 +95,17 @@ export function getFaultIcon(fault: PoolFault) {
       return crisisAlert;
 
   }
+}
+
+export function getScoreTeam(teamNumber: number): number {
+  let score = 0;
+  for (let action of usePoolParty().pool.game.history) {
+    const teams: PoolTeams = usePoolParty().pool.game.teams;
+    if (teamNumber == 1 && teams.team1.includes(action.username)) {
+      score += action.balls.length
+    } else if (teamNumber == 2 && teams.team2.includes(action.username)) {
+      score += action.balls.length
+    }
+  }
+  return score;
 }

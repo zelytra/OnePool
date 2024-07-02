@@ -30,6 +30,9 @@ const emits = defineEmits(['update:balls'])
 
 function updateBall(ball: BallsFormInterfaces) {
   ball.selected = !ball.disable && !props.disableForm ? !ball.selected : !ball.disable;
+  if (props.disableForm || ball.disable) {
+    return
+  }
   emits('update:balls', balls)
 }
 
@@ -110,6 +113,10 @@ function getBallColor(ballValue: number) {
     &.disabled {
       border: solid 4px var(--secondary-text);
       color: var(--secondary-text);
+
+      &.striped {
+        background: transparent;
+      }
     }
   }
 }

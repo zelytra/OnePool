@@ -8,6 +8,7 @@ import fr.zelytra.game.pool.data.GameAction;
 import fr.zelytra.game.pool.data.GameRules;
 import fr.zelytra.game.pool.data.GameStatus;
 import fr.zelytra.game.pool.data.PoolTeam;
+import fr.zelytra.game.pool.game.PoolVictoryState;
 import fr.zelytra.notification.Notification;
 import fr.zelytra.notification.NotificationMessageKey;
 import fr.zelytra.notification.NotificationMessageType;
@@ -318,9 +319,16 @@ public class PoolSocketService {
     public void playAction(GameAction gameAction, String socketSessionId) {
         PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
         PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
+
         poolParty.getGame().play(gameAction);
+        PoolVictoryState victoryState = poolParty.getGame().winDetection();
+
+        if (victoryState != PoolVictoryState.NONE) {
+            poolParty.getGame().setVictoryState(victoryState);
+            poolParty.setState(GameStatus.END);
+        }
         broadcastPoolDataToParty(poolParty);
-        Log.info("[updateCurrentGameAction][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " update current game action");
+        Log.info("[playAction][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " play game action");
     }
 
     /**

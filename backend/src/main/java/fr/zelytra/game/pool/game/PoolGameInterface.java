@@ -10,4 +10,5 @@ public interface PoolGameInterface {
     void initGame();
     GameAction getCurrentAction();
     void setCurrentAction(GameAction action);
+    void setVictoryState(PoolVictoryState state);
 }
