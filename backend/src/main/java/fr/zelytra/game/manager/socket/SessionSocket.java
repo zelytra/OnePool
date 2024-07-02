@@ -61,6 +61,9 @@ public class SessionSocket {
             case UPDATE_GAME_ACTION -> {
                 socketService.updateCurrentGameAction(objectMapper.convertValue(socketMessage.data(), GameAction.class), session.getId());
             }
+            case PLAY_GAME_ACTION -> {
+                socketService.playAction(objectMapper.convertValue(socketMessage.data(), GameAction.class), session.getId());
+            }
             case CHANGE_GAME_STATES -> {
                 GameStatus status = objectMapper.convertValue(socketMessage.data(), GameStatus.class);
                 socketService.setStatus(status, session.getId());

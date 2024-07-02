@@ -68,7 +68,7 @@
           <img class="chrono" src="@/assets/icons/timer-pause.svg" alt="chrono"/>
         </div>
       </GlassCard>
-      <GlassCard color="#FF8717">
+      <GlassCard color="#FF8717" @click="playAction">
         <div class="action-content-wrapper">
           <h2 class="end-turn-button">{{ t('pool.game.endTurn') }}</h2>
         </div>
@@ -83,7 +83,7 @@ import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 import GlassCard from "@/vue/templates/GlassCard.vue";
 import {onMounted, onUnmounted, ref} from "vue";
 import {Utils} from "@/objects/utils/Utils.ts";
-import {getFaultIcon, PoolFault, PoolTeams} from "@/objects/pool/Pool.ts";
+import {getFaultIcon, getScoreTeam, PoolFault} from "@/objects/pool/Pool.ts";
 import DropdownTemplate from "@/vue/templates/DropdownTemplate.vue";
 import BallForm from "@/vue/forms/BallForm.vue";
 import {BallsFormInterfaces} from "@/vue/forms/BallsFormInterfaces.ts";
@@ -104,19 +104,6 @@ onUnmounted(() => {
   clearInterval(interval);
 });
 
-function getScoreTeam(teamNumber: number): number {
-  let score = 0;
-  for (let action of poolStore.pool.game.history) {
-    const teams: PoolTeams = poolStore.pool.game.teams;
-    if (teamNumber == 1 && teams.team1.includes(action.username)) {
-      score += action.balls.length
-    } else if (teamNumber == 2 && teams.team2.includes(action.username)) {
-      score += action.balls.length
-    }
-  }
-  return score;
-}
-
 function getBallsForm(): BallsFormInterfaces[] {
   const balls: Map<number, BallsFormInterfaces> = Utils.getRawBallsMap();
 
@@ -133,6 +120,10 @@ function getBallsForm(): BallsFormInterfaces[] {
   }
 
   return Array.from(balls.values());
+}
+
+function playAction() {
+  poolStore.poolSocket.runGameAction(poolStore.pool.game.currentAction)
 }
 
 function onBallsUpdate(event: any) {

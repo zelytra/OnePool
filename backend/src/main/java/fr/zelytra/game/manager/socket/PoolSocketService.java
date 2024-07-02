@@ -314,6 +314,15 @@ public class PoolSocketService {
         Log.info("[updateCurrentGameAction][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " update current game action");
     }
 
+    @Lock(value = Lock.Type.WRITE, time = 200)
+    public void playAction(GameAction gameAction, String socketSessionId) {
+        PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
+        PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
+        poolParty.getGame().play(gameAction);
+        broadcastPoolDataToParty(poolParty);
+        Log.info("[updateCurrentGameAction][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " update current game action");
+    }
+
     /**
      * Retrieves all active pool parties.
      *

@@ -23,9 +23,10 @@ export const usePoolParty =
           team2: []
         }
       }
-    }
+    };
+
     return {
       poolSocket,
-      pool
+      pool,
     };
   });

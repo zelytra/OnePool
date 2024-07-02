@@ -8,5 +8,6 @@ public enum PoolFault {
     PLAYER_NO_GROUND_TOUCH,
     PLAYER_MISTAKE,
     EIGHT_NO_CALL,
+    EIGHT_OUT,
     NOT_GOOD_FAMILY
 }
