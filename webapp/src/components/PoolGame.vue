@@ -14,6 +14,7 @@
       <TeamingPlayers v-else-if="poolStore.pool.state==GameState.TEAMING_PLAYERS" key="teaming"/>
       <EightPoolGame v-else-if="poolStore.pool.state==GameState.RUNNING && poolStore.pool.rules == GameRule.AMERICAN_8"
                      key="8-pool"/>
+      <PoolGameResult v-else-if="poolStore.pool.state==GameState.END" key="victory"/>
     </transition>
   </section>
 </template>
@@ -26,6 +27,7 @@ import FriendInvitation from "@/components/pool/FriendInvitation.vue";
 import {GameRule, GameState} from "@/objects/pool/Pool.ts";
 import TeamingPlayers from "@/components/pool/TeamingPlayers.vue";
 import EightPoolGame from "@/components/pool/pools/EightPoolGame.vue";
+import PoolGameResult from "@/components/pool/PoolGameResult.vue";
 
 const poolStore = usePoolParty();
 

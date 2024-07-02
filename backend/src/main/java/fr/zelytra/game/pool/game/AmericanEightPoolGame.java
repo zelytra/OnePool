@@ -16,7 +16,13 @@ public class AmericanEightPoolGame extends PoolGameManager implements PoolGameIn
     @Override
     public void play(GameAction action) {
         this.getHistory().add(action);
-        this.setCurrentAction(new GameAction(this.getHistory().size() - 1, new ArrayList<>(), new ArrayList<>(), getNextPlayer()));
+        GameAction nextAction;
+        if (!action.balls().isEmpty() && action.faults().isEmpty()) {
+            nextAction = new GameAction(this.getHistory().size(), new ArrayList<>(), new ArrayList<>(), action.username());
+        } else {
+            nextAction = new GameAction(this.getHistory().size(), new ArrayList<>(), new ArrayList<>(), getNextPlayer());
+        }
+        this.setCurrentAction(nextAction);
     }
 
     @Override
@@ -34,16 +40,6 @@ public class AmericanEightPoolGame extends PoolGameManager implements PoolGameIn
 
         GameAction lastAction = this.getHistory().getLast();
 
-        // Eight before family clean
-        if (isEightIn && (strippedCount < 7 || fullCount < 7)) {
-            return lastActionTeamId.getInvertTeam();
-        }
-
-        // Eight out of the table
-        if (lastAction.faults().contains(PoolFault.EIGHT_OUT)) {
-            return lastActionTeamId.getInvertTeam();
-        }
-
         // If fault is commit at the same time as eight in (contain also white in during the shot)
         if (isEightIn && !lastAction.faults().isEmpty()) {
             return lastActionTeamId.getInvertTeam();
@@ -54,24 +50,25 @@ public class AmericanEightPoolGame extends PoolGameManager implements PoolGameIn
             return lastActionTeamId.getInvertTeam();
         }
 
-        if (strippedCount == 7 && isEightIn()) {
-            if (isTeamStripped(lastActionTeamId)) {
-                return PoolVictoryState.TEAM1;
-            } else {
-                return PoolVictoryState.TEAM2;
-            }
-        } else if (fullCount == 7 && isEightIn()) {
-            if (isTeamStripped(lastActionTeamId)) {
-                return PoolVictoryState.TEAM2;
-            } else {
-                return PoolVictoryState.TEAM1;
-            }
+        // Eight before family clean
+        if (isEightIn && ((isTeamStripped(lastActionTeamId) && strippedCount < 7) || !isTeamStripped(lastActionTeamId) && fullCount < 7)) {
+            return lastActionTeamId.getInvertTeam();
+        }
+
+        // Eight out of the table
+        if (lastAction.faults().contains(PoolFault.EIGHT_OUT)) {
+            return lastActionTeamId.getInvertTeam();
+        }
+
+        // Normal win detection
+        if ((strippedCount == 7 || fullCount == 7) && isEightIn) {
+            return lastActionTeamId;
         }
 
         return victoryState;
     }
 
-    private boolean isTeamStripped(PoolVictoryState teamId) {
+    public boolean isTeamStripped(PoolVictoryState teamId) {
         List<GameAction> teamActions = new ArrayList<>();
         if (teamId == PoolVictoryState.TEAM1) {
             teamActions.addAll(getTeamActions(getTeams().team1()));
@@ -94,7 +91,7 @@ public class AmericanEightPoolGame extends PoolGameManager implements PoolGameIn
         return strippedCount > fullCount;
     }
 
-    private int getStrippedCount() {
+    public int getStrippedCount() {
         int strippedCount = 0;
         for (GameAction action : getHistory()) {
             for (PoolBalls ball : action.balls()) {
@@ -106,7 +103,7 @@ public class AmericanEightPoolGame extends PoolGameManager implements PoolGameIn
         return strippedCount;
     }
 
-    private int getFullCount() {
+    public int getFullCount() {
         int fullCount = 0;
         for (GameAction action : getHistory()) {
             for (PoolBalls ball : action.balls()) {
@@ -118,7 +115,7 @@ public class AmericanEightPoolGame extends PoolGameManager implements PoolGameIn
         return fullCount;
     }
 
-    private boolean isEightIn() {
+    public boolean isEightIn() {
         for (GameAction action : getHistory()) {
             for (PoolBalls ball : action.balls()) {
                 if (ball.number == 8) {

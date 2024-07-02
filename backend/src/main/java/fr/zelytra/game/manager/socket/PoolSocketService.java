@@ -324,8 +324,7 @@ public class PoolSocketService {
         PoolVictoryState victoryState = poolParty.getGame().winDetection();
 
         if (victoryState != PoolVictoryState.NONE) {
-            poolParty.getGame().setVictoryState(victoryState);
-            poolParty.setState(GameStatus.END);
+            poolParty.winHandler(victoryState);
         }
         broadcastPoolDataToParty(poolParty);
         Log.info("[playAction][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " play game action");

@@ -7,7 +7,9 @@ import fr.zelytra.game.pool.data.GameStatus;
 import fr.zelytra.game.pool.data.PoolTeam;
 import fr.zelytra.game.pool.game.AmericanEightPoolGame;
 import fr.zelytra.game.pool.game.PoolGameInterface;
+import fr.zelytra.game.pool.game.PoolVictoryState;
 import fr.zelytra.notification.NotificationMessageKey;
+import fr.zelytra.poolpoint.PoolPointCalculator;
 import fr.zelytra.user.UserEntity;
 
 import java.util.ArrayList;
@@ -124,5 +126,16 @@ public class PoolParty {
             return true;
         }
         return false;
+    }
+
+    public void winHandler(PoolVictoryState victoryState) {
+        game.setVictoryState(victoryState);
+        setState(GameStatus.END);
+        for (PoolPlayer player : players) {
+            PoolPointCalculator poolPointCalculator = new PoolPointCalculator(player.getPp(), player.getGamePlayed());
+            player.setGamePlayed(player.getGamePlayed() + 1);
+        }
+
+
     }
 }
