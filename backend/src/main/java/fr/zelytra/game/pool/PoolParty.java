@@ -1,5 +1,12 @@
 package fr.zelytra.game.pool;
 
+import fr.zelytra.game.manager.socket.PoolSocketService;
+import fr.zelytra.game.pool.data.*;
+import fr.zelytra.game.pool.game.AmericanEightPoolGame;
+import fr.zelytra.game.pool.game.PoolGameInterface;
+import fr.zelytra.game.pool.game.PoolVictoryState;
+import fr.zelytra.notification.NotificationMessageKey;
+import fr.zelytra.poolpoint.PoolPointCalculator;
 import fr.zelytra.user.UserEntity;
 
 import java.util.ArrayList;
@@ -13,14 +20,13 @@ public class PoolParty {
     private PoolPlayer gameOwner;
     private GameRules rules;
     private GameStatus state;
-    private int maxPlayerAmount;
-    private final PoolTeam teams;
+    private PoolGameInterface game;
+    private GameReport gameReport;
 
     public PoolParty(PoolPlayer user) {
         this.gameOwner = user;
         players.add(user);
         state = GameStatus.SETUP;
-        teams = new PoolTeam(new ArrayList<>(), new ArrayList<>());
     }
 
     public List<PoolPlayer> getPlayers() {
@@ -39,20 +45,43 @@ public class PoolParty {
         return rules;
     }
 
+    public void setGame() {
+        switch (rules) {
+            case AMERICAN_8:
+                game = new AmericanEightPoolGame();
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported game type: " + rules);
+        }
+
+    }
+
     public void setRules(GameRules rules) {
         this.rules = rules;
-        this.maxPlayerAmount = rules.maxTotalPlayer;
+        setGame();
+    }
+
+    public void setCurrentAction(GameAction action) {
+        this.game.setCurrentAction(action);
+    }
+
+    public GameReport getGameReport() {
+        return gameReport;
+    }
+
+    public void setGameReport(GameReport gameReport) {
+        this.gameReport = gameReport;
     }
 
     public boolean setTeams(PoolTeam teams) {
         // Limit player amount by rules
-        if (teams.team1().size() + teams.team2().size() > maxPlayerAmount) {
+        if (teams.team1().size() + teams.team2().size() > rules.maxTotalPlayer) {
             return false;
         }
-        this.teams.team1().clear();
-        this.teams.team2().clear();
-        this.teams.team1().addAll(teams.team1());
-        this.teams.team2().addAll(teams.team2());
+        this.game.getTeams().team1().clear();
+        this.game.getTeams().team2().clear();
+        this.game.getTeams().team1().addAll(teams.team1());
+        this.game.getTeams().team2().addAll(teams.team2());
         return true;
     }
 
@@ -63,9 +92,11 @@ public class PoolParty {
     public boolean setState(GameStatus state) {
         // No empty teams
         if (this.state == GameStatus.TEAMING_PLAYERS && state == GameStatus.RUNNING) {
-            if (this.teams.team1().isEmpty() || this.teams.team2().isEmpty()) {
+            if (this.game.getTeams().team1().isEmpty() || this.game.getTeams().team2().isEmpty()) {
+                PoolSocketService.broadcastNotificationToParty(this, NotificationMessageKey.EMPTY_TEAM);
                 return false;
             }
+            game.initGame();
         }
         this.state = state;
         return true;
@@ -76,11 +107,14 @@ public class PoolParty {
     }
 
     public int getMaxPlayerAmount() {
-        return maxPlayerAmount;
+        if (rules == null) {
+            return 0;
+        }
+        return rules.maxTotalPlayer;
     }
 
-    public PoolTeam getTeams() {
-        return teams;
+    public PoolGameInterface getGame() {
+        return game;
     }
 
     /**
@@ -98,5 +132,39 @@ public class PoolParty {
             return true;
         }
         return false;
+    }
+
+    public GameReport winHandler(PoolVictoryState victoryState) {
+        game.setVictoryState(victoryState);
+        setState(GameStatus.END);
+        GameReport gameReport = new GameReport(new ArrayList<>(), new ArrayList<>());
+        for (PoolPlayer player : players) {
+            PoolPointCalculator poolPointCalculator = new PoolPointCalculator(player.getPp(), player.getGamePlayed());
+            List<Integer> opponentPPs = getPoolPlayersByTeam(victoryState.getInvertTeam()).stream().map(UserEntity::getPp).toList();
+
+            if ((victoryState == PoolVictoryState.TEAM1 && game.getTeams().team1().contains(player.getAuthUsername())) ||
+                    (victoryState == PoolVictoryState.TEAM2 && game.getTeams().team2().contains(player.getAuthUsername()))) {
+                // Player is in the winning team
+                int newPlayerPP = poolPointCalculator.computeNewElo(1.0, opponentPPs);
+                gameReport.victoryPlayer().add(new GameReportPlayer(player.getPp(), newPlayerPP, player.getUsername()));
+            } else {
+                // Player is in the losing team
+                int newPlayerPP = poolPointCalculator.computeNewElo(0, opponentPPs);
+                gameReport.looserPlayer().add(new GameReportPlayer(player.getPp(), newPlayerPP, player.getUsername()));
+            }
+        }
+        return gameReport;
+    }
+
+    public List<PoolPlayer> getPoolPlayersByTeam(PoolVictoryState poolVictoryState) {
+        List<PoolPlayer> poolPlayers = new ArrayList<>();
+        for (PoolPlayer player : players) {
+            if (poolVictoryState == PoolVictoryState.TEAM1 && game.getTeams().team1().contains(player.getAuthUsername())) {
+                poolPlayers.add(player);
+            } else if (poolVictoryState == PoolVictoryState.TEAM2 && game.getTeams().team2().contains(player.getAuthUsername())) {
+                poolPlayers.add(player);
+            }
+        }
+        return poolPlayers;
     }
 }

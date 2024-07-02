@@ -4,7 +4,7 @@ import {tsi18n} from "@/objects/i18n";
 import {WebSocketMessage, WebSocketMessageType} from "@/objects/pool/WebSocet.ts";
 import {useUserStore} from "@/objects/stores/UserStore.ts";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
-import {GameRule, GameState, PoolTeams} from "@/objects/pool/Pool.ts";
+import {GameAction, GameRule, GameState, PoolTeams} from "@/objects/pool/Pool.ts";
 
 const {t} = tsi18n.global;
 
@@ -51,7 +51,6 @@ export class PoolSocket {
       const message: WebSocketMessage = JSON.parse(ev.data) as WebSocketMessage;
       switch (message.messageType) {
         case WebSocketMessageType.UPDATE_POOL_DATA: {
-          console.log(message.data)
           this.poolStore.pool = message.data
           break
         }
@@ -84,6 +83,24 @@ export class PoolSocket {
     const message: WebSocketMessage = {
       data: gameRule,
       messageType: WebSocketMessageType.SET_RULES,
+    };
+    this.socket.send(JSON.stringify(message));
+  }
+
+  public updateGameAction(gameAction: GameAction) {
+    if (!this.socket) return;
+    const message: WebSocketMessage = {
+      data: gameAction,
+      messageType: WebSocketMessageType.UPDATE_GAME_ACTION,
+    };
+    this.socket.send(JSON.stringify(message));
+  }
+
+  public runGameAction(gameAction: GameAction) {
+    if (!this.socket) return;
+    const message: WebSocketMessage = {
+      data: gameAction,
+      messageType: WebSocketMessageType.PLAY_GAME_ACTION,
     };
     this.socket.send(JSON.stringify(message));
   }

@@ -3,9 +3,10 @@ package fr.zelytra.game.manager.socket;
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.zelytra.game.manager.message.SocketMessage;
 import fr.zelytra.game.manager.message.SocketTimeOutManager;
-import fr.zelytra.game.pool.GameRules;
-import fr.zelytra.game.pool.GameStatus;
-import fr.zelytra.game.pool.PoolTeam;
+import fr.zelytra.game.pool.data.GameAction;
+import fr.zelytra.game.pool.data.GameRules;
+import fr.zelytra.game.pool.data.GameStatus;
+import fr.zelytra.game.pool.data.PoolTeam;
 import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import jakarta.websocket.*;
@@ -56,6 +57,12 @@ public class SessionSocket {
             }
             case UPDATE_TEAMS -> {
                 socketService.setPlayersTeam(objectMapper.convertValue(socketMessage.data(), PoolTeam.class), session.getId());
+            }
+            case UPDATE_GAME_ACTION -> {
+                socketService.updateCurrentGameAction(objectMapper.convertValue(socketMessage.data(), GameAction.class), session.getId());
+            }
+            case PLAY_GAME_ACTION -> {
+                socketService.playAction(objectMapper.convertValue(socketMessage.data(), GameAction.class), session.getId());
             }
             case CHANGE_GAME_STATES -> {
                 GameStatus status = objectMapper.convertValue(socketMessage.data(), GameStatus.class);
