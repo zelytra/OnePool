@@ -76,6 +76,7 @@ function inviteUser(username: string) {
 
   input {
     color: var(--primary);
+    z-index: 99;
   }
 
   .results-wrapper {
@@ -83,6 +84,7 @@ function inviteUser(username: string) {
     width: 100%;
     margin-top: 8px;
     box-sizing: border-box;
+    z-index: 99;
 
     .user-wrapper {
       display: flex;
