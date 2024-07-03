@@ -17,15 +17,15 @@
     "mitt": "^3.0.1",
     "pinia": "^2.1.7",
     "sass": "^1.77.6",
-    "vue": "^3.4.30",
+    "vue": "^3.4.31",
     "vue-i18n": "^9.13.1"
   },
   "devDependencies": {
     "@interactjs/types": "^1.10.27",
     "@vitejs/plugin-vue": "^5.0.5",
-    "typescript": "^5.5.2",
-    "vite": "^5.3.1",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.2",
     "vue-router": "^4.4.0",
-    "vue-tsc": "^2.0.22"
+    "vue-tsc": "^2.0.24"
   }
 }
