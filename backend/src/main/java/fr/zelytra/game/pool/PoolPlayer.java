@@ -17,4 +17,12 @@ public class PoolPlayer extends UserEntity {
     public Session getSocketSession() {
         return socketSession;
     }
+
+    public void setSocketSession(Session socketSession) {
+        this.socketSession = socketSession;
+    }
+
+    public void resetSession() {
+        socketSession = null;
+    }
 }

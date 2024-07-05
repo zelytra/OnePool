@@ -4,6 +4,7 @@ import fr.zelytra.game.pool.PoolParty;
 import fr.zelytra.game.pool.PoolPlayer;
 import fr.zelytra.user.UserEntity;
 import fr.zelytra.user.UserService;
+import io.quarkus.logging.Log;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.transaction.Transactional;
@@ -82,6 +83,7 @@ class PoolSocketServiceTest {
     void joinPool_sameUserConnectToAnotherSession() {
         when(userService.getUserByName("user1")).thenReturn(new UserEntity("user1"));
         socketService.joinPool("user1", "", session);
+        Log.info("splitter");
         socketService.joinPool("user1", "", session);
 
         ConcurrentMap<String, PoolParty> games = socketService.getGames();

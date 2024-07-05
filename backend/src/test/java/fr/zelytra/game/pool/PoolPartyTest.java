@@ -116,7 +116,7 @@ public class PoolPartyTest {
 
     @Test
     @Transactional
-    public void testWinHandler() {
+    public void testGetGameReport() {
         /*
         PoolVictoryState victoryState = PoolVictoryState.TEAM1;
         poolParty.setRules(GameRules.AMERICAN_8);
