@@ -80,15 +80,24 @@ public class PoolSocketService {
 
         PoolPlayer poolPlayer = new PoolPlayer(user, socketSession);
 
+        if (isPlayerInPool(username)) {
+            Log.warn("[joinPool][N/A] User already in pool: " + username);
+            PoolParty poolParty = getPoolPartyByPlayer(username);
+            PoolPlayer retrievePlayer = poolParty.getPoolPlayerByName(username);
+            if (poolParty.getState() == GameStatus.RUNNING && retrievePlayer.getSocketSession() == null) {
+                retrievePlayer.setSocketSession(socketSession);
+                broadcastPoolDataToParty(poolParty);
+                return;
+            } else {
+                removePlayerFromPool(poolPlayer, poolParty.getUuid());
+            }
+        }
+
         if (sessionID.isBlank() || sessionID.isEmpty()) {
             PoolParty poolParty = createParty(username, socketSession);
             SocketMessage<PoolParty> socketMessage = new SocketMessage<>(MessageType.UPDATE_POOL_DATA, poolParty);
             socketMessage.sendDataToPlayer(poolPlayer.getSocketSession());
             return;
-        } else if (isPlayerInPool(username)) {
-            Log.warn("[joinPool][N/A] User already in pool: " + username);
-            PoolParty poolParty = getPoolPartyByPlayer(username);
-            removePlayerFromPool(poolPlayer, poolParty.getUuid());
         } else if (!games.containsKey(sessionID)) {
             Log.warn("[joinPool][N/A] Pool not found: " + sessionID);
             return;
@@ -185,10 +194,16 @@ public class PoolSocketService {
         Log.info("[getPlayerBySocketSessionId][N/A] User: " + socketSessionId);
 
         for (PoolParty poolParty : games.values()) {
+            if (poolParty.getGameOwner().getSocketSession() == null) {
+                continue;
+            }
             if (Objects.equals(poolParty.getGameOwner().getSocketSession().getId(), socketSessionId)) {
                 return poolParty.getGameOwner();
             }
             for (PoolPlayer player : poolParty.getPlayers()) {
+                if (player.getSocketSession() == null) {
+                    continue;
+                }
                 if (Objects.equals(player.getSocketSession().getId(), socketSessionId)) {
                     return player;
                 }
@@ -222,7 +237,14 @@ public class PoolSocketService {
         broadcastPoolDataToParty(poolParty);
         if (removed) {
             Log.info("[removePlayerFromPool][" + sessionID + "] Removed user: " + user.getUsername());
-            if (poolParty.getPlayers().isEmpty()) {
+            boolean isUserRemaining = false;
+            for (PoolPlayer player : poolParty.getPlayers()) {
+                if (player.getSocketSession() != null) {
+                    isUserRemaining = true;
+                    break;
+                }
+            }
+            if (poolParty.getPlayers().isEmpty() || !isUserRemaining) {
                 games.remove(sessionID);
                 Log.info("[removePlayerFromPool][" + sessionID + "] Pool deleted");
             }
@@ -323,7 +345,7 @@ public class PoolSocketService {
         PoolVictoryState victoryState = poolParty.getGame().winDetection();
 
         if (victoryState != PoolVictoryState.NONE) {
-            GameReport gameReport = poolParty.winHandler(victoryState);
+            GameReport gameReport = poolParty.getGameReport(victoryState);
             poolParty.setGameReport(gameReport);
 
             // Updating players data in DB

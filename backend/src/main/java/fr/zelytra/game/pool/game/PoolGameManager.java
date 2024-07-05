@@ -83,7 +83,7 @@ public class PoolGameManager {
         }
 
         // If all players from the current team have played, reset and return the first player from the opposite team
-        return currentTeam.get(0);
+        return currentTeam.getFirst();
     }
 
 

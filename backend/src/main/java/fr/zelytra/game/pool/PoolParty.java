@@ -125,16 +125,23 @@ public class PoolParty {
      * @return true if the user was removed, false otherwise
      */
     public boolean removePlayer(UserEntity user) {
+        // If game is running don't remove the player from the list but just setting is session to null;
+        if (state == GameStatus.RUNNING) {
+            players.get(players.indexOf(user)).resetSession();
+            return true;
+        }
+
         if (players.remove(user)) {
             if (user.equals(gameOwner) && !players.isEmpty()) {
                 gameOwner = players.getFirst();
             }
             return true;
         }
+
         return false;
     }
 
-    public GameReport winHandler(PoolVictoryState victoryState) {
+    public GameReport getGameReport(PoolVictoryState victoryState) {
         game.setVictoryState(victoryState);
         setState(GameStatus.END);
         GameReport gameReport = new GameReport(new ArrayList<>(), new ArrayList<>());
@@ -166,5 +173,14 @@ public class PoolParty {
             }
         }
         return poolPlayers;
+    }
+
+    public PoolPlayer getPoolPlayerByName(String username) {
+        for (PoolPlayer player : players) {
+            if (player.getAuthUsername().equals(username)) {
+                return player;
+            }
+        }
+        return null;
     }
 }
