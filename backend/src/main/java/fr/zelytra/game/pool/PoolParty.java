@@ -89,16 +89,17 @@ public class PoolParty {
         return state;
     }
 
-    public boolean setState(GameStatus state) {
+    //TODO UT
+    public boolean setState(GameStatus nextState) {
         // No empty teams
-        if (this.state == GameStatus.TEAMING_PLAYERS && state == GameStatus.RUNNING) {
+        if (this.state == GameStatus.TEAMING_PLAYERS && nextState == GameStatus.RUNNING) {
             if (this.game.getTeams().team1().isEmpty() || this.game.getTeams().team2().isEmpty()) {
                 PoolSocketService.broadcastNotificationToParty(this, NotificationMessageKey.EMPTY_TEAM);
                 return false;
             }
             game.initGame();
         }
-        this.state = state;
+        this.state = nextState;
         return true;
     }
 
