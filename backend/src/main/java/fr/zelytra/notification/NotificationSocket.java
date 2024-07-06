@@ -25,7 +25,7 @@ public class NotificationSocket {
 
     @OnOpen
     public void onOpen(Session session) {
-        socketTimeOutManager.initLogin(session);
+        socketTimeOutManager.init(session);
         Log.info("[notification:OPEN] Connecting...");
     }
 
@@ -42,7 +42,7 @@ public class NotificationSocket {
             case INIT_NOTIFICATION -> {
                 String username = objectMapper.convertValue(socketMessage.data(), String.class);
                 notificationSessions.put(username, session);
-                socketTimeOutManager.completeLogin(session.getId());
+                socketTimeOutManager.complete(session.getId());
                 Log.info("[notification:INIT_NOTIFICATION] " + username + " connected");
             }
             case SEND_NOTIFICATION -> {

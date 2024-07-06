@@ -1,5 +1,6 @@
 package fr.zelytra.game.pool;
 
+import fr.zelytra.game.manager.message.SocketTimeOutManager;
 import fr.zelytra.game.manager.socket.PoolSocketService;
 import fr.zelytra.game.pool.data.*;
 import fr.zelytra.game.pool.game.AmericanEightPoolGame;
@@ -98,6 +99,11 @@ public class PoolParty {
                 return false;
             }
             game.initGame();
+        } else if (nextState == GameStatus.END) {
+            //Init timeout on game end
+            for (PoolPlayer player : players) {
+                new SocketTimeOutManager(60).init(player.getSocketSession());
+            }
         }
         this.state = nextState;
         return true;

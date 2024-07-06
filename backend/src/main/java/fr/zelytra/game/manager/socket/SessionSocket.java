@@ -33,7 +33,7 @@ public class SessionSocket {
 
     @OnOpen
     public void onOpen(Session session) {
-        socketTimeOutManager.initLogin(session);
+        socketTimeOutManager.init(session);
         Log.info("[ANYONE] Connecting...");
     }
 
@@ -50,7 +50,7 @@ public class SessionSocket {
             case CONNECT_TO_POOL -> {
                 String username = objectMapper.convertValue(socketMessage.data(), String.class);
                 socketService.joinPool(username, sessionId, session);
-                socketTimeOutManager.completeLogin(session.getId());
+                socketTimeOutManager.complete(session.getId());
             }
             case SET_RULES -> {
                 socketService.setRule(objectMapper.convertValue(socketMessage.data(), GameRules.class), session.getId());
@@ -80,7 +80,7 @@ public class SessionSocket {
 
     @OnError
     public void onError(Session session, Throwable throwable) throws IOException {
-        Log.error("WebSocket error for session " + session.getId() + ": " + throwable);
+        Log.error("WebSocket error for session " + session.getId() + ": " + throwable.fillInStackTrace());
         session.close();
     }
 }
