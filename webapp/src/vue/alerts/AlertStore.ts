@@ -7,7 +7,7 @@ export type AlertState = {
 export type Alert = {
   type: AlertType;
   title: string;
-  content: string;
+  content?: string;
   id?: number;
   timeout?: number;
   event?: string;

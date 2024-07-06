@@ -4,6 +4,7 @@ import {AlertType, useAlertStore} from "@/vue/alerts/AlertStore.ts";
 import {WebSocketMessage, WebSocketMessageType} from "@/objects/pool/WebSocet.ts";
 import {tsi18n} from "@/objects/i18n";
 import eventBus from "@/objects/bus/EventBus.ts";
+import {useUserStore} from "@/objects/stores/UserStore.ts";
 
 const {t} = tsi18n.global;
 
@@ -24,6 +25,7 @@ export interface NotificationMessage {
 export const useNotification =
   defineStore('notifications', () => {
     let socket: WebSocket
+    let autoReconnectInterval: number = 0;
 
     async function init(username: string) {
       if (socket && socket.readyState >= 2) {
@@ -69,15 +71,35 @@ export const useNotification =
       };
 
       socket.onerror = () => {
-        useAlertStore().send({
-          content: t("alert.socket.connectionFailed"),
-          title: t("alert.socket.title"),
-          type: AlertType.ERROR,
-        });
+        autoReconnectTask()
       };
 
       socket.onclose = () => {
+        autoReconnectTask()
       }
+    }
+
+    function autoReconnectTask() {
+      console.log("hello")
+      if (autoReconnectInterval != 0) {
+        return;
+      }
+      useAlertStore().send({
+        title: t("alert.socket.connectionFailed"),
+        type: AlertType.ERROR,
+      });
+      autoReconnectInterval = setInterval(async () => {
+        if (!socket || socket.readyState < 2) {
+          await init(useUserStore().user.authUsername);
+        } else {
+          clearInterval(autoReconnectInterval);
+          autoReconnectInterval = 0;
+          useAlertStore().send({
+            title: t("alert.socket.connectionBack"),
+            type: AlertType.VALID,
+          });
+        }
+      }, 5000);
     }
 
     function closeSocket() {

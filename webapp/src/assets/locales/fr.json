@@ -1,4 +1,10 @@
 {
+  "alert": {
+    "socket": {
+      "connectionBack": "Connexion rétablie avec le système de notification",
+      "connectionFailed": "Echec de la connexion au système de notification"
+    }
+  },
   "friends": {
     "action": {
       "add": "Cliquez ici pour ajouter un(e) ami(e)s"
