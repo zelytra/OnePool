@@ -8,7 +8,7 @@ import java.util.concurrent.*;
 
 public class SocketTimeOutManager {
 
-    private static final ConcurrentMap<String, Future<?>> sessionTimeoutTasks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Future<?>> sessionTimeoutTasks = new ConcurrentHashMap<>();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final int timeout;
 

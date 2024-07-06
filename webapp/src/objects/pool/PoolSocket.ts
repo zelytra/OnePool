@@ -21,7 +21,7 @@ export class PoolSocket {
   }
 
   async joinSession(sessionId: string) {
-    if (this.socket && this.socket.readyState >= 2) {
+    if (this.socket && this.socket.readyState < 2) {
       this.socket.close();
     }
 
@@ -70,15 +70,18 @@ export class PoolSocket {
         type: AlertType.ERROR,
       });
       router.push("/")
+      this.poolStore.pool = this.poolStore.getRawPool();
     };
 
     this.socket.onclose = () => {
       router.push("/")
+      this.poolStore.pool = this.poolStore.getRawPool();
     }
   }
 
   closeSocket() {
-    this.socket?.close()
+    this.socket?.close();
+    this.socket = undefined;
   }
 
   public setGameRule(gameRule: GameRule) {

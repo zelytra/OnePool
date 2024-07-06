@@ -1,5 +1,6 @@
 package fr.zelytra.game.pool;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.zelytra.game.manager.message.SocketTimeOutManager;
 import fr.zelytra.game.manager.socket.PoolSocketService;
 import fr.zelytra.game.pool.data.*;
@@ -23,6 +24,9 @@ public class PoolParty {
     private GameStatus state;
     private PoolGameInterface game;
     private GameReport gameReport;
+
+    @JsonIgnore
+    private final SocketTimeOutManager socketTimeOutManager = new SocketTimeOutManager(60);
 
     public PoolParty(PoolPlayer user) {
         this.gameOwner = user;
@@ -102,7 +106,7 @@ public class PoolParty {
         } else if (nextState == GameStatus.END) {
             //Init timeout on game end
             for (PoolPlayer player : players) {
-                new SocketTimeOutManager(60).init(player.getSocketSession());
+                socketTimeOutManager.init(player.getSocketSession());
             }
         }
         this.state = nextState;
