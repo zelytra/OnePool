@@ -74,7 +74,6 @@ export class PoolSocket {
     };
 
     this.socket.onclose = () => {
-      router.push("/")
       this.poolStore.pool = this.poolStore.getRawPool();
     }
   }

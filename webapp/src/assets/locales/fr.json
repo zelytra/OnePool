@@ -50,7 +50,8 @@
   },
   "pool": {
     "action": {
-      "continue": "Continuer"
+      "continue": "Continuer",
+      "leave": "Quitter la partie"
     },
     "friend": {
       "selection": "Créer vos equipes !"

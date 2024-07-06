@@ -2,7 +2,7 @@
   <div class="pool-game-wrapper" v-if="poolStore.pool.gameReport">
     <GlassCard color="#27A27A">
       <div class="glass-wrapper">
-        <h1 class="winner">{{t('pool.game.win')}}</h1>
+        <h1 class="winner">{{ t('pool.game.win') }}</h1>
         <div class="players" v-for="playerReport of poolStore.pool.gameReport.victoryPlayer">
           <p>{{ playerReport.username }} - {{ playerReport.pp }} <span
               :class="{
@@ -24,6 +24,9 @@
         </div>
       </div>
     </GlassCard>
+    <AlertCard color="#27A27A" @click="leaveGame()">
+      <p class="button-title">{{ t('pool.action.leave') }}</p>
+    </AlertCard>
   </div>
 </template>
 
@@ -32,12 +35,19 @@ import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 import GlassCard from "@/vue/templates/GlassCard.vue";
 import {GameReportPlayer} from "@/objects/pool/Pool.ts";
 import {useI18n} from "vue-i18n";
+import AlertCard from "@/vue/templates/AlertCard.vue";
+import router from "@/router";
 
 const poolStore = usePoolParty();
 const {t} = useI18n();
 
 function getPPDelta(playerReport: GameReportPlayer) {
   return playerReport.pp - playerReport.previousPP;
+}
+
+function leaveGame() {
+  poolStore.poolSocket.closeSocket()
+  router.push("/")
 }
 </script>
 
