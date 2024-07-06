@@ -1,8 +1,10 @@
 <template>
   <section>
+    <!-- Removed for UI/UX reason
     <GlassCard color="#FFF">
       <p class="timer"><strong>{{ t('pool.game.chrono') }}</strong>: {{ elapsedTime }}</p>
     </GlassCard>
+    -->
     <GlassCard color="#27A27A">
       <div class="team-content">
         <div class="content">
@@ -209,8 +211,10 @@ section {
 
     hr {
       width: 2px;
-      height: 60px;
+      border-radius: 8px;
+      height: 40px;
       background: rgba(255, 255, 255, 0.5);
+      margin: 0;
     }
 
     img {
