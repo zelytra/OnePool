@@ -80,26 +80,28 @@ export const useNotification =
     }
 
     function autoReconnectTask() {
-      console.log("hello")
       if (autoReconnectInterval != 0) {
         return;
       }
-      useAlertStore().send({
-        title: t("alert.socket.connectionFailed"),
-        type: AlertType.ERROR,
-      });
-      autoReconnectInterval = setInterval(async () => {
-        if (!socket || socket.readyState < 2) {
-          await init(useUserStore().user.authUsername);
-        } else {
-          clearInterval(autoReconnectInterval);
-          autoReconnectInterval = 0;
-          useAlertStore().send({
-            title: t("alert.socket.connectionBack"),
-            type: AlertType.VALID,
-          });
-        }
-      }, 5000);
+      intervalConnection();
+      autoReconnectInterval = setInterval(intervalConnection, 5000);
+    }
+
+    async function intervalConnection() {
+      if (!socket || socket.readyState >= 2) {
+        await init(useUserStore().user.authUsername);
+        useAlertStore().send({
+          title: t("alert.socket.connectionFailed"),
+          type: AlertType.ERROR,
+        });
+      } else {
+        clearInterval(autoReconnectInterval);
+        autoReconnectInterval = 0;
+        useAlertStore().send({
+          title: t("alert.socket.connectionBack"),
+          type: AlertType.VALID,
+        });
+      }
     }
 
     function closeSocket() {
