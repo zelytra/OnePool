@@ -36,11 +36,6 @@ export const useNotification =
         socket = new WebSocket(
           import.meta.env.VITE_BACKEND_HOST + "/notifications/" + response.data);
       }).catch(() => {
-        useAlertStore().send({
-          content: t('alert.websocketAuthFailed.content'),
-          title: t('alert.websocketAuthFailed.title'),
-          type: AlertType.ERROR
-        })
       })
 
       if (!socket) return;

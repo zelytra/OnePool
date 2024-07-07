@@ -8,7 +8,7 @@ services:
     ports:
       - "24900:5432"
     volumes:
-      - /onepool/psql-data/app:/var/lib/postgresql/data
+      - ./onepool/psql-data/app:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -23,7 +23,7 @@ services:
     ports:
       - "24903:5432"
     volumes:
-      - /onepool/psql-data/auth:/var/lib/postgresql/data/pgdata
+      - ./onepool/psql-data/auth:/var/lib/postgresql/data/pgdata
       - /etc/localtime:/etc/localtime:ro
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -31,6 +31,22 @@ services:
       POSTGRES_DB: Keycloak
       PGDATA: /var/lib/postgresql/data/pgdata
     restart: unless-stopped
+
+  mongo-app:
+    image: mongo
+    container_name: onepool-mongo-app
+    restart: unless-stopped
+    ports:
+      - "24905:27017"
+    volumes:
+      - ./onepool/mongo-data/app:/data/db
+      - ./mongodb/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${POSTGRES_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
+      MONGO_INITDB_DATABASE: onepool
+      MONGO_INITDB_USER: ${POSTGRES_USER}
+      MONGO_INITDB_PWD: ${POSTGRES_PASSWORD}
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest

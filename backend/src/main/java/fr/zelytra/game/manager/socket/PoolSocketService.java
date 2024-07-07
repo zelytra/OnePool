@@ -5,7 +5,9 @@ import fr.zelytra.game.manager.message.SocketMessage;
 import fr.zelytra.game.pool.PoolParty;
 import fr.zelytra.game.pool.PoolPlayer;
 import fr.zelytra.game.pool.data.*;
+import fr.zelytra.game.pool.game.PoolGameManager;
 import fr.zelytra.game.pool.game.PoolVictoryState;
+import fr.zelytra.game.pool.game.services.PoolGameService;
 import fr.zelytra.notification.Notification;
 import fr.zelytra.notification.NotificationMessageKey;
 import fr.zelytra.notification.NotificationMessageType;
@@ -28,6 +30,9 @@ public class PoolSocketService {
 
     @Inject
     UserService userService;
+
+    @Inject
+    PoolGameService poolGameService;
 
     private final ConcurrentMap<String, PoolParty> games = new ConcurrentHashMap<>();
 
@@ -382,7 +387,10 @@ public class PoolSocketService {
                 user.setPp(reportPlayer.pp());
                 user.setGamePlayed(user.getGamePlayed() + 1);
             }
+            // Persist game
+            poolGameService.persist((PoolGameManager) poolParty.getGame());
         }
+
         broadcastPoolDataToParty(poolParty);
         Log.info("[playAction][" + poolParty.getUuid() + "] User: " + poolPlayer.getUsername() + " play game action");
     }
