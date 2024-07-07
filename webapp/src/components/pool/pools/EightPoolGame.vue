@@ -126,6 +126,7 @@ function getBallsForm(): BallsFormInterfaces[] {
 
 function playAction() {
   poolStore.poolSocket.runGameAction(poolStore.pool.game.currentAction)
+  document.getElementById('app')!.scrollTop = 0;
 }
 
 function onBallsUpdate(event: any) {
