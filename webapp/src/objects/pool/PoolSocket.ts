@@ -5,6 +5,7 @@ import {WebSocketMessage, WebSocketMessageType} from "@/objects/pool/WebSocet.ts
 import {useUserStore} from "@/objects/stores/UserStore.ts";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
 import {GameAction, GameRule, GameState, PoolTeams} from "@/objects/pool/Pool.ts";
+import router from "@/router";
 
 const {t} = tsi18n.global;
 
@@ -20,7 +21,7 @@ export class PoolSocket {
   }
 
   async joinSession(sessionId: string) {
-    if (this.socket && this.socket.readyState >= 2) {
+    if (this.socket && this.socket.readyState < 2) {
       this.socket.close();
     }
 
@@ -68,14 +69,18 @@ export class PoolSocket {
         title: t("alert.socket.title"),
         type: AlertType.ERROR,
       });
+      router.push("/")
+      this.poolStore.pool = this.poolStore.getRawPool();
     };
 
     this.socket.onclose = () => {
+      this.poolStore.pool = this.poolStore.getRawPool();
     }
   }
 
   closeSocket() {
-    this.socket?.close()
+    this.socket?.close();
+    this.socket = undefined;
   }
 
   public setGameRule(gameRule: GameRule) {

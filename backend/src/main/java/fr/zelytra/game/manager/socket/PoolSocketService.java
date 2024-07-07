@@ -124,7 +124,7 @@ public class PoolSocketService {
                 return poolParty.getGameOwner();
             }
             for (PoolPlayer player : poolParty.getPlayers()) {
-                if (player.getUsername().equals(username)) {
+                if (player.getAuthUsername().equals(username)) {
                     return player;
                 }
             }
@@ -194,17 +194,11 @@ public class PoolSocketService {
         Log.info("[getPlayerBySocketSessionId][N/A] User: " + socketSessionId);
 
         for (PoolParty poolParty : games.values()) {
-            if (poolParty.getGameOwner().getSocketSession() == null) {
-                continue;
-            }
-            if (Objects.equals(poolParty.getGameOwner().getSocketSession().getId(), socketSessionId)) {
+            if (poolParty.getGameOwner().getSocketSession() != null && Objects.equals(poolParty.getGameOwner().getSocketSession().getId(), socketSessionId)) {
                 return poolParty.getGameOwner();
             }
             for (PoolPlayer player : poolParty.getPlayers()) {
-                if (player.getSocketSession() == null) {
-                    continue;
-                }
-                if (Objects.equals(player.getSocketSession().getId(), socketSessionId)) {
+                if (player.getSocketSession() != null && Objects.equals(player.getSocketSession().getId(), socketSessionId)) {
                     return player;
                 }
             }
@@ -290,6 +284,12 @@ public class PoolSocketService {
     @Lock(value = Lock.Type.WRITE, time = 200)
     public void setRule(GameRules gameRules, String socketSessionId) {
         PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
+
+        if (poolPlayer == null) {
+            Log.warn("[setRule][N/A] User not found: " + socketSessionId);
+            return;
+        }
+
         PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
         poolParty.setRules(gameRules);
         broadcastPoolDataToParty(poolParty);
@@ -305,6 +305,12 @@ public class PoolSocketService {
     @Lock(value = Lock.Type.WRITE, time = 200)
     public void setStatus(GameStatus gameStatus, String socketSessionId) {
         PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
+
+        if (poolPlayer == null) {
+            Log.warn("[setStatus][N/A] User not found: " + socketSessionId);
+            return;
+        }
+
         PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
         poolParty.setState(gameStatus);
         broadcastPoolDataToParty(poolParty);
@@ -320,6 +326,12 @@ public class PoolSocketService {
     @Lock(value = Lock.Type.WRITE, time = 200)
     public void setPlayersTeam(PoolTeam team, String socketSessionId) {
         PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
+
+        if (poolPlayer == null) {
+            Log.warn("[poolPlayer][N/A] User not found: " + socketSessionId);
+            return;
+        }
+
         PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
         poolParty.setTeams(team);
         broadcastPoolDataToParty(poolParty);
@@ -329,6 +341,12 @@ public class PoolSocketService {
     @Lock(value = Lock.Type.WRITE, time = 200)
     public void updateCurrentGameAction(GameAction gameAction, String socketSessionId) {
         PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
+
+        if (poolPlayer == null) {
+            Log.warn("[updateCurrentGameAction][N/A] User not found: " + socketSessionId);
+            return;
+        }
+
         PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
         poolParty.setCurrentAction(gameAction);
         broadcastPoolDataToParty(poolParty);
@@ -339,6 +357,12 @@ public class PoolSocketService {
     @Transactional
     public void playAction(GameAction gameAction, String socketSessionId) {
         PoolPlayer poolPlayer = getPlayerBySocketSessionId(socketSessionId);
+
+        if (poolPlayer == null) {
+            Log.warn("[poolPlayer][N/A] User not found: " + socketSessionId);
+            return;
+        }
+
         PoolParty poolParty = getPoolPartyByPlayer(poolPlayer.getUsername());
 
         poolParty.getGame().play(gameAction);

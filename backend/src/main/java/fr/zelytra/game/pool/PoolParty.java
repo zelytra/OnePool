@@ -1,5 +1,7 @@
 package fr.zelytra.game.pool;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import fr.zelytra.game.manager.message.SocketTimeOutManager;
 import fr.zelytra.game.manager.socket.PoolSocketService;
 import fr.zelytra.game.pool.data.*;
 import fr.zelytra.game.pool.game.AmericanEightPoolGame;
@@ -22,6 +24,9 @@ public class PoolParty {
     private GameStatus state;
     private PoolGameInterface game;
     private GameReport gameReport;
+
+    @JsonIgnore
+    private final SocketTimeOutManager socketTimeOutManager = new SocketTimeOutManager(60);
 
     public PoolParty(PoolPlayer user) {
         this.gameOwner = user;
@@ -89,16 +94,22 @@ public class PoolParty {
         return state;
     }
 
-    public boolean setState(GameStatus state) {
+    //TODO UT
+    public boolean setState(GameStatus nextState) {
         // No empty teams
-        if (this.state == GameStatus.TEAMING_PLAYERS && state == GameStatus.RUNNING) {
+        if (this.state == GameStatus.TEAMING_PLAYERS && nextState == GameStatus.RUNNING) {
             if (this.game.getTeams().team1().isEmpty() || this.game.getTeams().team2().isEmpty()) {
                 PoolSocketService.broadcastNotificationToParty(this, NotificationMessageKey.EMPTY_TEAM);
                 return false;
             }
             game.initGame();
+        } else if (nextState == GameStatus.END) {
+            //Init timeout on game end
+            for (PoolPlayer player : players) {
+                socketTimeOutManager.init(player.getSocketSession());
+            }
         }
-        this.state = state;
+        this.state = nextState;
         return true;
     }
 
