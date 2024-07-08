@@ -7,6 +7,7 @@ import fr.zelytra.game.pool.data.PoolTeam;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import jakarta.persistence.GeneratedValue;
 import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,7 @@ public class PoolGameManager {
     }
 
     @JsonIgnore
+    @BsonIgnore
     public String getNextPlayer() {
         // Get the list of players from both teams
         List<String> team1 = teams.team1();
