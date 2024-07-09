@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.zelytra.game.manager.message.SocketTimeOutManager;
 import fr.zelytra.game.manager.socket.PoolSocketService;
 import fr.zelytra.game.pool.data.*;
-import fr.zelytra.game.pool.game.AmericanEightPoolGame;
+import fr.zelytra.game.pool.game.customs.AmericanEightPoolGame;
 import fr.zelytra.game.pool.game.PoolGameInterface;
 import fr.zelytra.game.pool.game.PoolVictoryState;
 import fr.zelytra.notification.NotificationMessageKey;
@@ -171,6 +171,7 @@ public class PoolParty {
                 gameReport.looserPlayer().add(new GameReportPlayer(player.getPp(), newPlayerPP, player.getUsername()));
             }
         }
+        game.setGameReport(gameReport);
         return gameReport;
     }
 

@@ -1,6 +1,7 @@
 package fr.zelytra.game.pool.game;
 
 import fr.zelytra.game.pool.data.GameAction;
+import fr.zelytra.game.pool.data.GameReport;
 import fr.zelytra.game.pool.data.PoolTeam;
 
 public interface PoolGameInterface {
@@ -11,4 +12,5 @@ public interface PoolGameInterface {
     GameAction getCurrentAction();
     void setCurrentAction(GameAction action);
     void setVictoryState(PoolVictoryState state);
+    void setGameReport(GameReport report);
 }

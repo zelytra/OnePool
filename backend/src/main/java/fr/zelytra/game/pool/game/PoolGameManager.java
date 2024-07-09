@@ -2,12 +2,22 @@ package fr.zelytra.game.pool.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.zelytra.game.pool.data.GameAction;
+import fr.zelytra.game.pool.data.GameReport;
 import fr.zelytra.game.pool.data.PoolTeam;
+import io.quarkus.mongodb.panache.common.MongoEntity;
+import jakarta.persistence.GeneratedValue;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@MongoEntity(collection = "PoolGames")
 public class PoolGameManager {
+
+    @BsonId
+    @GeneratedValue
+    private int id;
 
     private final PoolTeam teams = new PoolTeam(new ArrayList<>(), new ArrayList<>());
     private final long startingTime;
@@ -16,6 +26,7 @@ public class PoolGameManager {
     private GameAction currentAction;
     private boolean paused = false;
     private PoolVictoryState victoryState = PoolVictoryState.NONE;
+    private GameReport gameReport;
 
     public PoolGameManager() {
         startingTime = System.currentTimeMillis();
@@ -50,6 +61,7 @@ public class PoolGameManager {
     }
 
     @JsonIgnore
+    @BsonIgnore
     public String getNextPlayer() {
         // Get the list of players from both teams
         List<String> team1 = teams.team1();
@@ -129,5 +141,13 @@ public class PoolGameManager {
 
     public boolean isPaused() {
         return paused;
+    }
+
+    public GameReport getGameReport() {
+        return gameReport;
+    }
+
+    public void setGameReport(GameReport gameReport) {
+        this.gameReport = gameReport;
     }
 }
