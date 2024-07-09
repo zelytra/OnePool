@@ -10,6 +10,7 @@ public enum MessageType {
     UPDATE_TEAMS,
     UPDATE_GAME_ACTION,
     PLAY_GAME_ACTION,
+    SILENT_JOIN_POOL,
 
     //Notification message types
     INIT_NOTIFICATION,

@@ -4,7 +4,7 @@ import fr.zelytra.game.manager.socket.PoolSocketService;
 import fr.zelytra.game.pool.data.GameRules;
 import fr.zelytra.game.pool.data.GameStatus;
 import fr.zelytra.game.pool.data.PoolTeam;
-import fr.zelytra.game.pool.game.AmericanEightPoolGame;
+import fr.zelytra.game.pool.game.customs.AmericanEightPoolGame;
 import fr.zelytra.user.UserEntity;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.transaction.Transactional;

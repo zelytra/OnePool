@@ -3,10 +3,7 @@ package fr.zelytra.game.manager.socket;
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.zelytra.game.manager.message.SocketMessage;
 import fr.zelytra.game.manager.message.SocketTimeOutManager;
-import fr.zelytra.game.pool.data.GameAction;
-import fr.zelytra.game.pool.data.GameRules;
-import fr.zelytra.game.pool.data.GameStatus;
-import fr.zelytra.game.pool.data.PoolTeam;
+import fr.zelytra.game.pool.data.*;
 import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import jakarta.websocket.*;
@@ -51,6 +48,10 @@ public class SessionSocket {
                 String username = objectMapper.convertValue(socketMessage.data(), String.class);
                 socketService.joinPool(username, sessionId, session);
                 socketTimeOutManager.complete(session.getId());
+            }
+            case SILENT_JOIN_POOL -> {
+                PoolSilentJoin silentJoin = objectMapper.convertValue(socketMessage.data(), PoolSilentJoin.class);
+                socketService.joinPool(silentJoin.username(), silentJoin.sessionId(), null);
             }
             case SET_RULES -> {
                 socketService.setRule(objectMapper.convertValue(socketMessage.data(), GameRules.class), session.getId());

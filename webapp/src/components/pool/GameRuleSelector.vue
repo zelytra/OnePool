@@ -9,6 +9,14 @@
         :selected="selectedRules == GameRule.AMERICAN_8"
         @click="selectedRules = GameRule.AMERICAN_8"
     />
+    <RulesCard
+        :title="t('pool.rules.card.manual.title')"
+        :amount="t('pool.rules.card.manual.amount')"
+        :description="t('pool.rules.card.manual.description')"
+        :color="'#457BE4'"
+        :selected="selectedRules == GameRule.MANUAL"
+        @click="selectedRules = GameRule.MANUAL"
+    />
     <AlertCard color="#27A27A" @click="setGameRule()">
       <p class="button-title">{{ t('pool.action.continue') }}</p>
     </AlertCard>

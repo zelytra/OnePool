@@ -54,8 +54,14 @@ export interface GameReportPlayer {
   username: string
 }
 
+export interface PoolSilentJoin{
+  username:string
+  sessionId:string
+}
+
 export enum GameRule {
-  AMERICAN_8 = "AMERICAN_8"
+  AMERICAN_8 = "AMERICAN_8",
+  MANUAL = "MANUAL"
 }
 
 export enum PoolVictoryState {

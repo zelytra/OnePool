@@ -4,7 +4,7 @@ import {tsi18n} from "@/objects/i18n";
 import {WebSocketMessage, WebSocketMessageType} from "@/objects/pool/WebSocet.ts";
 import {useUserStore} from "@/objects/stores/UserStore.ts";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
-import {GameAction, GameRule, GameState, PoolTeams} from "@/objects/pool/Pool.ts";
+import {GameAction, GameRule, GameState, PoolSilentJoin, PoolTeams} from "@/objects/pool/Pool.ts";
 import router from "@/router";
 
 const {t} = tsi18n.global;
@@ -124,6 +124,15 @@ export class PoolSocket {
     const message: WebSocketMessage = {
       data: teams,
       messageType: WebSocketMessageType.UPDATE_TEAMS,
+    };
+    this.socket.send(JSON.stringify(message));
+  }
+
+  public silentJoinPool(username: string) {
+    if (!this.socket) return;
+    const message: WebSocketMessage = {
+      data: {sessionId: this.poolStore.pool.uuid, username: username} as PoolSilentJoin,
+      messageType: WebSocketMessageType.SILENT_JOIN_POOL,
     };
     this.socket.send(JSON.stringify(message));
   }

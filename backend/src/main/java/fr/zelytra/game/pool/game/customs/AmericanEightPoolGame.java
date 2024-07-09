@@ -1,8 +1,11 @@
-package fr.zelytra.game.pool.game;
+package fr.zelytra.game.pool.game.customs;
 
 import fr.zelytra.game.pool.data.GameAction;
 import fr.zelytra.game.pool.data.PoolBalls;
 import fr.zelytra.game.pool.data.PoolFault;
+import fr.zelytra.game.pool.game.PoolGameInterface;
+import fr.zelytra.game.pool.game.PoolGameManager;
+import fr.zelytra.game.pool.game.PoolVictoryState;
 
 import java.util.ArrayList;
 import java.util.List;

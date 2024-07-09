@@ -44,14 +44,6 @@ const currentUser = useUserStore();
 const poolStore = usePoolParty();
 const notification = useNotification();
 
-const props = defineProps({
-  silentInvit: {
-    type: Boolean,
-    required: false,
-    default: () => false
-  }
-})
-
 onMounted(() => {
   loadFriendList()
 })
@@ -80,20 +72,14 @@ function getFriendUser(friend: Friend): User {
 }
 
 function inviteToGame(user: User) {
-  if (!props.silentInvit) {
-    notification.send({
-      users: [user.authUsername],
-      data: {
-        data: poolStore.pool.uuid,
-        type: NotificationType.INVITE_TO_GAME
-      }
-    });
-    user.gameInviteStatus = InviteStatus.PENDING;
-  } else {
-    poolStore.poolSocket.silentJoinPool(user.authUsername)
-    user.gameInviteStatus = InviteStatus.ACCEPT
-  }
-
+  notification.send({
+    users: [user.authUsername],
+    data: {
+      data: poolStore.pool.uuid,
+      type: NotificationType.INVITE_TO_GAME
+    }
+  });
+  user.gameInviteStatus = InviteStatus.PENDING;
 }
 
 function filterPlayer(users: User[]): User[] {
