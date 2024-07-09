@@ -1,0 +1,29 @@
+services:
+  mongo-rs0-1:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "24905:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${POSTGRES_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
+      MONGO_INITDB_DATABASE: onepool
+      MONGO_REPLICA_SET_NAME: rs0
+    volumes:
+      - /onepool/mongo-data/app:/data/db
+    command: >
+      bash -c "mongod --replSet rs0 --bind_ip_all
+               && mongo --eval 'rs.initiate({_id: \"rs0\", members: [{ _id: 0, host: \"localhost:27017\" }]})'"
+
+  mongo-init-replica:
+    image: mongo:latest
+    depends_on:
+      - mongo-rs0-1
+    entrypoint: >
+      bash -c "
+      sleep 10;
+      mongo --host mongo:27017 <<EOF
+      rs.initiate();
+      exit;
+      EOF
+      "

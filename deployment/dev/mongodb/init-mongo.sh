@@ -2,6 +2,7 @@
 set -e
 
 echo "Starting MongoDB initialization script..."
+openssl rand -base64 756 > ~/rs_keyfile
 
 mongosh <<EOF
 use ${MONGO_INITDB_DATABASE}
