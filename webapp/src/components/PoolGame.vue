@@ -11,10 +11,13 @@
         mode="out-in"
     >
       <GameRuleSelector v-if="poolStore.pool.state==GameState.SETUP" key="setup"/>
-      <FriendInvitation v-else-if="poolStore.pool.state==GameState.INVITE_PLAYER" key="invite"/>
+      <FriendInvitation v-else-if="poolStore.pool.state==GameState.INVITE_PLAYER"
+                        :silent-invit="poolStore.pool.rules == GameRule.MANUAL" key="invite"/>
       <TeamingPlayers v-else-if="poolStore.pool.state==GameState.TEAMING_PLAYERS" key="teaming"/>
       <EightPoolGame v-else-if="poolStore.pool.state==GameState.RUNNING && poolStore.pool.rules == GameRule.AMERICAN_8"
                      key="8-pool"/>
+      <ManualPoolGame v-else-if="poolStore.pool.state==GameState.RUNNING && poolStore.pool.rules == GameRule.MANUAL"
+                      key="manual-pool"/>
       <PoolGameResult v-else-if="poolStore.pool.state==GameState.END" key="victory"/>
     </transition>
   </section>
@@ -29,6 +32,7 @@ import {GameRule, GameState} from "@/objects/pool/Pool.ts";
 import TeamingPlayers from "@/components/pool/TeamingPlayers.vue";
 import EightPoolGame from "@/components/pool/pools/EightPoolGame.vue";
 import PoolGameResult from "@/components/pool/PoolGameResult.vue";
+import ManualPoolGame from "@/components/pool/pools/ManualPoolGame.vue";
 
 const poolStore = usePoolParty();
 

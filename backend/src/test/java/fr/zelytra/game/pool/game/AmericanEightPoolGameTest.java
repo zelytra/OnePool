@@ -3,6 +3,7 @@ package fr.zelytra.game.pool.game;
 import fr.zelytra.game.pool.data.GameAction;
 import fr.zelytra.game.pool.data.PoolBalls;
 import fr.zelytra.game.pool.data.PoolFault;
+import fr.zelytra.game.pool.game.customs.AmericanEightPoolGame;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -45,7 +45,7 @@ const props = defineProps({
   position: relative;
   overflow: hidden;
   width: 100%;
-  min-height: 56px;
+  min-height: 99px;
   gap: 8px;
   padding: 16px;
   border-radius: 15px;

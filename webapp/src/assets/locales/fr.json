@@ -76,6 +76,8 @@
       },
       "loose": "Looser bhouuuu",
       "round": "Tour",
+      "team1": "Equipe 1",
+      "team2": "Equipe 2",
       "win": "Vainqueur(s)"
     },
     "rules": {
@@ -84,6 +86,11 @@
           "amount": "2 à 6 joueurs",
           "description": "Les regles classique du billard. Rentrer les boules de votre familles puis rentrer la noire !",
           "title": "La 8 Américaine"
+        },
+        "manual": {
+          "amount": "2 à 6 joueurs",
+          "description": "Aucune regles, seulement pour rentrer le resultat d'un match",
+          "title": "Manuel"
         }
       },
       "selection": "Choisissez le mode de jeux !"

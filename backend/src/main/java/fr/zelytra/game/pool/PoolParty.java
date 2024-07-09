@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.zelytra.game.manager.message.SocketTimeOutManager;
 import fr.zelytra.game.manager.socket.PoolSocketService;
 import fr.zelytra.game.pool.data.*;
-import fr.zelytra.game.pool.game.AmericanEightPoolGame;
 import fr.zelytra.game.pool.game.PoolGameInterface;
 import fr.zelytra.game.pool.game.PoolVictoryState;
+import fr.zelytra.game.pool.game.customs.AmericanEightPoolGame;
+import fr.zelytra.game.pool.game.customs.ManualPoolGame;
 import fr.zelytra.notification.NotificationMessageKey;
 import fr.zelytra.poolpoint.PoolPointCalculator;
 import fr.zelytra.user.UserEntity;
@@ -54,6 +55,9 @@ public class PoolParty {
         switch (rules) {
             case AMERICAN_8:
                 game = new AmericanEightPoolGame();
+                break;
+            case MANUAL:
+                game = new ManualPoolGame();
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported game type: " + rules);
