@@ -1,7 +1,7 @@
 {
   "productName": "onepool",
-  "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "version": "0.1.2-alpha",
+  "identifier": "fr.zelytra.onepool",
   "build": {
     "frontendDist": "../src",
     "devUrl": "http://localhost:5173",
@@ -19,12 +19,16 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+
     }
   },
   "bundle": {
     "active": true,
     "targets": "all",
+    "android": {
+      "minSdkVersion": 24
+    },
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

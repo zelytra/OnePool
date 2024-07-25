@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "tauri-dev": "npm run tauri dev",
-    "tauri-build": "npm run tauri build"
+    "tauri-build": "npm run tauri build",
+    "tauri-android-build": "npm run tauri android build",
+    "tauri-android-dev": "npm run tauri android dev"
   },
   "dependencies": {
     "@types/matter-js": "^0.19.6",
