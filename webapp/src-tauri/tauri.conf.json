@@ -3,7 +3,7 @@
   "version": "0.1.2-alpha",
   "identifier": "fr.zelytra.onepool",
   "build": {
-    "frontendDist": "../src",
+    "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
@@ -19,8 +19,7 @@
       }
     ],
     "security": {
-      "csp": null,
-
+      "csp": null
     }
   },
   "bundle": {

@@ -1,7 +1,8 @@
-import axios, { AxiosResponse } from 'axios';
-import { keycloakStore } from "@/objects/stores/LoginStates.ts";
+import {keycloakStore} from "@/objects/stores/LoginStates.ts";
+import {fetch, ResponseType} from "@tauri-apps/api/http";
 
 export class HTTPAxios {
+
   private readonly path: string;
   private static readonly header = {
     'Access-Control-Allow-Origin': '*',
@@ -11,36 +12,44 @@ export class HTTPAxios {
   private readonly url = import.meta.env.VITE_BACKEND_HOST + "/";
 
   constructor(path: string) {
-    HTTPAxios.header.Authorization = 'Bearer ' + keycloakStore.keycloak.token;
     this.path = path;
   }
 
-  async get(): Promise<AxiosResponse<any>> {
+  async get(responseType?: ResponseType) {
     const urlPath = this.url + this.path;
-    console.debug("[HTTPAxios.ts][GET] " + urlPath);
-    return await axios.get(urlPath, { headers: HTTPAxios.header });
+    console.debug("[HTTPAxios.ts][GET] " + urlPath)
+    return await fetch(urlPath, {
+      method: "GET",
+      headers: HTTPAxios.header,
+      responseType: responseType ? responseType : ResponseType.JSON
+    });
   }
 
-  async post(body?: any): Promise<AxiosResponse<any>> {
+  async post(body: any) {
     const urlPath = this.url + this.path;
-    console.debug("[HTTPAxios.ts][POST] " + urlPath);
-    return await axios.post(urlPath, body, { headers: HTTPAxios.header });
+    console.debug("[HTTPAxios.ts][POST] " + urlPath)
+    return await fetch(urlPath, {
+      method: "POST",
+      body: {type: "Json", payload: body},
+      headers: HTTPAxios.header
+    });
   }
 
   /*
       async delete() {
         const urlPath = this.url + this.path;
-        return await axios.delete(urlPath, { headers: HTTPAxios.header });
+        return await this.axios.delete(urlPath);
       }
 
-      async patch(body: any) {
+      async patch() {
         const urlPath = this.url + this.path;
-        return await axios.patch(urlPath, body, { headers: HTTPAxios.header });
-      }
-  */
+        return await this.axios.patch(urlPath, this.json);
+      }*/
 
   public static async updateToken() {
-    await keycloakStore.keycloak.updateToken(60);
+    await keycloakStore.keycloak.updateToken(60).then((refresh: boolean) => {
+      if (refresh) console.debug("Token was successfully refreshed");
+    });
     HTTPAxios.header.Authorization = 'Bearer ' + keycloakStore.keycloak.token;
   }
 }
