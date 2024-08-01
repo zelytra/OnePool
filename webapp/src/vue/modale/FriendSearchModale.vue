@@ -19,7 +19,6 @@
 import AlertCard from "@/vue/templates/AlertCard.vue";
 import {ref, watch} from "vue";
 import {HTTPAxios} from "@/objects/utils/HTTPAxios.ts";
-import {AxiosResponse} from "axios";
 import {SimpleUser} from "@/objects/User";
 import {AlertType, useAlertStore} from "@/vue/alerts/AlertStore.ts";
 import {useI18n} from "vue-i18n";
@@ -34,7 +33,7 @@ const notification = useNotification();
 
 watch(() => inputResearch.value, () => {
   if (inputResearch.value.length == 0) return;
-  new HTTPAxios("user/research/" + inputResearch.value).get().then((response: AxiosResponse) => {
+  new HTTPAxios("user/research/" + inputResearch.value).get().then((response: any) => {
     searchResult.value = response.data
   })
 })

@@ -42,7 +42,6 @@ import {onMounted, ref} from "vue";
 import AlertCard from "@/vue/templates/AlertCard.vue";
 import {useI18n} from "vue-i18n";
 import {HTTPAxios} from "@/objects/utils/HTTPAxios.ts";
-import {AxiosResponse} from "axios";
 
 const players = ref<PlayerLeaderboard[]>([])
 const user = ref<PlayerLeaderboard | undefined>();
@@ -50,14 +49,14 @@ const user = ref<PlayerLeaderboard | undefined>();
 const {t} = useI18n()
 
 onMounted(() => {
-  new HTTPAxios("leaderboard/all").get().then((response: AxiosResponse) => {
+  new HTTPAxios("leaderboard/all").get().then((response: any) => {
     players.value = response.data;
     players.value.sort((a, b) => b.pp - a.pp).forEach((p, index) => {
       p.position = index + 1
     })
     console.log(players.value)
   })
-  new HTTPAxios("leaderboard/self").get().then((response: AxiosResponse) => {
+  new HTTPAxios("leaderboard/self").get().then((response: any) => {
     user.value = response.data;
   })
 })

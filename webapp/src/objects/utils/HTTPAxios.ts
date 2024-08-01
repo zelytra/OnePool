@@ -24,7 +24,7 @@ export class HTTPAxios {
     });
   }
 
-  async post(body: any) {
+  async post(body?: any) {
     const urlPath = this.url + this.path;
     console.debug("[HTTPAxios.ts][POST] " + urlPath)
     return await fetch(urlPath, {
