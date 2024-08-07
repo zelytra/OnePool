@@ -13,9 +13,10 @@
     "iOS"
   ],
   "permissions": [
-    "core:app:default",
-    "shell:allow-open",
-    "deep-link:default",
+    "event:allow-emit",
+    "event:allow-emit-to",
+    "event:allow-listen",
+    "event:allow-unlisten",
     "http:allow-fetch"
   ],
   "capabilities": [
