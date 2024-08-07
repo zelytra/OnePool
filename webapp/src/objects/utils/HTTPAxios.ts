@@ -1,5 +1,5 @@
 import {keycloakStore} from "@/objects/stores/LoginStates.ts";
-import {fetch, ResponseType} from "@tauri-apps/api/http";
+import {fetch} from "@tauri-apps/plugin-http";
 
 export class HTTPAxios {
 
@@ -15,13 +15,12 @@ export class HTTPAxios {
     this.path = path;
   }
 
-  async get(responseType?: ResponseType) {
+  async get() {
     const urlPath = this.url + this.path;
     console.debug("[HTTPAxios.ts][GET] " + urlPath)
     return await fetch(urlPath, {
       method: "GET",
-      headers: HTTPAxios.header,
-      responseType: responseType ? responseType : ResponseType.JSON
+      headers: HTTPAxios.header
     });
   }
 
@@ -30,21 +29,10 @@ export class HTTPAxios {
     console.debug("[HTTPAxios.ts][POST] " + urlPath)
     return await fetch(urlPath, {
       method: "POST",
-      body: {type: "Json", payload: body},
+      body: body,
       headers: HTTPAxios.header
     });
   }
-
-  /*
-      async delete() {
-        const urlPath = this.url + this.path;
-        return await this.axios.delete(urlPath);
-      }
-
-      async patch() {
-        const urlPath = this.url + this.path;
-        return await this.axios.patch(urlPath, this.json);
-      }*/
 
   public static async updateToken() {
     await keycloakStore.keycloak.updateToken(60).then((refresh: boolean) => {

@@ -1,0 +1,23 @@
+{
+  "$schema": "../gen/schemas/mobile-schema.json",
+  "identifier": "mobile-capability",
+  "description": "Capability for mobile",
+  "webviews": [
+    "main"
+  ],
+  "windows": [
+    "main"
+  ],
+  "platforms": [
+    "android",
+    "iOS"
+  ],
+  "permissions": [
+    "core:app:default",
+    "shell:allow-open",
+    "deep-link:default",
+    "http:allow-fetch"
+  ],
+  "capabilities": [
+  ]
+}

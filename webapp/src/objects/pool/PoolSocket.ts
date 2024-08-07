@@ -25,9 +25,9 @@ export class PoolSocket {
       this.socket.close();
     }
 
-    await new HTTPAxios("socket/register").get().then((response) => {
+    await new HTTPAxios("socket/register").get().then(async (response) => {
       this.socket = new WebSocket(
-        import.meta.env.VITE_BACKEND_HOST + "/sessions/" + response.data + "/" + sessionId);
+        import.meta.env.VITE_BACKEND_HOST + "/sessions/" + await response.text() + "/" + sessionId);
     }).catch(() => {
       useAlertStore().send({
         content: t('alert.websocketAuthFailed.content'),
