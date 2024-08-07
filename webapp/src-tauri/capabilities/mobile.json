@@ -2,9 +2,6 @@
   "$schema": "../gen/schemas/mobile-schema.json",
   "identifier": "mobile-capability",
   "description": "Capability for mobile",
-  "webviews": [
-    "main"
-  ],
   "windows": [
     "main"
   ],
@@ -13,11 +10,13 @@
     "iOS"
   ],
   "permissions": [
-    "event:allow-emit",
-    "event:allow-emit-to",
-    "event:allow-listen",
-    "event:allow-unlisten",
-    "http:allow-fetch"
+    "core:default",
+    "shell:allow-open",
+    "http:default",
+    {
+      "identifier": "http:allow-fetch",
+      "allow": [{ "url": "http://*" }]
+    }
   ],
   "capabilities": [
   ]

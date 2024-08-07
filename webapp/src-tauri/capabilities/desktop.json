@@ -2,9 +2,6 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "desktop-capability",
   "description": "Capability for desktop",
-  "webviews": [
-    "main"
-  ],
   "windows": [
     "main"
   ],
@@ -14,12 +11,8 @@
     "windows"
   ],
   "permissions": [
-    "event:allow-emit",
-    "event:allow-emit-to",
-    "event:allow-listen",
-    "event:allow-unlisten",
-    "http:allow-fetch"
-  ],
-  "capabilities": [
+    "core:default",
+    "shell:allow-open",
+    "http:default"
   ]
 }
