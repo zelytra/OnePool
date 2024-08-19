@@ -19,6 +19,11 @@ export const i18n = createI18n({
   messages: {fr, en, es, de},
 });
 
+//Debug tool ERUDA for mobile
+if (import.meta.env.MODE === 'development') {
+  import('eruda').then(eruda => eruda.default.init());
+}
+
 const app = createApp(App);
 keycloakStore.init();
 app.directive("click-outside", {

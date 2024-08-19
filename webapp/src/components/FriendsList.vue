@@ -27,7 +27,6 @@ import AlertCard from "@/vue/templates/AlertCard.vue";
 import {useI18n} from "vue-i18n";
 import FriendStatus from "@/vue/friends/FriendStatus.vue";
 import {HTTPAxios} from "@/objects/utils/HTTPAxios.ts";
-import {AxiosResponse} from "axios";
 import FriendSearchModale from "@/vue/modale/FriendSearchModale.vue";
 import {useUserStore} from "@/objects/stores/UserStore.ts";
 import {AlertType, useAlertStore} from "@/vue/alerts/AlertStore.ts";
@@ -52,7 +51,7 @@ onUnmounted(() => {
 });
 
 function loadFriendList() {
-  new HTTPAxios("friends/list").get().then((response: AxiosResponse) => {
+  new HTTPAxios("friends/list").get().then((response: any) => {
     const friendsList: Friend[] = response.data;
     friends.value = []
     pendingInvitation.value = []

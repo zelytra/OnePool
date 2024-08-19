@@ -31,7 +31,6 @@ import AlertCard from "@/vue/templates/AlertCard.vue";
 import {onMounted, ref} from "vue";
 import {Friend, InviteStatus, User} from "@/objects/User.ts";
 import {HTTPAxios} from "@/objects/utils/HTTPAxios.ts";
-import {AxiosResponse} from "axios";
 import {useUserStore} from "@/objects/stores/UserStore.ts";
 import FriendPoolInvite from "@/vue/friends/FriendPoolInvite.vue";
 import {usePoolParty} from "@/objects/stores/PoolStore.ts";
@@ -49,7 +48,7 @@ onMounted(() => {
 })
 
 function loadFriendList() {
-  new HTTPAxios("friends/list").get().then((response: AxiosResponse) => {
+  new HTTPAxios("friends/list").get().then((response: any) => {
     const friendsList: Friend[] = response.data;
     friends.value = []
     for (let friend of friendsList) {

@@ -4,7 +4,6 @@ import {tsi18n} from "@/objects/i18n/index.ts"
 import {User} from "@/objects/User.ts";
 import {defineStore} from "pinia";
 import {HTTPAxios} from "@/objects/utils/HTTPAxios.ts";
-import {AxiosResponse} from "axios";
 import {useNotification} from "@/objects/stores/NotificationStore.ts";
 
 
@@ -31,9 +30,10 @@ export const useUserStore = defineStore('user', () => {
       pp: 0,
       username: username,
     };
-    new HTTPAxios("user/preferences").get().then((response: AxiosResponse) => {
+    new HTTPAxios("user/preferences").get().then((response: any) => {
+      console.log(response)
       user.value = {
-        ...response.data,
+        ...response,
         lang: browserLang,
       }
       useNotification().init(user.value.authUsername);

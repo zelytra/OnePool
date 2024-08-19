@@ -34,7 +34,7 @@ export const useNotification =
 
       await new HTTPAxios("socket/register").get().then((response) => {
         socket = new WebSocket(
-          import.meta.env.VITE_BACKEND_HOST + "/notifications/" + response.data);
+          import.meta.env.VITE_BACKEND_HOST + "/notifications/" + response);
       }).catch(() => {
         useAlertStore().send({
           content: t('alert.websocketAuthFailed.content'),

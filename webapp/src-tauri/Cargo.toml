@@ -1,0 +1,20 @@
+[package]
+name = "onepool"
+version = "0.1.2-alpha"
+description = "A Tauri App"
+authors = ["Zelytra"]
+edition = "2021"
+
+[lib]
+name = "onepool_lib"
+crate-type = ["staticlib", "cdylib", "lib"]
+
+[build-dependencies]
+tauri-build = { version = "2.0.0-rc.3", features = [] }
+
+[dependencies]
+tauri = { version = "2.0.0-rc.3", features = [] }
+tauri-plugin-shell = "2.0.0-rc"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri-plugin-http = "2.0.0-rc.0"
