@@ -31,8 +31,9 @@ export const useUserStore = defineStore('user', () => {
       username: username,
     };
     new HTTPAxios("user/preferences").get().then((response: any) => {
+      console.log(response)
       user.value = {
-        ...response.data,
+        ...response,
         lang: browserLang,
       }
       useNotification().init(user.value.authUsername);

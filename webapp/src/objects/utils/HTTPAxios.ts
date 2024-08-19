@@ -20,7 +20,7 @@ export class HTTPAxios {
     console.debug("[HTTPAxios.ts][GET] " + urlPath)
     return await fetch(urlPath, {
       method: "GET",
-      headers: HTTPAxios.header
+      headers: HTTPAxios.header,
     });
   }
 

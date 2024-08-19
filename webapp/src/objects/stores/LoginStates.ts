@@ -21,7 +21,7 @@ export const keycloakStore = reactive({
   init() {
     this.keycloak.init({
       onLoad: 'login-required',
-      redirectUri: "http://10.0.2.2:5173",
+      redirectUri: window.location.href,
       checkLoginIframe: false
     }).then((auth: boolean) => {
       this.isAuthenticated = auth;
